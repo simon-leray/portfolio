@@ -233,7 +233,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       {showQuotes ? (
         <div
           aria-hidden
-          className="absolute inset-0 pointer-events-none select-none"
+          className="absolute inset-0 pointer-events-none select-none quotes-bg"
           style={{
             maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
@@ -359,10 +359,15 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           animation: fade-up 0.8s ease forwards;
         }
         @media (max-width: 767px) {
-          .drift          { max-width: 85vw; }
-          .drift.qs-short  { font-size: 1rem; }
-          .drift.qs-medium { font-size: 0.8rem; }
-          .drift.qs-long   { font-size: 0.7rem; }
+          .drift {
+            font-size: 0.65rem !important;
+            line-height: 1.4;
+            max-width: 75vw;
+            color: rgba(255, 255, 255, 0.09);
+          }
+          .quotes-bg {
+            clip-path: inset(0 0 40% 0);
+          }
         }
         @media (prefers-reduced-motion: reduce) {
           .animate-fade-up { animation: none; }
