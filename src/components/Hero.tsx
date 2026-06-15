@@ -19,6 +19,7 @@ interface ActiveQuote {
   delay: number;
   lines: string[];
   fontSize: string;
+  sizeClass: "qs-short" | "qs-medium" | "qs-long";
 }
 
 interface Props {
@@ -33,6 +34,14 @@ function quoteFontSize(maxLineLen: number): string {
   if (maxLineLen < 70)  return "clamp(1.6rem, 3vw, 2.6rem)";
   if (maxLineLen < 100) return "clamp(1.3rem, 2.5vw, 2.1rem)";
   return "clamp(1.1rem, 2.2vw, 1.8rem)";
+}
+
+// Mobile size class based on total quote length (all lines joined).
+function quoteSizeClass(lines: string[]): "qs-short" | "qs-medium" | "qs-long" {
+  const total = lines.join(" ").length;
+  if (total < 50)  return "qs-short";
+  if (total < 100) return "qs-medium";
+  return "qs-long";
 }
 
 // Split on editor-entered newlines; filter blank lines from trailing \n.
@@ -138,7 +147,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       const lines    = quoteLines(text);
       const maxLen   = Math.max(...lines.map(l => l.length));
 
-      batch.push({ id: nextId++, slot, duration, delay, lines, fontSize: quoteFontSize(maxLen) });
+      batch.push({ id: nextId++, slot, duration, delay, lines, fontSize: quoteFontSize(maxLen), sizeClass: quoteSizeClass(lines) });
     }
 
     setActiveQuotes(batch);
@@ -171,6 +180,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       delay: 0,
       lines,
       fontSize: quoteFontSize(maxLen),
+      sizeClass: quoteSizeClass(lines),
     };
 
     setActiveQuotes(prev => {
@@ -236,7 +246,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               style={{ top: `${slotToPercent(q.slot)}%`, transform: "translateY(-50%)" }}
             >
               <div
-                className="drift"
+                className={`drift ${q.sizeClass}`}
                 style={{
                   fontSize:          q.fontSize,
                   animationDuration: `${q.duration}s`,
@@ -347,6 +357,12 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         }
         .animate-fade-up {
           animation: fade-up 0.8s ease forwards;
+        }
+        @media (max-width: 767px) {
+          .drift          { max-width: 85vw; }
+          .drift.qs-short  { font-size: 1rem; }
+          .drift.qs-medium { font-size: 0.8rem; }
+          .drift.qs-long   { font-size: 0.7rem; }
         }
         @media (prefers-reduced-motion: reduce) {
           .animate-fade-up { animation: none; }

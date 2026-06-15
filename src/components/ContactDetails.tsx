@@ -13,8 +13,8 @@ export function ContactDetails({ email, phone }: Props) {
         >
           <p className="text-red text-xs tracking-widest uppercase mb-3">E-Mail</p>
           <p
-            className="text-4xl md:text-5xl leading-none text-ink group-hover:text-red transition-colors duration-150 break-all"
-            style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
+            className="leading-none text-ink group-hover:text-red transition-colors duration-150 overflow-hidden"
+            style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em", fontSize: "clamp(1rem, 5vw, 3rem)", whiteSpace: "nowrap" }}
           >
             {email}
           </p>
@@ -27,8 +27,8 @@ export function ContactDetails({ email, phone }: Props) {
         >
           <p className="text-red text-xs tracking-widest uppercase mb-3">Telefon</p>
           <p
-            className="text-4xl md:text-5xl leading-none text-ink group-hover:text-red transition-colors duration-150"
-            style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
+            className="leading-none text-ink group-hover:text-red transition-colors duration-150 overflow-hidden"
+            style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em", fontSize: "clamp(1rem, 5vw, 3rem)", whiteSpace: "nowrap" }}
           >
             {phone}
           </p>
