@@ -26,7 +26,7 @@ export function Nav() {
           className="hover:opacity-80 transition-opacity"
           style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "2rem", letterSpacing: "0.05em" }}
         >
-          SL<span className="text-red">.</span>
+          LERAY<span className="text-red">.</span>
         </Link>
 
         {/* Desktop nav */}
