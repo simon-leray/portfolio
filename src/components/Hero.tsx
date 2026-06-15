@@ -231,27 +231,36 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       {showQuotes && (
         <div
           aria-hidden
-          className="mobile-quote-wrap absolute w-full flex justify-center pointer-events-none select-none"
-          style={{ top: "10%" }}
+          className="mobile-quote-wrap absolute pointer-events-none select-none"
+          style={{ top: "13%", left: "1.5rem", right: "1.5rem" }}
         >
-          <p
-            className="mobile-quote-text"
+          <div
             style={{
-              fontFamily: "var(--font-playfair), serif",
-              fontStyle:  "italic",
-              fontSize:   "1rem",
-              lineHeight: 1.5,
-              color:      "white",
-              opacity:    mobileVisible ? 0.35 : 0,
+              borderLeft: "3px solid #d0021b",
+              paddingLeft: "1rem",
+              opacity:    mobileVisible ? 1 : 0,
               transition: `opacity ${MOBILE_FADE_MS}ms ease`,
-              maxWidth:   "80vw",
-              textAlign:  "center",
             }}
           >
-            {mobileQuote.map((line, i) => (
-              <span key={i} style={{ display: "block" }}>{line}</span>
-            ))}
-          </p>
+            <p
+              className="mobile-quote-text"
+              style={{
+                fontFamily: "var(--font-playfair), serif",
+                fontStyle:  "italic",
+                fontSize:   "1.1rem",
+                lineHeight: 1.6,
+                color:      "rgba(255,255,255,0.55)",
+                textAlign:  "left",
+                maxWidth:   "80vw",
+              }}
+            >
+              {mobileQuote.map((line, i) => (
+                <span key={i} style={{ display: "block" }}>
+                  {i === 0 ? "« " : ""}{line}{i === mobileQuote.length - 1 ? " »" : ""}
+                </span>
+              ))}
+            </p>
+          </div>
         </div>
       )}
 
@@ -360,7 +369,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
       <style jsx>{`
         /* Mobile: show fade quote, hide drift layer */
-        .mobile-quote-wrap { display: flex; }
+        .mobile-quote-wrap { display: block; }
         .desktop-quotes    { display: none; }
 
         /* Desktop: hide fade quote, show drift layer */
