@@ -360,11 +360,13 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         }
         @media (max-width: 767px) {
           .drift {
-            font-size: 0.65rem !important;
             line-height: 1.4;
             max-width: 75vw;
             color: rgba(255, 255, 255, 0.09);
           }
+          .drift.qs-short  { font-size: 0.85rem !important; }
+          .drift.qs-medium { font-size: 0.75rem !important; }
+          .drift.qs-long   { font-size: 0.65rem !important; }
           .quotes-bg {
             clip-path: inset(0 0 40% 0);
           }
