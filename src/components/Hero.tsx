@@ -290,7 +290,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             >
               {mobileQuote.map((line, i) => (
                 <span key={i} style={{ display: "block" }}>
-                  {i === 0 ? "« " : ""}{line}{i === mobileQuote.length - 1 ? " »" : ""}
+                  {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
                 </span>
               ))}
             </p>
