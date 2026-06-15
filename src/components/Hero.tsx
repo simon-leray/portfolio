@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { replaceQuotes } from "@/lib/quotes";
 
 // ─── Desktop drift constants ──────────────────────────────────────────────────
 const N_SLOTS            = 9;
@@ -51,6 +52,31 @@ function quoteSizeClass(lines: string[]): "qs-short" | "qs-medium" | "qs-long" {
 function quoteLines(text: string): string[] {
   const lines = text.split("\n").filter(l => l.trim().length > 0);
   return lines.length ? lines : [text];
+}
+
+// Mobile: ignore CMS line breaks, auto-break at word boundaries ≤ maxChars.
+function breakMobileLines(text: string, maxChars = 28): string[] {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    if (!current) {
+      current = word;
+    } else if ((current + " " + word).length <= maxChars) {
+      current += " " + word;
+    } else {
+      lines.push(current);
+      current = word;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+// Flatten CMS line breaks, apply inner-quote replacement, then auto-break for mobile.
+function processMobileQuote(text: string): string[] {
+  const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
+  return breakMobileLines(replaceQuotes(flat));
 }
 
 function slotToPercent(slot: number): number {
@@ -128,7 +154,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     if (!quotes.length) return;
     mobilePoolRef.current = shuffleArray(quotes);
     mobileIdxRef.current  = 0;
-    setMobileQuote(quoteLines(mobilePoolRef.current[mobileIdxRef.current++]));
+    setMobileQuote(processMobileQuote(mobilePoolRef.current[mobileIdxRef.current++]));
     setMobileVisible(true);
 
     mobileTimerRef.current = setInterval(() => {
@@ -138,7 +164,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           mobilePoolRef.current = shuffleArray(quotesRef.current);
           mobileIdxRef.current  = 0;
         }
-        setMobileQuote(quoteLines(mobilePoolRef.current[mobileIdxRef.current++]));
+        setMobileQuote(processMobileQuote(mobilePoolRef.current[mobileIdxRef.current++]));
         setMobileVisible(true);
       }, MOBILE_FADE_MS);
     }, MOBILE_INTERVAL_MS);
@@ -227,12 +253,21 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: static fade quote (hidden on desktop) ── */}
+      {/* ── Mobile: static fade quote (hidden on desktop) ──
+            Spans from below the nav (~8%) to above the hero text (~45%),
+            flex-centered so it sits naturally in the available gap.        */}
       {showQuotes && (
         <div
           aria-hidden
           className="mobile-quote-wrap absolute pointer-events-none select-none"
-          style={{ top: "13%", left: "1.5rem", right: "1.5rem" }}
+          style={{
+            top:    "8%",
+            bottom: "48%",
+            left:   "1.5rem",
+            right:  "1.5rem",
+            display:        "flex",
+            alignItems:     "center",
+          }}
         >
           <div
             style={{
@@ -251,7 +286,6 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
                 lineHeight: 1.6,
                 color:      "rgba(255,255,255,0.55)",
                 textAlign:  "left",
-                maxWidth:   "80vw",
               }}
             >
               {mobileQuote.map((line, i) => (
@@ -369,7 +403,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
       <style jsx>{`
         /* Mobile: show fade quote, hide drift layer */
-        .mobile-quote-wrap { display: block; }
+        .mobile-quote-wrap { display: flex; }
         .desktop-quotes    { display: none; }
 
         /* Desktop: hide fade quote, show drift layer */
