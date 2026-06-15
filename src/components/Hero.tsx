@@ -364,9 +364,9 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             max-width: 75vw;
             color: rgba(255, 255, 255, 0.09);
           }
-          .drift.qs-short  { font-size: 0.85rem !important; }
-          .drift.qs-medium { font-size: 0.75rem !important; }
-          .drift.qs-long   { font-size: 0.65rem !important; }
+          .drift.qs-short,
+          .drift.qs-medium,
+          .drift.qs-long   { font-size: 0.95rem !important; }
           .quotes-bg {
             clip-path: inset(0 0 40% 0);
           }
