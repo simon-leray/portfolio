@@ -23,11 +23,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Simon Leray — Journalist in Biel/Bienne",
+  title: "Simon Leray – Journalist",
   description:
     "Journalismus aus Biel/Bienne. Reportagen, Interviews und Hintergründe für Bieler Tagblatt und ajour.ch.",
   openGraph: {
-    title: "Simon Leray — Journalist in Biel/Bienne",
+    title: "Simon Leray – Journalist",
     description:
       "Journalismus aus Biel/Bienne. Reportagen, Interviews und Hintergründe für Bieler Tagblatt und ajour.ch.",
     siteName: "Simon Leray",
