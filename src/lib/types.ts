@@ -50,7 +50,7 @@ export interface HeroQuote {
 export interface Homepage {
   heroTagline?: string;
   heroSubtitle?: string;
-  heroQuotes?: (string | HeroQuote)[];
+  heroQuotes?: HeroQuote[];
   aboutTeaser?: unknown[];
   aboutTags?: string[];
   contactTitle?: string;

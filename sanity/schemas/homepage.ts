@@ -110,8 +110,6 @@ export const homepageSchema = defineType({
             select: { title: "quote", subtitle: "source" },
           },
         },
-        // Legacy plain-text entries — kept so existing quotes keep working unmigrated.
-        { type: "text", rows: 3, title: "Zitat (alt, nur Text)" },
       ],
     }),
     defineField({

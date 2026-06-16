@@ -34,7 +34,7 @@ interface ActiveQuote {
 interface Props {
   tagline?: string;
   subtitle?: string;
-  quotes?: (string | HeroQuote)[];
+  quotes?: HeroQuote[];
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -62,11 +62,6 @@ function quoteLines(text: string): string[] {
 function processMobileQuote(text: string): string {
   const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
   return `«${replaceQuotes(flat)}»`;
-}
-
-// Legacy entries are plain strings; new entries are { quote, source, date } objects.
-function normalizeHeroQuote(item: string | HeroQuote): HeroQuote {
-  return typeof item === "string" ? { quote: item } : item;
 }
 
 function formatSourceLine(source?: string, date?: string): string | null {
@@ -150,7 +145,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   // ── Mobile typewriter cycle ─────────────────────────────────────────────────
   function getNextTypedQuote(): HeroQuote {
     if (typedPoolIdxRef.current >= typedPoolRef.current.length) {
-      typedPoolRef.current = shuffleArray(quotesRef.current.map(normalizeHeroQuote));
+      typedPoolRef.current = shuffleArray(quotesRef.current);
       typedPoolIdxRef.current = 0;
     }
     return typedPoolRef.current[typedPoolIdxRef.current++];
@@ -209,7 +204,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
   useEffect(() => {
     if (!quotes.length) return;
-    typedPoolRef.current    = shuffleArray(quotes.map(normalizeHeroQuote));
+    typedPoolRef.current    = shuffleArray(quotes);
     typedPoolIdxRef.current = 0;
     typedActiveRef.current  = true;
     runPauseEmpty(); // initial 0.5s cursor-only blink before first quote types in
@@ -223,7 +218,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   // ── Desktop drift pool ──────────────────────────────────────────────────────
   function getNextText(): string {
     if (poolIdxRef.current >= poolRef.current.length) {
-      poolRef.current = shuffleArray(quotesRef.current.map(q => normalizeHeroQuote(q).quote));
+      poolRef.current = shuffleArray(quotesRef.current.map(q => q.quote));
       poolIdxRef.current = 0;
     }
     return poolRef.current[poolIdxRef.current++];
@@ -282,7 +277,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   useEffect(() => {
     if (!quotes.length) return;
     mountedRef.current = true;
-    poolRef.current    = shuffleArray(quotes.map(q => normalizeHeroQuote(q).quote));
+    poolRef.current    = shuffleArray(quotes.map(q => q.quote));
     poolIdxRef.current = 0;
     spawnInitialQuotes();
     scheduleNext();
