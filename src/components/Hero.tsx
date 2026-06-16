@@ -482,24 +482,40 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       </div>
 
-      {/* Desktop red circle — same drift animation as mobile's, decorative only.
-            The flying quotes keep their existing translucent styling unchanged
-            ("continue as before"); this circle doesn't force blend onto them, since
-            their established low-opacity white wouldn't invert cleanly anyway (a
-            partially-transparent color dilutes mix-blend-mode math, the same issue
-            fixed earlier on the mobile quote/source elements).                    */}
+      {/* Desktop circle system — two layers for text inversion.
+            Layer 1 (red, z-1): sets the visual color of the circle.
+            Layer 2 (white, z-11, difference blend): sits above the text (z-10) and
+            inverts it — diff(white, white_text) = black wherever the circle overlaps
+            text, diff(white, black_bg) = white in the circle's open areas.
+            Flying quotes live at z-12, above both layers, so they drift unaffected.  */}
       <div
-        className="desktop-bg-circle"
+        className="desktop-red-circle"
         aria-hidden
         style={{
           position:        "absolute",
           top:              "50%",
           left:             "50%",
-          width:            "60vh",
-          height:           "60vh",
+          width:            "55vw",
+          height:           "55vw",
           borderRadius:     "50%",
           backgroundColor:  "#d0021b",
           zIndex:           1,
+          pointerEvents:    "none",
+        }}
+      />
+      <div
+        className="desktop-blend-circle"
+        aria-hidden
+        style={{
+          position:        "absolute",
+          top:              "50%",
+          left:             "50%",
+          width:            "55vw",
+          height:           "55vw",
+          borderRadius:     "50%",
+          backgroundColor:  "white",
+          mixBlendMode:     "difference",
+          zIndex:           11,
           pointerEvents:    "none",
         }}
       />
@@ -512,6 +528,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           style={{
             maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+            zIndex: 12,
           }}
         >
           {activeQuotes.map(q => (
@@ -537,9 +554,9 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
                     style={{
                       display:       "block",
                       fontFamily:    "var(--font-inter), sans-serif",
-                      fontSize:      "0.55rem",
+                      fontSize:      "0.8rem",
                       textTransform: "uppercase",
-                      letterSpacing: "0.12em",
+                      letterSpacing: "0.15em",
                       fontStyle:     "normal",
                       marginTop:     "0.4em",
                     }}
@@ -571,7 +588,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       <div className="desktop-hero-content relative z-10 max-w-7xl mx-auto px-6 py-24">
         <div className="animate-fade-up">
           {tagline && (
-            <p className="text-red text-xs tracking-widest uppercase mb-8">{tagline}</p>
+            <p className="text-paper text-xs tracking-widest uppercase mb-8">{tagline}</p>
           )}
           <h1
             className="text-[clamp(3.5rem,12vw,9rem)] leading-none text-paper mb-8"
@@ -607,7 +624,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       </div>
 
       {/* Scroll hint */}
-      <div className="scroll-hint absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center">
+      <div className="scroll-hint absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center" style={{ zIndex: 13 }}>
         <span className="text-xs tracking-widest uppercase">Scroll</span>
         <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
           <path d="M6 0v18M1 13l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -656,9 +673,9 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           }
         }
 
-        .desktop-bg-circle { display: none; }
+        .desktop-red-circle, .desktop-blend-circle { display: none; }
         @media (prefers-reduced-motion: reduce) {
-          .desktop-bg-circle { animation: none; }
+          .desktop-red-circle, .desktop-blend-circle { animation: none; }
         }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
@@ -668,7 +685,12 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           .desktop-hero-content { display: block; }
           .desktop-quotes       { display: block; }
           .scroll-hint           { display: flex; }
-          .desktop-bg-circle {
+          .desktop-red-circle {
+            display: block;
+            transform: translate(-50%, -50%);
+            animation: circleDrift 13s ease-in-out infinite;
+          }
+          .desktop-blend-circle {
             display: block;
             transform: translate(-50%, -50%);
             animation: circleDrift 13s ease-in-out infinite;
