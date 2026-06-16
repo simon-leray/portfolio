@@ -114,6 +114,25 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   const typedTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typedActiveRef   = useRef(false);
 
+  // Mobile name full-bleed width fit
+  const simonRef = useRef<HTMLSpanElement>(null);
+  const lerayRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    function fitWords() {
+      const vw = window.innerWidth;
+      [simonRef.current, lerayRef.current].forEach(el => {
+        if (!el) return;
+        el.style.transform = "scaleX(1)";
+        const width = el.getBoundingClientRect().width;
+        if (width > 0) el.style.transform = `scaleX(${vw / width})`;
+      });
+    }
+    fitWords();
+    window.addEventListener("resize", fitWords);
+    return () => window.removeEventListener("resize", fitWords);
+  }, []);
+
   useEffect(() => { quotesRef.current = quotes; }, [quotes]);
   useEffect(() => { activeRef.current = activeQuotes; }, [activeQuotes]);
 
@@ -284,16 +303,40 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         style={{ paddingTop: "4rem" }}
       >
         {/* TOP — fixed header, anchored at top */}
-        <div style={{ paddingTop: "1rem", paddingLeft: "1.2rem", paddingRight: "1.2rem" }}>
+        <div style={{ paddingTop: "1rem" }}>
+          {/* Name bleeds edge-to-edge: no side padding/margin */}
           <h1
             style={{
               fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "clamp(5.5rem, 24vw, 7rem)",
-              lineHeight: 0.85,
+              lineHeight: 0.82,
               color:      "white",
+              margin:     0,
+              width:      "100%",
             }}
           >
-            SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
+            <span
+              ref={simonRef}
+              style={{
+                display:        "inline-block",
+                whiteSpace:     "nowrap",
+                transformOrigin: "left center",
+                fontSize:       "clamp(1rem, 23.5vw, 99vw)",
+              }}
+            >
+              SIMON
+            </span>
+            <br />
+            <span
+              ref={lerayRef}
+              style={{
+                display:        "inline-block",
+                whiteSpace:     "nowrap",
+                transformOrigin: "left center",
+                fontSize:       "clamp(1rem, 23.5vw, 99vw)",
+              }}
+            >
+              LERAY<span style={{ color: "#d0021b" }}>.</span>
+            </span>
           </h1>
           <p
             style={{
@@ -303,6 +346,8 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               textTransform: "uppercase",
               color:         "#d0021b",
               marginTop:     "0.5rem",
+              paddingLeft:   "1.2rem",
+              paddingRight:  "1.2rem",
             }}
           >
             Journalist · Biel/Bienne
