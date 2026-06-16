@@ -14,7 +14,7 @@ const ENTRY_INTERVAL_MAX = 12_000;
 const INITIAL_COUNT      = 5;
 
 // ─── Mobile fade constants ────────────────────────────────────────────────────
-const MOBILE_INTERVAL_MS = 7_000;
+const MOBILE_INTERVAL_MS = 9_000;
 const MOBILE_FADE_MS     = 500;
 
 interface ActiveQuote {
@@ -244,53 +244,124 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: Playfair italic quote (hidden on desktop) ──
-            Occupies the upper portion of the hero, just below the nav to ~45% down.
-            display is controlled entirely via CSS class (see <style jsx>)          */}
-      {showQuotes && (
+      {/* ── Mobile: full bespoke layout (hidden on desktop) ──
+            Top zone (quote) / divider / bottom zone (eyebrow, name, tagline, buttons).
+            display is controlled entirely via CSS class (see <style jsx>)             */}
+      <div
+        className="mobile-hero-content absolute inset-0 z-10 flex flex-col"
+        style={{ paddingTop: "4rem" }}
+      >
+        {/* TOP ZONE — quote */}
         <div
-          aria-hidden
-          className="mobile-quote-wrap absolute pointer-events-none select-none overflow-hidden"
-          style={{
-            top:        "8%",
-            bottom:     "55%",
-            left:       "1.5rem",
-            right:      "1.5rem",
-            paddingTop: "1.2rem",
-          }}
+          className="flex flex-col justify-start px-6 overflow-hidden"
+          style={{ flexBasis: "35%", paddingTop: "1.2rem" }}
         >
-          <p
-            className="mobile-quote-text"
+          {showQuotes && (
+            <>
+              <p
+                style={{
+                  fontFamily:    "var(--font-bebas), sans-serif",
+                  fontSize:      "0.6rem",
+                  letterSpacing: "0.25em",
+                  textTransform: "uppercase",
+                  color:         "#d0021b",
+                  marginBottom:  "0.5rem",
+                }}
+              >
+                Zitat
+              </p>
+              <p
+                className="mobile-quote-text"
+                style={{
+                  fontFamily: "var(--font-bebas), sans-serif",
+                  fontSize:   "clamp(1.6rem, 5.5vw, 2rem)",
+                  lineHeight: 1.0,
+                  color:      "rgba(255,255,255,0.9)",
+                  textAlign:  "left",
+                  opacity:    mobileVisible ? 1 : 0,
+                  transition: `opacity ${MOBILE_FADE_MS}ms ease`,
+                }}
+              >
+                {mobileQuote.map((line, i) => (
+                  <span key={i} style={{ display: "block" }}>
+                    {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
+                  </span>
+                ))}
+              </p>
+            </>
+          )}
+        </div>
+
+        {/* DIVIDER */}
+        <div
+          style={{
+            width:           "100%",
+            height:          "1px",
+            backgroundColor: "#d0021b",
+            marginTop:       "1rem",
+            marginBottom:    "1rem",
+          }}
+        />
+
+        {/* BOTTOM ZONE — eyebrow, name, tagline, buttons */}
+        <div className="flex-1 flex flex-col justify-center px-6 pb-10">
+          {tagline && (
+            <p
+              style={{
+                fontFamily:    "var(--font-bebas), sans-serif",
+                fontSize:      "0.6rem",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                color:         "#d0021b",
+                marginBottom:  "0.75rem",
+              }}
+            >
+              {tagline}
+            </p>
+          )}
+          <h1
             style={{
-              fontFamily: "var(--font-playfair), serif",
-              fontStyle:  "italic",
-              fontSize:   "clamp(1.2rem, 4.5vw, 1.5rem)",
-              lineHeight: 1.4,
-              color:      "rgba(255,255,255,0.7)",
-              textAlign:  "left",
-              opacity:    mobileVisible ? 1 : 0,
-              transition: `opacity ${MOBILE_FADE_MS}ms ease`,
+              fontFamily:    "var(--font-bebas), sans-serif",
+              fontSize:      "clamp(4rem, 18vw, 5.5rem)",
+              lineHeight:    0.88,
+              letterSpacing: "0.02em",
+              color:         "white",
             }}
           >
-            {mobileQuote.map((line, i) => (
-              <span key={i} style={{ display: "block" }}>
-                {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
-              </span>
-            ))}
-          </p>
-          <div
-            style={{
-              width:        "40px",
-              height:       "1px",
-              backgroundColor: "#d0021b",
-              marginTop:    "1.5rem",
-              marginBottom: "1.5rem",
-              opacity:      mobileVisible ? 1 : 0,
-              transition:   `opacity ${MOBILE_FADE_MS}ms ease`,
-            }}
-          />
+            SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
+          </h1>
+          {subtitle && (
+            <p
+              style={{
+                fontFamily: "var(--font-playfair), serif",
+                fontStyle:  "italic",
+                fontSize:   "0.9rem",
+                color:      "rgba(255,255,255,0.6)",
+                maxWidth:   "85vw",
+                marginTop:  "1rem",
+              }}
+            >
+              {subtitle}
+            </p>
+          )}
+          <div className="flex gap-3 mt-8">
+            <Link
+              href="/texte"
+              className="bg-red text-paper tracking-widest uppercase px-5 py-3 hover:bg-paper hover:text-ink transition-colors duration-200"
+              style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.7rem" }}
+            >
+              Artikel lesen
+            </Link>
+            <Link
+              href="/kontakt"
+              className="border border-paper/30 text-paper tracking-widest uppercase px-5 py-3 hover:bg-paper hover:text-ink transition-colors duration-200"
+              style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.7rem" }}
+            >
+              Kontakt
+            </Link>
+          </div>
         </div>
-      )}
+      </div>
 
       {/* ── Desktop: drifting quotes (hidden on mobile) ── */}
       {showQuotes ? (
@@ -340,8 +411,8 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         </div>
       )}
 
-      {/* Foreground content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+      {/* Foreground content — desktop only */}
+      <div className="desktop-hero-content relative z-10 max-w-7xl mx-auto px-6 py-24">
         <div className="animate-fade-up">
           {tagline && (
             <p className="text-red text-xs tracking-widest uppercase mb-8">{tagline}</p>
@@ -396,14 +467,16 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       `}</style>
 
       <style jsx>{`
-        /* Mobile: show fade quote, hide drift layer */
-        .mobile-quote-wrap { display: block; }
-        .desktop-quotes    { display: none; }
+        /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content */
+        .mobile-hero-content  { display: flex; }
+        .desktop-hero-content { display: none; }
+        .desktop-quotes       { display: none; }
 
-        /* Desktop: hide fade quote, show drift layer */
+        /* Desktop: hide mobile layout, show drift layer + desktop content */
         @media (min-width: 768px) {
-          .mobile-quote-wrap { display: none; }
-          .desktop-quotes    { display: block; }
+          .mobile-hero-content  { display: none; }
+          .desktop-hero-content { display: block; }
+          .desktop-quotes       { display: block; }
         }
 
         .drift {
