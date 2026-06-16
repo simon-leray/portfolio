@@ -13,9 +13,11 @@ const ENTRY_INTERVAL_MIN = 8_000;
 const ENTRY_INTERVAL_MAX = 12_000;
 const INITIAL_COUNT      = 5;
 
-// ─── Mobile fade constants ────────────────────────────────────────────────────
-const MOBILE_INTERVAL_MS = 9_000;
-const MOBILE_FADE_MS     = 500;
+// ─── Mobile typewriter constants ──────────────────────────────────────────────
+const TYPE_SPEED_MS   = 35;   // ms per character while typing
+const DELETE_SPEED_MS = 18;   // ms per character while deleting (faster)
+const PAUSE_FULL_MS   = 2_500; // pause once fully typed
+const PAUSE_EMPTY_MS  = 500;   // pause once fully deleted, before next quote
 
 interface ActiveQuote {
   id: number;
@@ -103,13 +105,14 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Mobile fade state
-  const [mobileQuote, setMobileQuote]     = useState<string>("");
-  const [mobileVisible, setMobileVisible] = useState(true);
-  const mobilePoolRef    = useRef<string[]>([]);
-  const mobileIdxRef     = useRef(0);
-  const mobileTimerRef   = useRef<ReturnType<typeof setInterval> | null>(null);
-  const mobileFadeRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Mobile typewriter state
+  const [typedText, setTypedText] = useState("");
+  const typedQuoteRef    = useRef("");
+  const typedIdxRef      = useRef(0);
+  const typedPoolRef     = useRef<string[]>([]);
+  const typedPoolIdxRef  = useRef(0);
+  const typedTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typedActiveRef   = useRef(false);
 
   useEffect(() => { quotesRef.current = quotes; }, [quotes]);
   useEffect(() => { activeRef.current = activeQuotes; }, [activeQuotes]);
@@ -130,29 +133,68 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     return () => cancelAnimationFrame(raf);
   }, [quotes.length]);
 
-  // ── Mobile fade cycle ───────────────────────────────────────────────────────
+  // ── Mobile typewriter cycle ─────────────────────────────────────────────────
+  function getNextTypedQuote(): string {
+    if (typedPoolIdxRef.current >= typedPoolRef.current.length) {
+      typedPoolRef.current = shuffleArray(quotesRef.current);
+      typedPoolIdxRef.current = 0;
+    }
+    return processMobileQuote(typedPoolRef.current[typedPoolIdxRef.current++]);
+  }
+
+  function runPauseEmpty() {
+    typedTimerRef.current = setTimeout(() => {
+      if (!typedActiveRef.current) return;
+      typedQuoteRef.current = getNextTypedQuote();
+      typedIdxRef.current = 0;
+      setTypedText("");
+      runTyping();
+    }, PAUSE_EMPTY_MS);
+  }
+
+  function runTyping() {
+    typedTimerRef.current = setTimeout(() => {
+      if (!typedActiveRef.current) return;
+      typedIdxRef.current++;
+      setTypedText(typedQuoteRef.current.slice(0, typedIdxRef.current));
+      if (typedIdxRef.current >= typedQuoteRef.current.length) {
+        runPauseFull();
+      } else {
+        runTyping();
+      }
+    }, TYPE_SPEED_MS);
+  }
+
+  function runPauseFull() {
+    typedTimerRef.current = setTimeout(() => {
+      if (!typedActiveRef.current) return;
+      runDeleting();
+    }, PAUSE_FULL_MS);
+  }
+
+  function runDeleting() {
+    typedTimerRef.current = setTimeout(() => {
+      if (!typedActiveRef.current) return;
+      typedIdxRef.current--;
+      setTypedText(typedQuoteRef.current.slice(0, typedIdxRef.current));
+      if (typedIdxRef.current <= 0) {
+        runPauseEmpty();
+      } else {
+        runDeleting();
+      }
+    }, DELETE_SPEED_MS);
+  }
+
   useEffect(() => {
     if (!quotes.length) return;
-    mobilePoolRef.current = shuffleArray(quotes);
-    mobileIdxRef.current  = 0;
-    setMobileQuote(processMobileQuote(mobilePoolRef.current[mobileIdxRef.current++]));
-    setMobileVisible(true);
-
-    mobileTimerRef.current = setInterval(() => {
-      setMobileVisible(false);
-      mobileFadeRef.current = setTimeout(() => {
-        if (mobileIdxRef.current >= mobilePoolRef.current.length) {
-          mobilePoolRef.current = shuffleArray(quotesRef.current);
-          mobileIdxRef.current  = 0;
-        }
-        setMobileQuote(processMobileQuote(mobilePoolRef.current[mobileIdxRef.current++]));
-        setMobileVisible(true);
-      }, MOBILE_FADE_MS);
-    }, MOBILE_INTERVAL_MS);
+    typedPoolRef.current    = shuffleArray(quotes);
+    typedPoolIdxRef.current = 0;
+    typedActiveRef.current  = true;
+    runPauseEmpty(); // initial 0.5s cursor-only blink before first quote types in
 
     return () => {
-      if (mobileTimerRef.current) clearInterval(mobileTimerRef.current);
-      if (mobileFadeRef.current)  clearTimeout(mobileFadeRef.current);
+      typedActiveRef.current = false;
+      if (typedTimerRef.current) clearTimeout(typedTimerRef.current);
     };
   }, [quotes.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -234,57 +276,25 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: "THE NAME IS THE HERO" (hidden on desktop) ──
-            Oversized name bleeding off screen edges; quote and nav are minimal footnotes.
-            display is controlled entirely via CSS class (see <style jsx>)                */}
-      <div className="mobile-hero-content absolute inset-0 z-10">
-        {/* TOP-LEFT — rotating quote, subtle footnote */}
-        {showQuotes && (
-          <p
-            className="mobile-quote-text"
-            style={{
-              position:   "absolute",
-              top:        "5rem",
-              left:       "1.2rem",
-              maxWidth:   "55vw",
-              fontFamily: "var(--font-playfair), serif",
-              fontStyle:  "italic",
-              fontSize:   "0.78rem",
-              color:      "white",
-              opacity:    mobileVisible ? 0.5 : 0,
-              transition: `opacity ${MOBILE_FADE_MS}ms ease`,
-            }}
-          >
-            {mobileQuote}
-          </p>
-        )}
-
-        {/* MIDDLE — oversized name, bleeds off both edges */}
-        <div
-          style={{
-            position: "absolute",
-            top:      "38%",
-            left:     "-0.5rem",
-            right:    0,
-            overflow: "hidden",
-          }}
-        >
+      {/* ── Mobile: typewriter concept (hidden on desktop) ──
+            Fixed header / typewriter quote filling the middle / minimal bottom links.
+            display is controlled entirely via CSS class (see <style jsx>)            */}
+      <div
+        className="mobile-hero-content absolute inset-0 z-10 flex flex-col"
+        style={{ paddingTop: "4rem" }}
+      >
+        {/* TOP — fixed header */}
+        <div style={{ paddingTop: "1.5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem" }}>
           <h1
             style={{
-              fontFamily:    "var(--font-bebas), sans-serif",
-              fontSize:      "28vw",
-              lineHeight:    0.82,
-              letterSpacing: "-0.02em",
-              color:         "white",
-              textAlign:     "left",
+              fontFamily: "var(--font-bebas), sans-serif",
+              fontSize:   "clamp(3rem, 12vw, 4rem)",
+              lineHeight: 1,
+              color:      "white",
             }}
           >
-            SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
+            SIMON LERAY<span style={{ color: "#d0021b" }}>.</span>
           </h1>
-        </div>
-
-        {/* BOTTOM — minimal text navigation */}
-        <div style={{ position: "absolute", bottom: "3rem", left: "1.2rem" }}>
           <p
             style={{
               fontFamily:    "var(--font-inter), sans-serif",
@@ -292,38 +302,60 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               letterSpacing: "0.25em",
               textTransform: "uppercase",
               color:         "#d0021b",
+              marginTop:     "0.5rem",
             }}
           >
             Journalist · Biel/Bienne
           </p>
-          <div style={{ display: "flex", gap: "2rem", marginTop: "1rem" }}>
-            <Link
-              href="/texte"
+        </div>
+
+        {/* MIDDLE — typewriter quote */}
+        {showQuotes && (
+          <div className="flex-1 flex items-center px-6">
+            <p
               style={{
-                fontFamily:    "var(--font-inter), sans-serif",
-                fontSize:      "0.7rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color:         "white",
-                opacity:       0.7,
+                fontFamily: "var(--font-playfair), serif",
+                fontStyle:  "italic",
+                fontSize:   "1.1rem",
+                color:      "white",
+                opacity:    0.85,
+                maxWidth:   "80vw",
               }}
             >
-              Texte →
-            </Link>
-            <Link
-              href="/kontakt"
-              style={{
-                fontFamily:    "var(--font-inter), sans-serif",
-                fontSize:      "0.7rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color:         "white",
-                opacity:       0.7,
-              }}
-            >
-              Kontakt →
-            </Link>
+              {typedText}
+              <span className="typewriter-cursor" style={{ color: "#d0021b" }}>|</span>
+            </p>
           </div>
+        )}
+
+        {/* BOTTOM — minimal text links */}
+        <div style={{ position: "absolute", bottom: "2.5rem", left: "1.2rem", display: "flex", gap: "2rem" }}>
+          <Link
+            href="/texte"
+            style={{
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.7rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color:         "white",
+              opacity:       0.6,
+            }}
+          >
+            Texte →
+          </Link>
+          <Link
+            href="/kontakt"
+            style={{
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.7rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color:         "white",
+              opacity:       0.6,
+            }}
+          >
+            Kontakt →
+          </Link>
         </div>
       </div>
 
@@ -471,10 +503,18 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         .animate-fade-up {
           animation: fade-up 0.8s ease forwards;
         }
+        @keyframes cursorBlink {
+          0%, 50%  { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+        .typewriter-cursor {
+          animation: cursorBlink 1s steps(1) infinite;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .animate-fade-up   { animation: none; }
-          .drift             { animation: none; opacity: 0; }
-          .mobile-quote-text { transition: none !important; }
+          .animate-fade-up      { animation: none; }
+          .drift                { animation: none; opacity: 0; }
+          .typewriter-cursor    { animation: none; opacity: 1; }
         }
       `}</style>
     </section>
