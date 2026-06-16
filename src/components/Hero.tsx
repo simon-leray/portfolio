@@ -280,11 +280,11 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             Fixed header / typewriter quote filling the middle / minimal bottom links.
             display is controlled entirely via CSS class (see <style jsx>)            */}
       <div
-        className="mobile-hero-content absolute inset-0 z-10 flex flex-col"
+        className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between"
         style={{ paddingTop: "4rem" }}
       >
-        {/* TOP — fixed header */}
-        <div style={{ paddingTop: "1.5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem" }}>
+        {/* TOP — fixed header, anchored at top */}
+        <div style={{ paddingTop: "1rem", paddingLeft: "1.2rem", paddingRight: "1.2rem" }}>
           <h1
             style={{
               fontFamily: "var(--font-bebas), sans-serif",
@@ -328,8 +328,8 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           </div>
         )}
 
-        {/* BOTTOM — minimal text links */}
-        <div style={{ position: "absolute", bottom: "2.5rem", left: "1.2rem", display: "flex", gap: "2rem" }}>
+        {/* BOTTOM — minimal text links, anchored at bottom */}
+        <div style={{ paddingBottom: "2.5rem", paddingLeft: "1.2rem", display: "flex", gap: "2rem" }}>
           <Link
             href="/texte"
             style={{
