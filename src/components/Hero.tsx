@@ -56,10 +56,10 @@ function quoteLines(text: string): string[] {
   return lines.length ? lines : [text];
 }
 
-// Flatten CMS line breaks and convert inner quotes to ‹ ›; lets CSS wrap naturally.
+// Flatten CMS line breaks, convert inner quotes to ‹ ›, wrap in outer « » guillemets.
 function processMobileQuote(text: string): string {
   const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
-  return replaceQuotes(flat);
+  return `«${replaceQuotes(flat)}»`;
 }
 
 function slotToPercent(slot: number): number {
@@ -352,7 +352,8 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             style={{
               paddingLeft:  "1.2rem",
               paddingRight: "1.2rem",
-              margin:       "2.5rem 0",
+              marginTop:    "1.1rem",
+              marginBottom: "2.5rem",
               height:       "7.5rem",
               display:      "flex",
               alignItems:   "flex-start",
