@@ -275,7 +275,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
   return (
     <section
-      className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16"
+      className="hero-section relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16"
       style={{ backgroundColor: "#000000" }}
     >
 
@@ -283,10 +283,10 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             Fixed header / typewriter quote filling the middle / minimal bottom links.
             display is controlled entirely via CSS class (see <style jsx>)            */}
       <div
-        className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between"
-        style={{ paddingTop: "4rem" }}
+        className="mobile-hero-content"
+        style={{ position: "relative", paddingTop: "1rem" }}
       >
-        {/* Animated red circle — sits behind all text, mix-blend-mode inverts text on top of it */}
+        {/* Animated red circle — sits behind all text, overlapping name + quote areas */}
         <div
           className="mobile-bg-circle"
           aria-hidden
@@ -303,8 +303,8 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           }}
         />
 
-        {/* TOP — anchored at top */}
-        <div style={{ paddingTop: "1rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
+        {/* TOP — name, immediately below nav */}
+        <div style={{ paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
           <h1
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
@@ -326,7 +326,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               letterSpacing: "0.25em",
               textTransform: "uppercase",
               color:         "white",
-              marginTop:     "0.5rem",
+              marginTop:     "0.4rem",
               position:      "relative",
               zIndex:        3,
               mixBlendMode:  "difference",
@@ -336,9 +336,9 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           </p>
         </div>
 
-        {/* MIDDLE — typewriter quote, vertically centered */}
+        {/* MIDDLE — typewriter quote */}
         {showQuotes && (
-          <div className="flex-1 flex items-center px-6" style={{ position: "relative", zIndex: 3 }}>
+          <div style={{ marginTop: "2rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
             <p
               style={{
                 fontFamily:   "var(--font-playfair), serif",
@@ -360,6 +360,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         {/* BOTTOM — minimal text links */}
         <div
           style={{
+            marginTop:     "2rem",
             paddingBottom: "2.5rem",
             paddingLeft:   "1.2rem",
             display:       "flex",
@@ -510,7 +511,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
       <style jsx>{`
         /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content + scroll hint */
-        .mobile-hero-content  { display: flex; }
+        .mobile-hero-content  { display: block; }
         .mobile-bg-circle {
           transform: translate(-50%, -50%);
           animation: circleDrift 13s ease-in-out infinite;
@@ -521,6 +522,11 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         .desktop-hero-content { display: none; }
         .desktop-quotes       { display: none; }
         .scroll-hint           { display: none; }
+
+        /* Mobile: content sits tightly at the top instead of vertically centered */
+        @media (max-width: 767px) {
+          .hero-section { justify-content: flex-start; }
+        }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
         @media (min-width: 768px) {
