@@ -482,21 +482,15 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       </div>
 
-      {/* Desktop circle system — two layers for text inversion.
-            Layer 1 (red, z-1): sets the visual color of the circle.
-            Layer 2 (white, z-11, difference blend): sits above the text (z-10) and
-            inverts it — diff(white, white_text) = black wherever the circle overlaps
-            text, diff(white, black_bg) = white in the circle's open areas.
-            Flying quotes live at z-12, above both layers, so they drift unaffected.  */}
       <div
         className="desktop-red-circle"
         aria-hidden
         style={{
           position:        "absolute",
           top:              "50%",
-          left:             "50%",
-          width:            "55vw",
-          height:           "55vw",
+          right:            "15%",
+          width:            "600px",
+          height:           "600px",
           borderRadius:     "50%",
           backgroundColor:  "#d0021b",
           pointerEvents:    "none",
@@ -569,7 +563,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             No position/z-index on this container — stacking contexts on wrappers isolate
             children's mix-blend-mode from sibling elements (same bug as mobile), so only
             the leaf text elements carry position + z-index + blend. */}
-      <div className="desktop-hero-content max-w-7xl mx-auto px-6 py-24">
+      <div className="desktop-hero-content mx-auto px-6 py-24" style={{ maxWidth: "900px" }}>
         {tagline && (
           <p
             className="text-xs tracking-widest uppercase mb-8"
@@ -662,6 +656,14 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           80%  { transform: translate(-50%, -50%) translate(-6vw, -5vw); }
           100% { transform: translate(-50%, -50%) translate(0, 0); }
         }
+        @keyframes circleDriftDesktop {
+          0%   { transform: translateY(-50%) translate(0, 0); }
+          20%  { transform: translateY(-50%) translate(4vw, -3vw); }
+          40%  { transform: translateY(-50%) translate(-3vw, 4vw); }
+          60%  { transform: translateY(-50%) translate(5vw, 3vw); }
+          80%  { transform: translateY(-50%) translate(-3vw, -3vw); }
+          100% { transform: translateY(-50%) translate(0, 0); }
+        }
       `}</style>
 
       <style jsx>{`
@@ -692,7 +694,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
 
         .desktop-red-circle { display: none; }
         @media (prefers-reduced-motion: reduce) {
-          .desktop-red-circle { animation: none; }
+          .desktop-red-circle { animation: none; transform: translateY(-50%); }
         }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
@@ -704,8 +706,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           .scroll-hint           { display: flex; }
           .desktop-red-circle {
             display: block;
-            transform: translate(-50%, -50%);
-            animation: circleDrift 13s ease-in-out infinite;
+            transform: translateY(-50%);
+            animation: circleDriftDesktop 13s ease-in-out infinite;
           }
         }
 
