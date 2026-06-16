@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { replaceQuotes } from "@/lib/quotes";
 
 // ─── Desktop drift constants ──────────────────────────────────────────────────
 const N_SLOTS            = 9;
@@ -14,8 +13,8 @@ const ENTRY_INTERVAL_MAX = 12_000;
 const INITIAL_COUNT      = 5;
 
 // ─── Mobile fade constants ────────────────────────────────────────────────────
-const MOBILE_INTERVAL_MS = 8_000;
-const MOBILE_FADE_MS     = 800;
+const MOBILE_INTERVAL_MS = 7_000;
+const MOBILE_FADE_MS     = 500;
 
 interface ActiveQuote {
   id: number;
@@ -54,29 +53,20 @@ function quoteLines(text: string): string[] {
   return lines.length ? lines : [text];
 }
 
-// Mobile: ignore CMS line breaks, auto-break at word boundaries ≤ maxChars.
-function breakMobileLines(text: string, maxChars = 28): string[] {
-  const words = text.split(" ");
+// Mobile poster style: ignore CMS line breaks, break aggressively at 3-4 words per line.
+function breakMobilePosterLines(text: string, maxWords = 4): string[] {
+  const words = text.split(" ").filter(Boolean);
   const lines: string[] = [];
-  let current = "";
-  for (const word of words) {
-    if (!current) {
-      current = word;
-    } else if ((current + " " + word).length <= maxChars) {
-      current += " " + word;
-    } else {
-      lines.push(current);
-      current = word;
-    }
+  for (let i = 0; i < words.length; i += maxWords) {
+    lines.push(words.slice(i, i + maxWords).join(" "));
   }
-  if (current) lines.push(current);
   return lines;
 }
 
-// Flatten CMS line breaks, apply inner-quote replacement, then auto-break for mobile.
+// Flatten CMS line breaks, then break aggressively for the mobile poster display.
 function processMobileQuote(text: string): string[] {
   const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
-  return breakMobileLines(replaceQuotes(flat));
+  return breakMobilePosterLines(flat);
 }
 
 function slotToPercent(slot: number): number {
@@ -253,45 +243,37 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: static fade quote (hidden on desktop) ──
-            Anchored near the top of the hero, well above the tagline/header.
-            display is controlled entirely via CSS class (see <style jsx>)   */}
+      {/* ── Mobile: bold poster-style quote (hidden on desktop) ──
+            Occupies the upper portion of the hero, just below the nav to ~45% down.
+            display is controlled entirely via CSS class (see <style jsx>)          */}
       {showQuotes && (
         <div
           aria-hidden
-          className="mobile-quote-wrap absolute pointer-events-none select-none"
+          className="mobile-quote-wrap absolute pointer-events-none select-none overflow-hidden"
           style={{
-            top:   "17%",
-            left:  "1.5rem",
-            right: "1.5rem",
+            top:    "8%",
+            bottom: "55%",
+            left:   "1.5rem",
+            right:  "1.5rem",
           }}
         >
-          <div
+          <p
+            className="mobile-quote-text"
             style={{
-              borderLeft: "3px solid #d0021b",
-              paddingLeft: "1rem",
+              fontFamily: "var(--font-bebas), sans-serif",
+              fontSize:   "clamp(2.8rem, 10vw, 3.5rem)",
+              lineHeight: 0.95,
+              letterSpacing: "0.01em",
+              color:      "rgba(255,255,255,0.85)",
+              textAlign:  "left",
               opacity:    mobileVisible ? 1 : 0,
               transition: `opacity ${MOBILE_FADE_MS}ms ease`,
             }}
           >
-            <p
-              className="mobile-quote-text"
-              style={{
-                fontFamily: "var(--font-playfair), serif",
-                fontStyle:  "italic",
-                fontSize:   "1.1rem",
-                lineHeight: 1.6,
-                color:      "rgba(255,255,255,0.55)",
-                textAlign:  "left",
-              }}
-            >
-              {mobileQuote.map((line, i) => (
-                <span key={i} style={{ display: "block" }}>
-                  {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
-                </span>
-              ))}
-            </p>
-          </div>
+            {mobileQuote.map((line, i) => (
+              <span key={i} style={{ display: "block" }}>{line}</span>
+            ))}
+          </p>
         </div>
       )}
 
