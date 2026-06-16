@@ -279,6 +279,24 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       style={{ backgroundColor: "#000000" }}
     >
 
+      {/* Animated red circle — positioned against the section (fixed height on mobile),
+            never the content wrapper, so quote line-count changes can't move or resize it. */}
+      <div
+        className="mobile-bg-circle"
+        aria-hidden
+        style={{
+          position:        "absolute",
+          top:              "38%",
+          left:             "50%",
+          width:            "95vw",
+          height:           "95vw",
+          borderRadius:     "50%",
+          backgroundColor:  "#d0021b",
+          zIndex:           2,
+          pointerEvents:    "none",
+        }}
+      />
+
       {/* ── Mobile: typewriter concept (hidden on desktop) ──
             Fixed header / typewriter quote filling the middle / minimal bottom links.
             display is controlled entirely via CSS class (see <style jsx>)            */}
@@ -286,23 +304,6 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         className="mobile-hero-content"
         style={{ position: "relative", paddingTop: "1rem" }}
       >
-        {/* Animated red circle — sits behind all text, overlapping name + quote areas */}
-        <div
-          className="mobile-bg-circle"
-          aria-hidden
-          style={{
-            position:        "absolute",
-            top:              "50%",
-            left:             "50%",
-            width:            "95vw",
-            height:           "95vw",
-            borderRadius:     "50%",
-            backgroundColor:  "#d0021b",
-            zIndex:           2,
-            pointerEvents:    "none",
-          }}
-        />
-
         {/* TOP — name, immediately below nav */}
         <div style={{ paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
           <h1
@@ -513,6 +514,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content + scroll hint */
         .mobile-hero-content  { display: block; }
         .mobile-bg-circle {
+          display: block;
           transform: translate(-50%, -50%);
           animation: circleDrift 13s ease-in-out infinite;
         }
@@ -523,14 +525,21 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         .desktop-quotes       { display: none; }
         .scroll-hint           { display: none; }
 
-        /* Mobile: content sits tightly at the top instead of vertically centered */
+        /* Mobile: exact viewport height (accounts for browser chrome), content sits at the top */
         @media (max-width: 767px) {
-          .hero-section { justify-content: flex-start; }
+          .hero-section {
+            justify-content: flex-start;
+            height:     calc(var(--vh, 1vh) * 100);
+            height:     100dvh;
+            min-height: calc(var(--vh, 1vh) * 100);
+            min-height: 100dvh;
+          }
         }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
         @media (min-width: 768px) {
           .mobile-hero-content  { display: none; }
+          .mobile-bg-circle     { display: none; }
           .desktop-hero-content { display: block; }
           .desktop-quotes       { display: block; }
           .scroll-hint           { display: flex; }
