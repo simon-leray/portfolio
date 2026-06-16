@@ -311,7 +311,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         }}
       >
         {/* TOP — name, immediately below nav */}
-        <div style={{ paddingTop: "3.5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3, overflow: "visible" }}>
+        <div style={{ paddingTop: "5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3, overflow: "visible" }}>
           <h1
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
