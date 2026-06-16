@@ -482,20 +482,105 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       </div>
 
-      <div
-        className="desktop-red-circle"
-        aria-hidden
-        style={{
-          position:        "absolute",
-          top:              "50%",
-          right:            "15%",
-          width:            "600px",
-          height:           "600px",
-          borderRadius:     "50%",
-          backgroundColor:  "#d0021b",
-          pointerEvents:    "none",
-        }}
-      />
+      {/* ── Desktop: constrained layout wrapper ──
+            Anchors the circle to the 1400px content zone so it doesn't drift
+            to the far right on wide viewports. position: absolute fills the
+            full hero height; max-width + margin: auto center it. No z-index
+            here — a stacking context would isolate the red circle from the
+            drift quotes (which are siblings, rendered after this wrapper) and
+            break the mix-blend-mode. DOM order is what determines paint order. */}
+      <div className="desktop-layout-wrapper">
+        <div
+          className="desktop-red-circle"
+          aria-hidden
+          style={{
+            position:        "absolute",
+            top:              "50%",
+            right:            "5%",
+            width:            "600px",
+            height:           "600px",
+            borderRadius:     "50%",
+            backgroundColor:  "#d0021b",
+            pointerEvents:    "none",
+          }}
+        />
+
+        {/* Foreground content — desktop only.
+              No position/z-index on this container — stacking contexts on wrappers isolate
+              children's mix-blend-mode from sibling elements (same bug as mobile), so only
+              the leaf text elements carry position + z-index + blend. */}
+        <div className="desktop-hero-content px-6 py-24" style={{ maxWidth: "900px" }}>
+          {tagline && (
+            <p
+              className="text-xs tracking-widest uppercase mb-8"
+              style={{
+                color:        "#d0021b",
+                mixBlendMode: "difference",
+                position:     "relative",
+                zIndex:       2,
+              }}
+            >{tagline}</p>
+          )}
+          <h1
+            className="text-[clamp(3.5rem,12vw,9rem)] leading-none mb-8"
+            style={{
+              fontFamily:    "var(--font-bebas), sans-serif",
+              letterSpacing: "0.02em",
+              color:         "#d0021b",
+              mixBlendMode:  "difference",
+              position:      "relative",
+              zIndex:        2,
+            }}
+          >
+            Simon<br />Leray
+          </h1>
+          {subtitle && (
+            <p
+              className="text-lg md:text-xl max-w-lg leading-relaxed mb-12"
+              style={{
+                fontFamily:   "var(--font-playfair), serif",
+                color:        "#d0021b",
+                mixBlendMode: "difference",
+                position:     "relative",
+                zIndex:       2,
+              }}
+            >
+              {subtitle}
+            </p>
+          )}
+          <div className="flex flex-wrap gap-4">
+            <Link
+              href="/texte"
+              className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
+              style={{
+                fontFamily:   "var(--font-bebas), sans-serif",
+                fontSize:     "0.9rem",
+                color:        "#d0021b",
+                mixBlendMode: "difference",
+                position:     "relative",
+                zIndex:       2,
+              }}
+            >
+              Artikel lesen
+            </Link>
+            <Link
+              href="/kontakt"
+              className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
+              style={{
+                fontFamily:   "var(--font-bebas), sans-serif",
+                fontSize:     "0.9rem",
+                color:        "#d0021b",
+                mixBlendMode: "difference",
+                position:     "relative",
+                zIndex:       2,
+              }}
+            >
+              Kontakt
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* ── Desktop: drifting quotes (hidden on mobile) ── */}
       {showQuotes ? (
         <div
@@ -559,81 +644,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       )}
 
-      {/* Foreground content — desktop only.
-            No position/z-index on this container — stacking contexts on wrappers isolate
-            children's mix-blend-mode from sibling elements (same bug as mobile), so only
-            the leaf text elements carry position + z-index + blend. */}
-      <div className="desktop-hero-content mx-auto px-6 py-24" style={{ maxWidth: "900px" }}>
-        {tagline && (
-          <p
-            className="text-xs tracking-widest uppercase mb-8"
-            style={{
-              color:        "#d0021b",
-              mixBlendMode: "difference",
-              position:     "relative",
-              zIndex:       2,
-            }}
-          >{tagline}</p>
-        )}
-        <h1
-          className="text-[clamp(3.5rem,12vw,9rem)] leading-none mb-8"
-          style={{
-            fontFamily:   "var(--font-bebas), sans-serif",
-            letterSpacing:"0.02em",
-            color:        "#d0021b",
-            mixBlendMode: "difference",
-            position:     "relative",
-            zIndex:       2,
-          }}
-        >
-          Simon<br />Leray
-        </h1>
-        {subtitle && (
-          <p
-            className="text-lg md:text-xl max-w-lg leading-relaxed mb-12"
-            style={{
-              fontFamily:   "var(--font-playfair), serif",
-              color:        "#d0021b",
-              mixBlendMode: "difference",
-              position:     "relative",
-              zIndex:       2,
-            }}
-          >
-            {subtitle}
-          </p>
-        )}
-        <div className="flex flex-wrap gap-4">
-          <Link
-            href="/texte"
-            className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
-            style={{
-              fontFamily:   "var(--font-bebas), sans-serif",
-              fontSize:     "0.9rem",
-              color:        "#d0021b",
-              mixBlendMode: "difference",
-              position:     "relative",
-              zIndex:       2,
-            }}
-          >
-            Artikel lesen
-          </Link>
-          <Link
-            href="/kontakt"
-            className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
-            style={{
-              fontFamily:   "var(--font-bebas), sans-serif",
-              fontSize:     "0.9rem",
-              color:        "#d0021b",
-              mixBlendMode: "difference",
-              position:     "relative",
-              zIndex:       2,
-            }}
-          >
-            Kontakt
-          </Link>
-        </div>
-      </div>
-
       {/* Scroll hint */}
       <div className="scroll-hint absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center" style={{ zIndex: 13 }}>
         <span className="text-xs tracking-widest uppercase">Scroll</span>
@@ -692,20 +702,30 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           }
         }
 
-        .desktop-red-circle { display: none; }
+        .desktop-layout-wrapper { display: none; }
+        .desktop-red-circle     { display: none; }
         @media (prefers-reduced-motion: reduce) {
           .desktop-red-circle { animation: none; transform: translateY(-50%); }
         }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
         @media (min-width: 768px) {
-          .mobile-hero-content  { display: none; }
-          .mobile-bg-circle     { display: none; }
-          .desktop-hero-content { display: block; }
-          .desktop-quotes       { display: block; }
-          .scroll-hint           { display: flex; }
+          .mobile-hero-content    { display: none; }
+          .mobile-bg-circle       { display: none; }
+          .desktop-hero-content   { display: block; }
+          .desktop-quotes         { display: block; }
+          .scroll-hint             { display: flex; }
+          .desktop-layout-wrapper {
+            display:         flex;
+            flex-direction:  column;
+            justify-content: center;
+            position:        absolute;
+            inset:           0;
+            max-width:       1400px;
+            margin:          0 auto;
+          }
           .desktop-red-circle {
-            display: block;
+            display:   block;
             transform: translateY(-50%);
             animation: circleDriftDesktop 13s ease-in-out infinite;
           }
