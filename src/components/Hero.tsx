@@ -244,7 +244,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: bold poster-style quote (hidden on desktop) ──
+      {/* ── Mobile: Playfair italic quote (hidden on desktop) ──
             Occupies the upper portion of the hero, just below the nav to ~45% down.
             display is controlled entirely via CSS class (see <style jsx>)          */}
       {showQuotes && (
@@ -252,20 +252,21 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           aria-hidden
           className="mobile-quote-wrap absolute pointer-events-none select-none overflow-hidden"
           style={{
-            top:    "8%",
-            bottom: "55%",
-            left:   "1.5rem",
-            right:  "1.5rem",
+            top:        "8%",
+            bottom:     "55%",
+            left:       "1.5rem",
+            right:      "1.5rem",
+            paddingTop: "1.2rem",
           }}
         >
           <p
             className="mobile-quote-text"
             style={{
-              fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "clamp(1.8rem, 6.5vw, 2.2rem)",
-              lineHeight: 0.95,
-              letterSpacing: "0.01em",
-              color:      "rgba(255,255,255,0.85)",
+              fontFamily: "var(--font-playfair), serif",
+              fontStyle:  "italic",
+              fontSize:   "clamp(1.2rem, 4.5vw, 1.5rem)",
+              lineHeight: 1.4,
+              color:      "rgba(255,255,255,0.7)",
               textAlign:  "left",
               opacity:    mobileVisible ? 1 : 0,
               transition: `opacity ${MOBILE_FADE_MS}ms ease`,
@@ -379,7 +380,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       </div>
 
       {/* Scroll hint */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none">
+      <div className="absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center">
         <span className="text-xs tracking-widest uppercase">Scroll</span>
         <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
           <path d="M6 0v18M1 13l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
