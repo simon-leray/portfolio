@@ -254,19 +254,16 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
       {/* ── Mobile: static fade quote (hidden on desktop) ──
-            Spans from below the nav (~8%) to above the hero text (~45%),
-            flex-centered so it sits naturally in the available gap.        */}
+            Anchored near the top of the hero, well above the tagline/header.
+            display is controlled entirely via CSS class (see <style jsx>)   */}
       {showQuotes && (
         <div
           aria-hidden
           className="mobile-quote-wrap absolute pointer-events-none select-none"
           style={{
-            top:    "8%",
-            bottom: "48%",
-            left:   "1.5rem",
-            right:  "1.5rem",
-            display:        "flex",
-            alignItems:     "center",
+            top:   "17%",
+            left:  "1.5rem",
+            right: "1.5rem",
           }}
         >
           <div
@@ -403,7 +400,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
       <style jsx>{`
         /* Mobile: show fade quote, hide drift layer */
-        .mobile-quote-wrap { display: flex; }
+        .mobile-quote-wrap { display: block; }
         .desktop-quotes    { display: none; }
 
         /* Desktop: hide fade quote, show drift layer */
