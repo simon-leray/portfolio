@@ -280,110 +280,102 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             Fixed header / typewriter quote filling the middle / minimal bottom links.
             display is controlled entirely via CSS class (see <style jsx>)            */}
       <div
-        className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between"
+        className="mobile-hero-content absolute inset-0 z-10"
         style={{ paddingTop: "4rem" }}
       >
-        {/* TOP — fixed header, anchored at top */}
-        <div style={{ paddingTop: "1rem" }}>
-          <span
-            style={{
-              display:    "block",
-              fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "22vw",
-              lineHeight: 0.85,
-              color:      "white",
-            }}
-          >
-            SIMON
-          </span>
+        {/* Vertical red stripe — runs the full height of the hero */}
+        <div
+          aria-hidden
+          style={{
+            position:        "absolute",
+            left:             "1.8rem",
+            top:              0,
+            bottom:           0,
+            width:            "3px",
+            backgroundColor:  "#d0021b",
+          }}
+        />
 
-          {/* Full-width red block containing LERAY. in black */}
-          <div
-            style={{
-              width:           "100%",
-              backgroundColor: "#d0021b",
-              height:          "calc(22vw * 1.1)",
-              display:         "flex",
-              alignItems:      "center",
-              overflow:        "hidden",
-            }}
-          >
-            <span
+        {/* All content sits to the right of the stripe */}
+        <div
+          className="flex flex-col justify-between"
+          style={{ height: "100%", paddingLeft: "3rem" }}
+        >
+          {/* TOP — anchored at top */}
+          <div style={{ paddingTop: "1rem" }}>
+            <h1
               style={{
-                display:    "block",
                 fontFamily: "var(--font-bebas), sans-serif",
-                fontSize:   "22vw",
+                fontSize:   "20vw",
                 lineHeight: 0.85,
-                color:      "black",
+                color:      "white",
+                margin:     0,
               }}
             >
-              LERAY<span style={{ color: "black" }}>.</span>
-            </span>
-          </div>
-
-          <p
-            style={{
-              fontFamily:    "var(--font-inter), sans-serif",
-              fontSize:      "0.55rem",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color:         "#d0021b",
-              marginTop:     "0.75rem",
-              paddingLeft:   "1.2rem",
-              paddingRight:  "1.2rem",
-            }}
-          >
-            Journalist · Biel/Bienne
-          </p>
-        </div>
-
-        {/* MIDDLE — typewriter quote */}
-        {showQuotes && (
-          <div className="flex-1 flex items-center px-6">
+              SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
+            </h1>
             <p
               style={{
-                fontFamily: "var(--font-playfair), serif",
-                fontStyle:  "italic",
-                fontSize:   "1.05rem",
-                color:      "white",
-                opacity:    0.85,
-                maxWidth:   "80vw",
+                fontFamily:    "var(--font-inter), sans-serif",
+                fontSize:      "0.55rem",
+                letterSpacing: "0.25em",
+                textTransform: "uppercase",
+                color:         "#d0021b",
+                marginTop:     "0.5rem",
               }}
             >
-              {typedText}
-              <span className="typewriter-cursor" style={{ color: "#d0021b" }}>|</span>
+              Journalist · Biel/Bienne
             </p>
           </div>
-        )}
 
-        {/* BOTTOM — minimal text links, anchored at bottom */}
-        <div style={{ paddingBottom: "2.5rem", paddingLeft: "1.2rem", display: "flex", gap: "2rem" }}>
-          <Link
-            href="/texte"
-            style={{
-              fontFamily:    "var(--font-inter), sans-serif",
-              fontSize:      "0.7rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color:         "white",
-              opacity:       0.6,
-            }}
-          >
-            Texte →
-          </Link>
-          <Link
-            href="/kontakt"
-            style={{
-              fontFamily:    "var(--font-inter), sans-serif",
-              fontSize:      "0.7rem",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color:         "white",
-              opacity:       0.6,
-            }}
-          >
-            Kontakt →
-          </Link>
+          {/* MIDDLE — typewriter quote, vertically centered */}
+          {showQuotes && (
+            <div className="flex-1 flex items-center pr-6">
+              <p
+                style={{
+                  fontFamily: "var(--font-playfair), serif",
+                  fontStyle:  "italic",
+                  fontSize:   "1.05rem",
+                  color:      "white",
+                  opacity:    0.85,
+                  maxWidth:   "80vw",
+                }}
+              >
+                {typedText}
+                <span className="typewriter-cursor" style={{ color: "#d0021b" }}>|</span>
+              </p>
+            </div>
+          )}
+
+          {/* BOTTOM — minimal text links */}
+          <div style={{ paddingBottom: "2.5rem", display: "flex", gap: "2rem" }}>
+            <Link
+              href="/texte"
+              style={{
+                fontFamily:    "var(--font-inter), sans-serif",
+                fontSize:      "0.7rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color:         "white",
+                opacity:       0.6,
+              }}
+            >
+              Texte →
+            </Link>
+            <Link
+              href="/kontakt"
+              style={{
+                fontFamily:    "var(--font-inter), sans-serif",
+                fontSize:      "0.7rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color:         "white",
+                opacity:       0.6,
+              }}
+            >
+              Kontakt →
+            </Link>
+          </div>
         </div>
       </div>
 
