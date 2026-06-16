@@ -313,8 +313,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       style={{ backgroundColor: "#000000" }}
     >
 
-      {/* Animated red circle — positioned against the section (fixed height on mobile),
-            never the content wrapper, so quote line-count changes can't move or resize it. */}
+      {/* Animated white circle — positioned against the section (fixed height on mobile),
+            never the content wrapper, so quote line-count changes can't move or resize it.
+            mix-blend-mode lives HERE (not on the text): the circle must paint ABOVE the
+            text (zIndex 5 > text's 3) so its own blend composites against text+background
+            beneath it — white∩black→white, white∩white(text)→black. Clean stamp effect. */}
       <div
         className="mobile-bg-circle"
         aria-hidden
@@ -325,8 +328,9 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           width:            "110vw",
           height:           "110vw",
           borderRadius:     "50%",
-          backgroundColor:  "#d0021b",
-          zIndex:           2,
+          backgroundColor:  "#ffffff",
+          mixBlendMode:     "difference",
+          zIndex:           5,
           pointerEvents:    "none",
         }}
       />
@@ -358,10 +362,9 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               margin:       0,
               position:     "relative",
               zIndex:       3,
-              mixBlendMode: "difference",
             }}
           >
-            SIMON<br />LERAY<span style={{ color: "white" }}>.</span>
+            SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
           </h1>
           <p
             style={{
@@ -369,11 +372,10 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               fontSize:      "0.55rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
-              color:         "white",
+              color:         "#d0021b",
               marginTop:     "0.4rem",
               position:      "relative",
               zIndex:        3,
-              mixBlendMode:  "difference",
             }}
           >
             Journalist · Biel/Bienne
@@ -409,11 +411,10 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
                 margin:       0,
                 position:     "relative",
                 zIndex:       3,
-                mixBlendMode: "difference",
               }}
             >
               {typedText}
-              <span className="typewriter-cursor" style={{ color: "white" }}>|</span>
+              <span className="typewriter-cursor" style={{ color: "#d0021b" }}>|</span>
             </p>
             {sourceLine && (
               <p
@@ -453,7 +454,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               letterSpacing: "0.15em",
               textTransform: "uppercase",
               color:         "white",
-              mixBlendMode:  "difference",
+              position:      "relative",
+              zIndex:        3,
             }}
           >
             Texte →
@@ -466,7 +468,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               letterSpacing: "0.15em",
               textTransform: "uppercase",
               color:         "white",
-              mixBlendMode:  "difference",
+              position:      "relative",
+              zIndex:        3,
             }}
           >
             Kontakt →
