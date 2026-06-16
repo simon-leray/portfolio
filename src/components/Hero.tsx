@@ -313,11 +313,15 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       style={{ backgroundColor: "#000000" }}
     >
 
-      {/* Animated white circle — positioned against the section (fixed height on mobile),
-            never the content wrapper, so quote line-count changes can't move or resize it.
-            mix-blend-mode lives HERE (not on the text): the circle must paint ABOVE the
-            text (zIndex 5 > text's 3) so its own blend composites against text+background
-            beneath it — white∩black→white, white∩white(text)→black. Clean stamp effect. */}
+      {/* Red circle — no blend mode on the circle itself; the inversion lives on the
+            text (see below). difference(X, X) = black, so text colored the SAME red
+            as this circle inverts to clean black wherever it overlaps the circle, and
+            reads as plain red against the black background everywhere else. A second
+            "overlay" layer can't work here: a full-area blend above the text would
+            invert the whole circle (not just the text), and one below the text never
+            reaches it, since opaque text painted later simply covers it. Positioned
+            against the section (not the content wrapper) so quote line-count changes
+            can't move or resize it.                                                 */}
       <div
         className="mobile-bg-circle"
         aria-hidden
@@ -328,9 +332,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           width:            "110vw",
           height:           "110vw",
           borderRadius:     "50%",
-          backgroundColor:  "#ffffff",
-          mixBlendMode:     "difference",
-          zIndex:           5,
+          backgroundColor:  "#d0021b",
+          zIndex:           2,
           pointerEvents:    "none",
         }}
       />
@@ -358,10 +361,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               fontFamily:   "var(--font-bebas), sans-serif",
               fontSize:     "28vw",
               lineHeight:   0.82,
-              color:        "white",
+              color:        "#d0021b",
               margin:       0,
               position:     "relative",
               zIndex:       3,
+              mixBlendMode: "difference",
             }}
           >
             SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
@@ -376,6 +380,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               marginTop:     "0.4rem",
               position:      "relative",
               zIndex:        3,
+              mixBlendMode:  "difference",
             }}
           >
             Journalist · Biel/Bienne
@@ -406,11 +411,12 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
                 fontStyle:    "italic",
                 fontSize:     "1.3rem",
                 lineHeight:   1.4,
-                color:        "white",
+                color:        "#d0021b",
                 maxWidth:     "80vw",
                 margin:       0,
                 position:     "relative",
                 zIndex:       3,
+                mixBlendMode: "difference",
               }}
             >
               {typedText}
