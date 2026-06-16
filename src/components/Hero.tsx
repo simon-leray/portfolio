@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { replaceQuotes } from "@/lib/quotes";
+import { HeroQuote } from "@/lib/types";
 
 // ─── Desktop drift constants ──────────────────────────────────────────────────
 const N_SLOTS            = 9;
@@ -18,6 +19,7 @@ const TYPE_SPEED_MS   = 35;   // ms per character while typing
 const DELETE_SPEED_MS = 18;   // ms per character while deleting (faster)
 const PAUSE_FULL_MS   = 2_500; // pause once fully typed
 const PAUSE_EMPTY_MS  = 500;   // pause once fully deleted, before next quote
+const SOURCE_FADE_MS  = 400;   // fade in/out duration for the source line
 
 interface ActiveQuote {
   id: number;
@@ -32,7 +34,7 @@ interface ActiveQuote {
 interface Props {
   tagline?: string;
   subtitle?: string;
-  quotes?: string[];
+  quotes?: (string | HeroQuote)[];
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -60,6 +62,16 @@ function quoteLines(text: string): string[] {
 function processMobileQuote(text: string): string {
   const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
   return `«${replaceQuotes(flat)}»`;
+}
+
+// Legacy entries are plain strings; new entries are { quote, source, date } objects.
+function normalizeHeroQuote(item: string | HeroQuote): HeroQuote {
+  return typeof item === "string" ? { quote: item } : item;
+}
+
+function formatSourceLine(source?: string, date?: string): string | null {
+  if (!source) return null;
+  return date ? `— ${source}, ${date}` : `— ${source}`;
 }
 
 function slotToPercent(slot: number): number {
@@ -106,10 +118,12 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   const retryRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mobile typewriter state
-  const [typedText, setTypedText] = useState("");
+  const [typedText, setTypedText]   = useState("");
+  const [sourceLine, setSourceLine] = useState<string | null>(null);
+  const [showSource, setShowSource] = useState(false);
   const typedQuoteRef    = useRef("");
   const typedIdxRef      = useRef(0);
-  const typedPoolRef     = useRef<string[]>([]);
+  const typedPoolRef     = useRef<HeroQuote[]>([]);
   const typedPoolIdxRef  = useRef(0);
   const typedTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typedActiveRef   = useRef(false);
@@ -134,20 +148,23 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   }, [quotes.length]);
 
   // ── Mobile typewriter cycle ─────────────────────────────────────────────────
-  function getNextTypedQuote(): string {
+  function getNextTypedQuote(): HeroQuote {
     if (typedPoolIdxRef.current >= typedPoolRef.current.length) {
-      typedPoolRef.current = shuffleArray(quotesRef.current);
+      typedPoolRef.current = shuffleArray(quotesRef.current.map(normalizeHeroQuote));
       typedPoolIdxRef.current = 0;
     }
-    return processMobileQuote(typedPoolRef.current[typedPoolIdxRef.current++]);
+    return typedPoolRef.current[typedPoolIdxRef.current++];
   }
 
   function runPauseEmpty() {
     typedTimerRef.current = setTimeout(() => {
       if (!typedActiveRef.current) return;
-      typedQuoteRef.current = getNextTypedQuote();
+      const next = getNextTypedQuote();
+      typedQuoteRef.current = processMobileQuote(next.quote);
       typedIdxRef.current = 0;
       setTypedText("");
+      setSourceLine(formatSourceLine(next.source, next.date));
+      setShowSource(false);
       runTyping();
     }, PAUSE_EMPTY_MS);
   }
@@ -158,6 +175,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       typedIdxRef.current++;
       setTypedText(typedQuoteRef.current.slice(0, typedIdxRef.current));
       if (typedIdxRef.current >= typedQuoteRef.current.length) {
+        setShowSource(true); // fade in now that typing is complete
         runPauseFull();
       } else {
         runTyping();
@@ -168,8 +186,12 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   function runPauseFull() {
     typedTimerRef.current = setTimeout(() => {
       if (!typedActiveRef.current) return;
-      runDeleting();
-    }, PAUSE_FULL_MS);
+      setShowSource(false); // fade out, finishing just before deletion starts
+      typedTimerRef.current = setTimeout(() => {
+        if (!typedActiveRef.current) return;
+        runDeleting();
+      }, SOURCE_FADE_MS);
+    }, PAUSE_FULL_MS - SOURCE_FADE_MS);
   }
 
   function runDeleting() {
@@ -187,7 +209,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
   useEffect(() => {
     if (!quotes.length) return;
-    typedPoolRef.current    = shuffleArray(quotes);
+    typedPoolRef.current    = shuffleArray(quotes.map(normalizeHeroQuote));
     typedPoolIdxRef.current = 0;
     typedActiveRef.current  = true;
     runPauseEmpty(); // initial 0.5s cursor-only blink before first quote types in
@@ -201,7 +223,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   // ── Desktop drift pool ──────────────────────────────────────────────────────
   function getNextText(): string {
     if (poolIdxRef.current >= poolRef.current.length) {
-      poolRef.current = shuffleArray(quotesRef.current);
+      poolRef.current = shuffleArray(quotesRef.current.map(q => normalizeHeroQuote(q).quote));
       poolIdxRef.current = 0;
     }
     return poolRef.current[poolIdxRef.current++];
@@ -260,7 +282,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   useEffect(() => {
     if (!quotes.length) return;
     mountedRef.current = true;
-    poolRef.current    = shuffleArray(quotes);
+    poolRef.current    = shuffleArray(quotes.map(q => normalizeHeroQuote(q).quote));
     poolIdxRef.current = 0;
     spawnInitialQuotes();
     scheduleNext();
@@ -356,6 +378,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               marginBottom: "2.5rem",
               height:       "7.5rem",
               display:      "flex",
+              flexDirection: "column",
               alignItems:   "flex-start",
               position:     "relative",
               zIndex:       3,
@@ -379,6 +402,24 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               {typedText}
               <span className="typewriter-cursor" style={{ color: "white" }}>|</span>
             </p>
+            {sourceLine && (
+              <p
+                style={{
+                  fontFamily:    "var(--font-inter), sans-serif",
+                  fontSize:      "0.6rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  color:         "white",
+                  opacity:       showSource ? 0.45 : 0,
+                  transition:    `opacity ${SOURCE_FADE_MS}ms ease`,
+                  margin:        "0.5rem 0 0",
+                  position:      "relative",
+                  zIndex:        3,
+                }}
+              >
+                {sourceLine}
+              </p>
+            )}
           </div>
         )}
 

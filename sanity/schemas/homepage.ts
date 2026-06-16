@@ -80,7 +80,39 @@ export const homepageSchema = defineType({
       title: "Hero-Zitate",
       description: "Sätze, die im Hintergrund des Hero-Bereichs langsam von rechts nach links driften. Enter = manueller Zeilenumbruch. Reihenfolge und Anzahl sind frei wählbar.",
       type: "array",
-      of: [{ type: "text", rows: 3 }],
+      of: [
+        {
+          type: "object",
+          name: "heroQuote",
+          title: "Zitat",
+          fields: [
+            defineField({
+              name: "quote",
+              title: "Zitat",
+              type: "text",
+              rows: 3,
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "source",
+              title: "Quelle",
+              description: "z. B. Artikeltitel oder Name",
+              type: "string",
+            }),
+            defineField({
+              name: "date",
+              title: "Datum",
+              description: "z. B. «Juni 2026» oder «15.06.2026»",
+              type: "string",
+            }),
+          ],
+          preview: {
+            select: { title: "quote", subtitle: "source" },
+          },
+        },
+        // Legacy plain-text entries — kept so existing quotes keep working unmigrated.
+        { type: "text", rows: 3, title: "Zitat (alt, nur Text)" },
+      ],
     }),
     defineField({
       name: "featuredArticles",

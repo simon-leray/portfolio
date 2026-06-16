@@ -41,10 +41,16 @@ export interface About {
   bio?: unknown[];
 }
 
+export interface HeroQuote {
+  quote: string;
+  source?: string;
+  date?: string;
+}
+
 export interface Homepage {
   heroTagline?: string;
   heroSubtitle?: string;
-  heroQuotes?: string[];
+  heroQuotes?: (string | HeroQuote)[];
   aboutTeaser?: unknown[];
   aboutTags?: string[];
   contactTitle?: string;
