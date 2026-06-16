@@ -274,7 +274,10 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   const showQuotes = quotes.length > 0;
 
   return (
-    <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
+    <section
+      className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16"
+      style={{ backgroundColor: "#000000" }}
+    >
 
       {/* ── Mobile: typewriter concept (hidden on desktop) ──
             Fixed header / typewriter quote filling the middle / minimal bottom links.
@@ -295,13 +298,13 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             height:           "95vw",
             borderRadius:     "50%",
             backgroundColor:  "#d0021b",
-            zIndex:           0,
+            zIndex:           2,
             pointerEvents:    "none",
           }}
         />
 
         {/* TOP — anchored at top */}
-        <div style={{ paddingTop: "1rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 1 }}>
+        <div style={{ paddingTop: "1rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
           <h1
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
@@ -310,7 +313,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               color:        "white",
               margin:       0,
               position:     "relative",
-              zIndex:       1,
+              zIndex:       3,
               mixBlendMode: "difference",
             }}
           >
@@ -325,7 +328,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               color:         "white",
               marginTop:     "0.5rem",
               position:      "relative",
-              zIndex:        1,
+              zIndex:        3,
               mixBlendMode:  "difference",
             }}
           >
@@ -335,17 +338,16 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
         {/* MIDDLE — typewriter quote, vertically centered */}
         {showQuotes && (
-          <div className="flex-1 flex items-center px-6" style={{ position: "relative", zIndex: 1 }}>
+          <div className="flex-1 flex items-center px-6" style={{ position: "relative", zIndex: 3 }}>
             <p
               style={{
                 fontFamily:   "var(--font-playfair), serif",
                 fontStyle:    "italic",
                 fontSize:     "1.05rem",
                 color:        "white",
-                opacity:      0.85,
                 maxWidth:     "80vw",
                 position:     "relative",
-                zIndex:       1,
+                zIndex:       3,
                 mixBlendMode: "difference",
               }}
             >
@@ -363,7 +365,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             display:       "flex",
             gap:           "2rem",
             position:      "relative",
-            zIndex:        1,
+            zIndex:        3,
           }}
         >
           <Link
@@ -512,7 +514,6 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         .mobile-bg-circle {
           transform: translate(-50%, -50%);
           animation: circleDrift 13s ease-in-out infinite;
-          will-change: transform;
         }
         @media (prefers-reduced-motion: reduce) {
           .mobile-bg-circle { animation: none; }
