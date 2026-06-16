@@ -244,122 +244,100 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: full bespoke layout (hidden on desktop) ──
-            Top zone (quote) / divider / bottom zone (eyebrow, name, tagline, buttons).
+      {/* ── Mobile: full from-scratch layout (hidden on desktop) ──
+            Top label / middle (name + line + quote) / bottom buttons, space-between.
             display is controlled entirely via CSS class (see <style jsx>)             */}
       <div
-        className="mobile-hero-content absolute inset-0 z-10 flex flex-col"
+        className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between px-6"
         style={{ paddingTop: "4rem" }}
       >
-        {/* TOP ZONE — quote */}
-        <div
-          className="flex flex-col justify-start px-6 overflow-hidden"
-          style={{ flexBasis: "35%", paddingTop: "1.2rem" }}
-        >
-          {showQuotes && (
-            <>
-              <p
-                style={{
-                  fontFamily:    "var(--font-bebas), sans-serif",
-                  fontSize:      "0.6rem",
-                  letterSpacing: "0.25em",
-                  textTransform: "uppercase",
-                  color:         "#d0021b",
-                  marginBottom:  "0.5rem",
-                }}
-              >
-                Zitat
-              </p>
-              <p
-                className="mobile-quote-text"
-                style={{
-                  fontFamily: "var(--font-bebas), sans-serif",
-                  fontSize:   "clamp(1.6rem, 5.5vw, 2rem)",
-                  lineHeight: 1.0,
-                  color:      "rgba(255,255,255,0.9)",
-                  textAlign:  "left",
-                  opacity:    mobileVisible ? 1 : 0,
-                  transition: `opacity ${MOBILE_FADE_MS}ms ease`,
-                }}
-              >
-                {mobileQuote.map((line, i) => (
-                  <span key={i} style={{ display: "block" }}>
-                    {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
-                  </span>
-                ))}
-              </p>
-            </>
-          )}
-        </div>
-
-        {/* DIVIDER */}
-        <div
+        {/* TOP — small label */}
+        <p
           style={{
-            width:           "100%",
-            height:          "1px",
-            backgroundColor: "#d0021b",
-            marginTop:       "1rem",
-            marginBottom:    "1rem",
+            fontFamily:    "var(--font-inter), sans-serif",
+            fontSize:      "0.6rem",
+            fontWeight:    500,
+            letterSpacing: "0.3em",
+            textTransform: "uppercase",
+            color:         "#d0021b",
+            marginTop:     "2rem",
           }}
-        />
+        >
+          Journalist · Biel/Bienne
+        </p>
 
-        {/* BOTTOM ZONE — eyebrow, name, tagline, buttons */}
-        <div className="flex-1 flex flex-col justify-center px-6 pb-10">
-          {tagline && (
-            <p
-              style={{
-                fontFamily:    "var(--font-bebas), sans-serif",
-                fontSize:      "0.6rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color:         "#d0021b",
-                marginBottom:  "0.75rem",
-              }}
-            >
-              {tagline}
-            </p>
-          )}
+        {/* MIDDLE — name, divider, quote */}
+        <div>
           <h1
             style={{
-              fontFamily:    "var(--font-bebas), sans-serif",
-              fontSize:      "clamp(4rem, 18vw, 5.5rem)",
-              lineHeight:    0.88,
-              letterSpacing: "0.02em",
-              color:         "white",
+              fontFamily: "var(--font-bebas), sans-serif",
+              fontSize:   "clamp(5.5rem, 22vw, 7rem)",
+              lineHeight: 0.85,
+              color:      "white",
             }}
           >
             SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
           </h1>
-          {subtitle && (
+
+          <div
+            style={{
+              width:           "100%",
+              height:          "1px",
+              backgroundColor: "#d0021b",
+              margin:          "1.2rem 0",
+            }}
+          />
+
+          {showQuotes && (
             <p
+              className="mobile-quote-text"
               style={{
                 fontFamily: "var(--font-playfair), serif",
                 fontStyle:  "italic",
-                fontSize:   "0.9rem",
-                color:      "rgba(255,255,255,0.6)",
-                maxWidth:   "85vw",
-                marginTop:  "1rem",
+                fontSize:   "1.05rem",
+                color:      "rgba(255,255,255,0.75)",
+                opacity:    mobileVisible ? 1 : 0,
+                transition: `opacity ${MOBILE_FADE_MS}ms ease`,
               }}
             >
-              {subtitle}
+              {mobileQuote.map((line, i) => (
+                <span key={i} style={{ display: "block" }}>
+                  {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
+                </span>
+              ))}
             </p>
           )}
-          <div className="flex gap-3 mt-8">
-            <Link
-              href="/texte"
-              className="bg-red text-paper tracking-widest uppercase px-5 py-3 hover:bg-paper hover:text-ink transition-colors duration-200"
-              style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.7rem" }}
-            >
-              Artikel lesen
-            </Link>
-            <Link
-              href="/kontakt"
-              className="border border-paper/30 text-paper tracking-widest uppercase px-5 py-3 hover:bg-paper hover:text-ink transition-colors duration-200"
-              style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.7rem" }}
-            >
-              Kontakt
-            </Link>
-          </div>
+        </div>
+
+        {/* BOTTOM — two equal-width buttons */}
+        <div className="flex gap-3" style={{ marginBottom: "2.5rem" }}>
+          <Link
+            href="/texte"
+            className="flex-1 text-center uppercase"
+            style={{
+              backgroundColor: "#d0021b",
+              color:           "white",
+              fontFamily:      "var(--font-bebas), sans-serif",
+              fontSize:        "1rem",
+              padding:         "1rem",
+            }}
+          >
+            Artikel lesen
+          </Link>
+          <Link
+            href="/kontakt"
+            className="flex-1 text-center uppercase"
+            style={{
+              backgroundColor: "transparent",
+              border:          "1px solid white",
+              color:           "white",
+              fontFamily:      "var(--font-bebas), sans-serif",
+              fontSize:        "1rem",
+              padding:         "1rem",
+            }}
+          >
+            Kontakt
+          </Link>
         </div>
       </div>
 
@@ -451,7 +429,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       </div>
 
       {/* Scroll hint */}
-      <div className="absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center">
+      <div className="scroll-hint absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center">
         <span className="text-xs tracking-widest uppercase">Scroll</span>
         <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
           <path d="M6 0v18M1 13l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -467,16 +445,18 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       `}</style>
 
       <style jsx>{`
-        /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content */
+        /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content + scroll hint */
         .mobile-hero-content  { display: flex; }
         .desktop-hero-content { display: none; }
         .desktop-quotes       { display: none; }
+        .scroll-hint           { display: none; }
 
-        /* Desktop: hide mobile layout, show drift layer + desktop content */
+        /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
         @media (min-width: 768px) {
           .mobile-hero-content  { display: none; }
           .desktop-hero-content { display: block; }
           .desktop-quotes       { display: block; }
+          .scroll-hint           { display: flex; }
         }
 
         .drift {
