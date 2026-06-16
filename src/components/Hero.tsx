@@ -286,10 +286,10 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         aria-hidden
         style={{
           position:        "absolute",
-          top:              "38%",
+          top:              "50%",
           left:             "50%",
-          width:            "95vw",
-          height:           "95vw",
+          width:            "110vw",
+          height:           "110vw",
           borderRadius:     "50%",
           backgroundColor:  "#d0021b",
           zIndex:           2,
@@ -298,19 +298,24 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       />
 
       {/* ── Mobile: typewriter concept (hidden on desktop) ──
-            Fixed header / typewriter quote filling the middle / minimal bottom links.
-            display is controlled entirely via CSS class (see <style jsx>)            */}
+            Fills the full 100dvh section; three zones spread by justify-content: space-between.
+            display is controlled entirely via CSS class (see <style jsx>)                       */}
       <div
         className="mobile-hero-content"
-        style={{ position: "relative", paddingTop: "1rem" }}
+        style={{
+          position:       "absolute",
+          inset:          0,
+          flexDirection:  "column",
+          justifyContent: "space-between",
+        }}
       >
         {/* TOP — name, immediately below nav */}
-        <div style={{ paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
+        <div style={{ paddingTop: "2rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
           <h1
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
-              fontSize:     "20vw",
-              lineHeight:   0.85,
+              fontSize:     "28vw",
+              lineHeight:   0.82,
               color:        "white",
               margin:       0,
               position:     "relative",
@@ -339,14 +344,15 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
         {/* MIDDLE — typewriter quote */}
         {showQuotes && (
-          <div style={{ marginTop: "2rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
+          <div style={{ paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
             <p
               style={{
                 fontFamily:   "var(--font-playfair), serif",
                 fontStyle:    "italic",
-                fontSize:     "1.05rem",
+                fontSize:     "1.3rem",
                 color:        "white",
                 maxWidth:     "80vw",
+                margin:       "2.5rem 0",
                 position:     "relative",
                 zIndex:       3,
                 mixBlendMode: "difference",
@@ -361,8 +367,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         {/* BOTTOM — minimal text links */}
         <div
           style={{
-            marginTop:     "2rem",
-            paddingBottom: "2.5rem",
+            paddingBottom: "3rem",
             paddingLeft:   "1.2rem",
             display:       "flex",
             gap:           "2rem",
@@ -512,7 +517,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
       <style jsx>{`
         /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content + scroll hint */
-        .mobile-hero-content  { display: block; }
+        .mobile-hero-content  { display: flex; }
         .mobile-bg-circle {
           display: block;
           transform: translate(-50%, -50%);
