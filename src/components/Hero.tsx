@@ -29,6 +29,7 @@ interface ActiveQuote {
   lines: string[];
   fontSize: string;
   sizeClass: "qs-short" | "qs-medium" | "qs-long";
+  sourceLine: string | null;
 }
 
 interface Props {
@@ -64,9 +65,8 @@ function processMobileQuote(text: string): string {
   return `«${replaceQuotes(flat)}»`;
 }
 
-function formatSourceLine(source?: string, date?: string): string | null {
-  if (!source) return null;
-  return date ? `— ${source}, ${date}` : `— ${source}`;
+function formatSourceLine(source?: string): string | null {
+  return source ? `— ${source}` : null;
 }
 
 function slotToPercent(slot: number): number {
@@ -113,7 +113,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
   const [activeQuotes, setActiveQuotes] = useState<ActiveQuote[]>([]);
   const activeRef    = useRef<ActiveQuote[]>([]);
   const quotesRef    = useRef(safeQuotes);
-  const poolRef      = useRef<string[]>([]);
+  const poolRef      = useRef<HeroQuote[]>([]);
   const poolIdxRef   = useRef(0);
   const mountedRef   = useRef(false);
   const timerRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -169,7 +169,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       typedQuoteRef.current = processMobileQuote(next?.quote ?? "");
       typedIdxRef.current = 0;
       setTypedText("");
-      setSourceLine(formatSourceLine(next?.source, next?.date));
+      setSourceLine(formatSourceLine(next?.source));
       setShowSource(false);
       runTyping();
     }, PAUSE_EMPTY_MS);
@@ -227,13 +227,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
   }, [safeQuotes.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Desktop drift pool ──────────────────────────────────────────────────────
-  // Returns null when there's no text to show — callers must check before using it.
-  function getNextText(): string | null {
+  // Returns null when there's no quote to show — callers must check before using it.
+  function getNextQuoteObj(): HeroQuote | null {
     if (quotesRef.current.length === 0) return null;
     if (poolIdxRef.current >= poolRef.current.length) {
-      poolRef.current = shuffleArray(
-        quotesRef.current.map(q => q?.quote ?? "").filter(Boolean)
-      );
+      poolRef.current = shuffleArray(quotesRef.current);
       poolIdxRef.current = 0;
     }
     return poolRef.current[poolIdxRef.current++] ?? null;
@@ -247,15 +245,15 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
     for (let i = 0; i < count; i++) {
       const free = Array.from({ length: N_SLOTS }, (_, s) => s).filter(s => !usedSlots.has(s));
       if (!free.length) break;
-      const text = getNextText();
-      if (!text) break; // no quotes available
+      const next = getNextQuoteObj();
+      if (!next?.quote) break; // no quotes available
       const slot     = free[Math.floor(Math.random() * free.length)];
       usedSlots.add(slot);
       const duration = randomDuration();
       const delay    = -(positions[i] * duration);
-      const lines    = quoteLines(text);
+      const lines    = quoteLines(next.quote);
       const maxLen   = Math.max(...lines.map(l => l.length));
-      batch.push({ id: nextId++, slot, duration, delay, lines, fontSize: quoteFontSize(maxLen), sizeClass: quoteSizeClass(lines) });
+      batch.push({ id: nextId++, slot, duration, delay, lines, fontSize: quoteFontSize(maxLen), sizeClass: quoteSizeClass(lines), sourceLine: formatSourceLine(next.source) });
     }
     setActiveQuotes(batch);
     activeRef.current = batch;
@@ -266,13 +264,13 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
     const occupied = new Set(activeRef.current.map(q => q.slot));
     const free     = Array.from({ length: N_SLOTS }, (_, i) => i).filter(s => !occupied.has(s));
     if (!free.length) { retryRef.current = setTimeout(trySpawnQuote, 1500); return; }
-    const text = getNextText();
-    if (!text) return; // no quotes available
+    const next = getNextQuoteObj();
+    if (!next?.quote) return; // no quotes available
     const slot     = free[Math.floor(Math.random() * free.length)];
-    const lines    = quoteLines(text);
+    const lines    = quoteLines(next.quote);
     const maxLen   = Math.max(...lines.map(l => l.length));
     const duration = randomDuration();
-    const q: ActiveQuote = { id: nextId++, slot, duration, delay: 0, lines, fontSize: quoteFontSize(maxLen), sizeClass: quoteSizeClass(lines) };
+    const q: ActiveQuote = { id: nextId++, slot, duration, delay: 0, lines, fontSize: quoteFontSize(maxLen), sizeClass: quoteSizeClass(lines), sourceLine: formatSourceLine(next.source) };
     setActiveQuotes(prev => { const next = [...prev, q]; activeRef.current = next; return next; });
   }
 
@@ -294,7 +292,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
   useEffect(() => {
     if (!safeQuotes.length) return;
     mountedRef.current = true;
-    poolRef.current    = shuffleArray(safeQuotes.map(q => q?.quote ?? "").filter(Boolean));
+    poolRef.current    = shuffleArray(safeQuotes);
     poolIdxRef.current = 0;
     spawnInitialQuotes();
     scheduleNext();
@@ -373,7 +371,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           <p
             style={{
               fontFamily:    "var(--font-inter), sans-serif",
-              fontSize:      "0.55rem",
+              fontSize:      "0.75rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
               color:         "#d0021b",
@@ -429,8 +427,9 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
                   fontSize:      "0.6rem",
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
-                  color:         "white",
-                  opacity:       showSource ? 0.45 : 0,
+                  color:         "#d0021b",
+                  mixBlendMode:  "difference",
+                  opacity:       showSource ? 1 : 0,
                   transition:    `opacity ${SOURCE_FADE_MS}ms ease`,
                   margin:        "0.5rem 0 0",
                   position:      "relative",
@@ -483,6 +482,28 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       </div>
 
+      {/* Desktop red circle — same drift animation as mobile's, decorative only.
+            The flying quotes keep their existing translucent styling unchanged
+            ("continue as before"); this circle doesn't force blend onto them, since
+            their established low-opacity white wouldn't invert cleanly anyway (a
+            partially-transparent color dilutes mix-blend-mode math, the same issue
+            fixed earlier on the mobile quote/source elements).                    */}
+      <div
+        className="desktop-bg-circle"
+        aria-hidden
+        style={{
+          position:        "absolute",
+          top:              "50%",
+          left:             "50%",
+          width:            "60vh",
+          height:           "60vh",
+          borderRadius:     "50%",
+          backgroundColor:  "#d0021b",
+          zIndex:           1,
+          pointerEvents:    "none",
+        }}
+      />
+
       {/* ── Desktop: drifting quotes (hidden on mobile) ── */}
       {showQuotes ? (
         <div
@@ -511,6 +532,21 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
                 {q.lines.map((line, j) => (
                   <span key={j} style={{ display: "block" }}>{line}</span>
                 ))}
+                {q.sourceLine && (
+                  <span
+                    style={{
+                      display:       "block",
+                      fontFamily:    "var(--font-inter), sans-serif",
+                      fontSize:      "0.55rem",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.12em",
+                      fontStyle:     "normal",
+                      marginTop:     "0.4em",
+                    }}
+                  >
+                    {q.sourceLine}
+                  </span>
+                )}
               </div>
             </div>
           ))}
@@ -620,6 +656,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           }
         }
 
+        .desktop-bg-circle { display: none; }
+        @media (prefers-reduced-motion: reduce) {
+          .desktop-bg-circle { animation: none; }
+        }
+
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
         @media (min-width: 768px) {
           .mobile-hero-content  { display: none; }
@@ -627,6 +668,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           .desktop-hero-content { display: block; }
           .desktop-quotes       { display: block; }
           .scroll-hint           { display: flex; }
+          .desktop-bg-circle {
+            display: block;
+            transform: translate(-50%, -50%);
+            animation: circleDrift 13s ease-in-out infinite;
+          }
         }
 
         .drift {

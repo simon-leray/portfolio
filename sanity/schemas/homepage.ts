@@ -99,12 +99,6 @@ export const homepageSchema = defineType({
               description: "z. B. Artikeltitel oder Name",
               type: "string",
             }),
-            defineField({
-              name: "date",
-              title: "Datum",
-              description: "z. B. «Juni 2026» oder «15.06.2026»",
-              type: "string",
-            }),
           ],
           preview: {
             select: { title: "quote", subtitle: "source" },

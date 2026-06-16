@@ -44,7 +44,6 @@ export interface About {
 export interface HeroQuote {
   quote: string;
   source?: string;
-  date?: string;
 }
 
 export interface Homepage {
