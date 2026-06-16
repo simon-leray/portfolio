@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { replaceQuotes } from "@/lib/quotes";
 import { HeroQuote } from "@/lib/types";
 
@@ -99,13 +99,20 @@ let nextId = 0;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Hero({ tagline, subtitle, quotes = [] }: Props) {
+export function Hero({ tagline, subtitle, quotes }: Props) {
   const ghostRef = useRef<HTMLDivElement>(null);
+
+  // Drop any null/undefined entries or items missing a quote — protects against
+  // stale/malformed Sanity data (e.g. leftover items from a schema migration).
+  const safeQuotes = useMemo(
+    () => (quotes ?? []).filter((q): q is HeroQuote => !!q?.quote),
+    [quotes]
+  );
 
   // Desktop drift state
   const [activeQuotes, setActiveQuotes] = useState<ActiveQuote[]>([]);
   const activeRef    = useRef<ActiveQuote[]>([]);
-  const quotesRef    = useRef(quotes);
+  const quotesRef    = useRef(safeQuotes);
   const poolRef      = useRef<string[]>([]);
   const poolIdxRef   = useRef(0);
   const mountedRef   = useRef(false);
@@ -123,12 +130,12 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   const typedTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typedActiveRef   = useRef(false);
 
-  useEffect(() => { quotesRef.current = quotes; }, [quotes]);
+  useEffect(() => { quotesRef.current = safeQuotes; }, [safeQuotes]);
   useEffect(() => { activeRef.current = activeQuotes; }, [activeQuotes]);
 
   // LERAY ghost — fallback when no quotes provided
   useEffect(() => {
-    if (quotes.length > 0) return;
+    if (safeQuotes.length > 0) return;
     const el = ghostRef.current;
     if (!el) return;
     let x = 0;
@@ -140,25 +147,29 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     }
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [quotes.length]);
+  }, [safeQuotes.length]);
 
   // ── Mobile typewriter cycle ─────────────────────────────────────────────────
-  function getNextTypedQuote(): HeroQuote {
+  // Returns null when there are no quotes to show (empty/undefined pool) — callers
+  // must check before using the result instead of assuming a quote is always there.
+  function getNextTypedQuote(): HeroQuote | null {
+    if (quotesRef.current.length === 0) return null;
     if (typedPoolIdxRef.current >= typedPoolRef.current.length) {
       typedPoolRef.current = shuffleArray(quotesRef.current);
       typedPoolIdxRef.current = 0;
     }
-    return typedPoolRef.current[typedPoolIdxRef.current++];
+    return typedPoolRef.current[typedPoolIdxRef.current++] ?? null;
   }
 
   function runPauseEmpty() {
     typedTimerRef.current = setTimeout(() => {
       if (!typedActiveRef.current) return;
       const next = getNextTypedQuote();
-      typedQuoteRef.current = processMobileQuote(next.quote);
+      if (!next) return; // nothing to show — stop the cycle gracefully
+      typedQuoteRef.current = processMobileQuote(next?.quote ?? "");
       typedIdxRef.current = 0;
       setTypedText("");
-      setSourceLine(formatSourceLine(next.source, next.date));
+      setSourceLine(formatSourceLine(next?.source, next?.date));
       setShowSource(false);
       runTyping();
     }, PAUSE_EMPTY_MS);
@@ -203,8 +214,8 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   }
 
   useEffect(() => {
-    if (!quotes.length) return;
-    typedPoolRef.current    = shuffleArray(quotes);
+    if (!safeQuotes.length) return;
+    typedPoolRef.current    = shuffleArray(safeQuotes);
     typedPoolIdxRef.current = 0;
     typedActiveRef.current  = true;
     runPauseEmpty(); // initial 0.5s cursor-only blink before first quote types in
@@ -213,15 +224,19 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
       typedActiveRef.current = false;
       if (typedTimerRef.current) clearTimeout(typedTimerRef.current);
     };
-  }, [quotes.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [safeQuotes.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Desktop drift pool ──────────────────────────────────────────────────────
-  function getNextText(): string {
+  // Returns null when there's no text to show — callers must check before using it.
+  function getNextText(): string | null {
+    if (quotesRef.current.length === 0) return null;
     if (poolIdxRef.current >= poolRef.current.length) {
-      poolRef.current = shuffleArray(quotesRef.current.map(q => q.quote));
+      poolRef.current = shuffleArray(
+        quotesRef.current.map(q => q?.quote ?? "").filter(Boolean)
+      );
       poolIdxRef.current = 0;
     }
-    return poolRef.current[poolIdxRef.current++];
+    return poolRef.current[poolIdxRef.current++] ?? null;
   }
 
   function spawnInitialQuotes() {
@@ -232,11 +247,12 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     for (let i = 0; i < count; i++) {
       const free = Array.from({ length: N_SLOTS }, (_, s) => s).filter(s => !usedSlots.has(s));
       if (!free.length) break;
+      const text = getNextText();
+      if (!text) break; // no quotes available
       const slot     = free[Math.floor(Math.random() * free.length)];
       usedSlots.add(slot);
       const duration = randomDuration();
       const delay    = -(positions[i] * duration);
-      const text     = getNextText();
       const lines    = quoteLines(text);
       const maxLen   = Math.max(...lines.map(l => l.length));
       batch.push({ id: nextId++, slot, duration, delay, lines, fontSize: quoteFontSize(maxLen), sizeClass: quoteSizeClass(lines) });
@@ -250,8 +266,9 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     const occupied = new Set(activeRef.current.map(q => q.slot));
     const free     = Array.from({ length: N_SLOTS }, (_, i) => i).filter(s => !occupied.has(s));
     if (!free.length) { retryRef.current = setTimeout(trySpawnQuote, 1500); return; }
+    const text = getNextText();
+    if (!text) return; // no quotes available
     const slot     = free[Math.floor(Math.random() * free.length)];
-    const text     = getNextText();
     const lines    = quoteLines(text);
     const maxLen   = Math.max(...lines.map(l => l.length));
     const duration = randomDuration();
@@ -275,9 +292,9 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!quotes.length) return;
+    if (!safeQuotes.length) return;
     mountedRef.current = true;
-    poolRef.current    = shuffleArray(quotes.map(q => q.quote));
+    poolRef.current    = shuffleArray(safeQuotes.map(q => q?.quote ?? "").filter(Boolean));
     poolIdxRef.current = 0;
     spawnInitialQuotes();
     scheduleNext();
@@ -288,7 +305,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
     };
   }, []); // intentional: run once on mount
 
-  const showQuotes = quotes.length > 0;
+  const showQuotes = safeQuotes.length > 0;
 
   return (
     <section
