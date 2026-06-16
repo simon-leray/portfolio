@@ -307,10 +307,11 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           inset:          0,
           flexDirection:  "column",
           justifyContent: "space-between",
+          overflow:       "visible",
         }}
       >
         {/* TOP — name, immediately below nav */}
-        <div style={{ paddingTop: "2rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
+        <div style={{ paddingTop: "3.5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3, overflow: "visible" }}>
           <h1
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
@@ -342,17 +343,33 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           </p>
         </div>
 
-        {/* MIDDLE — typewriter quote */}
+        {/* MIDDLE — typewriter quote.
+              Fixed height (~4 lines) + flex-start anchors the text to the top of the
+              box, so new lines extend downward instead of the existing text shifting
+              up as the flex space-between layout would otherwise force.            */}
         {showQuotes && (
-          <div style={{ paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3 }}>
+          <div
+            style={{
+              paddingLeft:  "1.2rem",
+              paddingRight: "1.2rem",
+              margin:       "2.5rem 0",
+              height:       "7.5rem",
+              display:      "flex",
+              alignItems:   "flex-start",
+              position:     "relative",
+              zIndex:       3,
+              overflow:     "visible",
+            }}
+          >
             <p
               style={{
                 fontFamily:   "var(--font-playfair), serif",
                 fontStyle:    "italic",
                 fontSize:     "1.3rem",
+                lineHeight:   1.4,
                 color:        "white",
                 maxWidth:     "80vw",
-                margin:       "2.5rem 0",
+                margin:       0,
                 position:     "relative",
                 zIndex:       3,
                 mixBlendMode: "difference",
