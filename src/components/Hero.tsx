@@ -288,12 +288,12 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           <h1
             style={{
               fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "clamp(3.8rem, 16vw, 5rem)",
-              lineHeight: 1,
+              fontSize:   "clamp(5.5rem, 24vw, 7rem)",
+              lineHeight: 0.85,
               color:      "white",
             }}
           >
-            SIMON LERAY<span style={{ color: "#d0021b" }}>.</span>
+            SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
           </h1>
           <p
             style={{
