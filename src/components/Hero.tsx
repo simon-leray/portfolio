@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { replaceQuotes } from "@/lib/quotes";
 
 // ─── Desktop drift constants ──────────────────────────────────────────────────
 const N_SLOTS            = 9;
@@ -63,10 +64,10 @@ function breakMobilePosterLines(text: string, maxWords = 4): string[] {
   return lines;
 }
 
-// Flatten CMS line breaks, then break aggressively for the mobile poster display.
+// Flatten CMS line breaks, convert inner quotes to ‹ ›, then break aggressively for mobile.
 function processMobileQuote(text: string): string[] {
   const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
-  return breakMobilePosterLines(flat);
+  return breakMobilePosterLines(replaceQuotes(flat));
 }
 
 function slotToPercent(slot: number): number {
@@ -261,7 +262,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             className="mobile-quote-text"
             style={{
               fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "clamp(2.8rem, 10vw, 3.5rem)",
+              fontSize:   "clamp(1.8rem, 6.5vw, 2.2rem)",
               lineHeight: 0.95,
               letterSpacing: "0.01em",
               color:      "rgba(255,255,255,0.85)",
@@ -271,9 +272,22 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             }}
           >
             {mobileQuote.map((line, i) => (
-              <span key={i} style={{ display: "block" }}>{line}</span>
+              <span key={i} style={{ display: "block" }}>
+                {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
+              </span>
             ))}
           </p>
+          <div
+            style={{
+              width:        "40px",
+              height:       "1px",
+              backgroundColor: "#d0021b",
+              marginTop:    "1.5rem",
+              marginBottom: "1.5rem",
+              opacity:      mobileVisible ? 1 : 0,
+              transition:   `opacity ${MOBILE_FADE_MS}ms ease`,
+            }}
+          />
         </div>
       )}
 
