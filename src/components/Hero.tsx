@@ -509,7 +509,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               No position/z-index on this container — stacking contexts on wrappers isolate
               children's mix-blend-mode from sibling elements (same bug as mobile), so only
               the leaf text elements carry position + z-index + blend. */}
-        <div className="desktop-hero-content px-6 py-24" style={{ maxWidth: "900px" }}>
+        <div className="desktop-hero-content py-24" style={{ paddingLeft: "8%", maxWidth: "55%" }}>
           {tagline && (
             <p
               className="text-xs tracking-widest uppercase mb-8"
