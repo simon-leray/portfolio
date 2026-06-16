@@ -344,8 +344,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           overflow:       "visible",
         }}
       >
-        {/* TOP — name, immediately below nav */}
-        <div style={{ paddingTop: "5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 3, overflow: "visible" }}>
+        {/* TOP — name, immediately below nav.
+              NOTE: this wrapper must stay position:static (no z-index) — giving it its
+              own stacking context would wall off the children's mix-blend-mode from the
+              circle, which lives in a sibling subtree. Only the leaf text gets z-index. */}
+        <div style={{ paddingTop: "5rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", overflow: "visible" }}>
           <h1
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
@@ -392,8 +395,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               display:      "flex",
               flexDirection: "column",
               alignItems:   "flex-start",
-              position:     "relative",
-              zIndex:       3,
               overflow:     "visible",
             }}
           >
@@ -442,8 +443,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             paddingLeft:   "1.2rem",
             display:       "flex",
             gap:           "2rem",
-            position:      "relative",
-            zIndex:        3,
           }}
         >
           <Link
