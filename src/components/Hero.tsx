@@ -280,102 +280,118 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
             Fixed header / typewriter quote filling the middle / minimal bottom links.
             display is controlled entirely via CSS class (see <style jsx>)            */}
       <div
-        className="mobile-hero-content absolute inset-0 z-10"
+        className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between"
         style={{ paddingTop: "4rem" }}
       >
-        {/* Vertical red stripe — runs the full height of the hero */}
+        {/* Animated red circle — sits behind all text, mix-blend-mode inverts text on top of it */}
         <div
+          className="mobile-bg-circle"
           aria-hidden
           style={{
             position:        "absolute",
-            left:             "1.8rem",
-            top:              0,
-            bottom:           0,
-            width:            "3px",
+            top:              "50%",
+            left:             "50%",
+            width:            "95vw",
+            height:           "95vw",
+            borderRadius:     "50%",
             backgroundColor:  "#d0021b",
+            zIndex:           0,
+            pointerEvents:    "none",
           }}
         />
 
-        {/* All content sits to the right of the stripe */}
-        <div
-          className="flex flex-col justify-between"
-          style={{ height: "100%", paddingLeft: "3rem" }}
-        >
-          {/* TOP — anchored at top */}
-          <div style={{ paddingTop: "1rem" }}>
-            <h1
-              style={{
-                fontFamily: "var(--font-bebas), sans-serif",
-                fontSize:   "20vw",
-                lineHeight: 0.85,
-                color:      "white",
-                margin:     0,
-              }}
-            >
-              SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
-            </h1>
+        {/* TOP — anchored at top */}
+        <div style={{ paddingTop: "1rem", paddingLeft: "1.2rem", paddingRight: "1.2rem", position: "relative", zIndex: 1 }}>
+          <h1
+            style={{
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "20vw",
+              lineHeight:   0.85,
+              color:        "white",
+              margin:       0,
+              position:     "relative",
+              zIndex:       1,
+              mixBlendMode: "difference",
+            }}
+          >
+            SIMON<br />LERAY<span style={{ color: "white" }}>.</span>
+          </h1>
+          <p
+            style={{
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.55rem",
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              color:         "white",
+              marginTop:     "0.5rem",
+              position:      "relative",
+              zIndex:        1,
+              mixBlendMode:  "difference",
+            }}
+          >
+            Journalist · Biel/Bienne
+          </p>
+        </div>
+
+        {/* MIDDLE — typewriter quote, vertically centered */}
+        {showQuotes && (
+          <div className="flex-1 flex items-center px-6" style={{ position: "relative", zIndex: 1 }}>
             <p
               style={{
-                fontFamily:    "var(--font-inter), sans-serif",
-                fontSize:      "0.55rem",
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                color:         "#d0021b",
-                marginTop:     "0.5rem",
+                fontFamily:   "var(--font-playfair), serif",
+                fontStyle:    "italic",
+                fontSize:     "1.05rem",
+                color:        "white",
+                opacity:      0.85,
+                maxWidth:     "80vw",
+                position:     "relative",
+                zIndex:       1,
+                mixBlendMode: "difference",
               }}
             >
-              Journalist · Biel/Bienne
+              {typedText}
+              <span className="typewriter-cursor" style={{ color: "white" }}>|</span>
             </p>
           </div>
+        )}
 
-          {/* MIDDLE — typewriter quote, vertically centered */}
-          {showQuotes && (
-            <div className="flex-1 flex items-center pr-6">
-              <p
-                style={{
-                  fontFamily: "var(--font-playfair), serif",
-                  fontStyle:  "italic",
-                  fontSize:   "1.05rem",
-                  color:      "white",
-                  opacity:    0.85,
-                  maxWidth:   "80vw",
-                }}
-              >
-                {typedText}
-                <span className="typewriter-cursor" style={{ color: "#d0021b" }}>|</span>
-              </p>
-            </div>
-          )}
-
-          {/* BOTTOM — minimal text links */}
-          <div style={{ paddingBottom: "2.5rem", display: "flex", gap: "2rem" }}>
-            <Link
-              href="/texte"
-              style={{
-                fontFamily:    "var(--font-inter), sans-serif",
-                fontSize:      "0.7rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color:         "white",
-                opacity:       0.6,
-              }}
-            >
-              Texte →
-            </Link>
-            <Link
-              href="/kontakt"
-              style={{
-                fontFamily:    "var(--font-inter), sans-serif",
-                fontSize:      "0.7rem",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-                color:         "white",
-                opacity:       0.6,
-              }}
-            >
-              Kontakt →
-            </Link>
-          </div>
+        {/* BOTTOM — minimal text links */}
+        <div
+          style={{
+            paddingBottom: "2.5rem",
+            paddingLeft:   "1.2rem",
+            display:       "flex",
+            gap:           "2rem",
+            position:      "relative",
+            zIndex:        1,
+          }}
+        >
+          <Link
+            href="/texte"
+            style={{
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.7rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color:         "white",
+              mixBlendMode:  "difference",
+            }}
+          >
+            Texte →
+          </Link>
+          <Link
+            href="/kontakt"
+            style={{
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.7rem",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color:         "white",
+              mixBlendMode:  "difference",
+            }}
+          >
+            Kontakt →
+          </Link>
         </div>
       </div>
 
@@ -480,11 +496,27 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           from { transform: translateX(110vw); }
           to   { transform: translateX(calc(-100% - 10vw)); }
         }
+        @keyframes circleDrift {
+          0%   { transform: translate(-50%, -50%) translate(0, 0); }
+          20%  { transform: translate(-50%, -50%) translate(6vw, -4vw); }
+          40%  { transform: translate(-50%, -50%) translate(-5vw, 6vw); }
+          60%  { transform: translate(-50%, -50%) translate(7vw, 5vw); }
+          80%  { transform: translate(-50%, -50%) translate(-6vw, -5vw); }
+          100% { transform: translate(-50%, -50%) translate(0, 0); }
+        }
       `}</style>
 
       <style jsx>{`
         /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content + scroll hint */
         .mobile-hero-content  { display: flex; }
+        .mobile-bg-circle {
+          transform: translate(-50%, -50%);
+          animation: circleDrift 13s ease-in-out infinite;
+          will-change: transform;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mobile-bg-circle { animation: none; }
+        }
         .desktop-hero-content { display: none; }
         .desktop-quotes       { display: none; }
         .scroll-hint           { display: none; }
