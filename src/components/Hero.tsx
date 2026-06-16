@@ -499,7 +499,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           height:           "55vw",
           borderRadius:     "50%",
           backgroundColor:  "#d0021b",
-          zIndex:           1,
           pointerEvents:    "none",
         }}
       />
@@ -511,7 +510,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           style={{
             maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-            zIndex: 3,
           }}
         >
           {activeQuotes.map(q => (
