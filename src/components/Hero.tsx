@@ -482,102 +482,108 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       </div>
 
-      {/* ── Desktop: constrained layout wrapper ──
-            Anchors the circle to the 1400px content zone so it doesn't drift
-            to the far right on wide viewports. position: absolute fills the
-            full hero height; max-width + margin: auto center it. No z-index
-            here — a stacking context would isolate the red circle from the
-            drift quotes (which are siblings, rendered after this wrapper) and
-            break the mix-blend-mode. DOM order is what determines paint order. */}
-      <div className="desktop-layout-wrapper">
-        <div
-          className="desktop-red-circle"
-          aria-hidden
-          style={{
-            position:        "absolute",
-            top:              "50%",
-            right:            "5%",
-            width:            "600px",
-            height:           "600px",
-            borderRadius:     "50%",
-            backgroundColor:  "#d0021b",
-            pointerEvents:    "none",
-          }}
-        />
+      {/* ── Desktop: red circle (right side) ──
+            z-index: 1 so it sits below text (z-2) and quotes (z-3). No blend
+            on the circle itself — blend lives on the text so the stacking
+            math works: diff(white, black)=white, diff(white, red)=cyan.
+            CSS handles transform: translateY(-50%) and the drift animation. */}
+      <div
+        className="desktop-red-circle"
+        aria-hidden
+        style={{
+          position:       "absolute",
+          top:            "50%",
+          right:          "12%",
+          width:          "500px",
+          height:         "500px",
+          borderRadius:   "50%",
+          backgroundColor:"#d0021b",
+          zIndex:         1,
+          pointerEvents:  "none",
+        }}
+      />
 
-        {/* Foreground content — desktop only.
-              No position/z-index on this container — stacking contexts on wrappers isolate
-              children's mix-blend-mode from sibling elements (same bug as mobile), so only
-              the leaf text elements carry position + z-index + blend. */}
-        <div className="desktop-hero-content py-24" style={{ paddingLeft: "8%", maxWidth: "55%" }}>
-          {tagline && (
-            <p
-              className="text-xs tracking-widest uppercase mb-8"
-              style={{
-                color:        "#d0021b",
-                mixBlendMode: "difference",
-                position:     "relative",
-                zIndex:       2,
-              }}
-            >{tagline}</p>
-          )}
-          <h1
-            className="text-[clamp(3.5rem,12vw,9rem)] leading-none mb-8"
+      {/* ── Desktop: hero content (left side) ──
+            position: absolute with no z-index → no stacking context, so the
+            leaf text elements' mix-blend-mode reaches the circle directly.
+            Vertical centering via display: flex + justify-content: center
+            (avoids transform on the wrapper which would create isolation). */}
+      <div className="desktop-hero-content">
+        {tagline && (
+          <p
+            className="uppercase"
             style={{
-              fontFamily:    "var(--font-bebas), sans-serif",
-              letterSpacing: "0.02em",
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.65rem",
+              letterSpacing: "0.2em",
               color:         "#d0021b",
               mixBlendMode:  "difference",
               position:      "relative",
               zIndex:        2,
+              marginBottom:  "1.2rem",
+            }}
+          >{tagline}</p>
+        )}
+        <h1
+          style={{
+            fontFamily:   "var(--font-bebas), sans-serif",
+            fontSize:     "clamp(5rem, 8vw, 9rem)",
+            lineHeight:   0.85,
+            color:        "white",
+            mixBlendMode: "difference",
+            position:     "relative",
+            zIndex:       2,
+            margin:       0,
+          }}
+        >
+          Simon<br />Leray.
+        </h1>
+        {subtitle && (
+          <p
+            style={{
+              fontFamily:   "var(--font-inter), sans-serif",
+              fontSize:     "1rem",
+              lineHeight:   1.6,
+              color:        "white",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+              marginTop:    "1.5rem",
+              maxWidth:     "380px",
             }}
           >
-            Simon<br />Leray
-          </h1>
-          {subtitle && (
-            <p
-              className="text-lg md:text-xl max-w-lg leading-relaxed mb-12"
-              style={{
-                fontFamily:   "var(--font-playfair), serif",
-                color:        "#d0021b",
-                mixBlendMode: "difference",
-                position:     "relative",
-                zIndex:       2,
-              }}
-            >
-              {subtitle}
-            </p>
-          )}
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/texte"
-              className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
-              style={{
-                fontFamily:   "var(--font-bebas), sans-serif",
-                fontSize:     "0.9rem",
-                color:        "#d0021b",
-                mixBlendMode: "difference",
-                position:     "relative",
-                zIndex:       2,
-              }}
-            >
-              Artikel lesen
-            </Link>
-            <Link
-              href="/kontakt"
-              className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
-              style={{
-                fontFamily:   "var(--font-bebas), sans-serif",
-                fontSize:     "0.9rem",
-                color:        "#d0021b",
-                mixBlendMode: "difference",
-                position:     "relative",
-                zIndex:       2,
-              }}
-            >
-              Kontakt
-            </Link>
-          </div>
+            {subtitle}
+          </p>
+        )}
+        <div className="flex flex-wrap gap-4" style={{ marginTop: "2rem" }}>
+          <Link
+            href="/texte"
+            className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
+            style={{
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "0.9rem",
+              color:        "white",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+            }}
+          >
+            Artikel lesen
+          </Link>
+          <Link
+            href="/kontakt"
+            className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
+            style={{
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "0.9rem",
+              color:        "white",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+            }}
+          >
+            Kontakt
+          </Link>
         </div>
       </div>
 
@@ -702,33 +708,37 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           }
         }
 
-        .desktop-layout-wrapper { display: none; }
-        .desktop-red-circle     { display: none; }
+        .desktop-hero-content { display: none; }
+        .desktop-red-circle   { display: none; }
         @media (prefers-reduced-motion: reduce) {
           .desktop-red-circle { animation: none; transform: translateY(-50%); }
         }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
         @media (min-width: 768px) {
-          .mobile-hero-content    { display: none; }
-          .mobile-bg-circle       { display: none; }
-          .desktop-hero-content   { display: block; }
-          .desktop-quotes         { display: block; }
-          .scroll-hint             { display: flex; }
-          .desktop-layout-wrapper {
+          .mobile-hero-content  { display: none; }
+          .mobile-bg-circle     { display: none; }
+          .desktop-quotes       { display: block; }
+          .scroll-hint           { display: flex; }
+          .desktop-hero-content {
             display:         flex;
             flex-direction:  column;
             justify-content: center;
             position:        absolute;
-            inset:           0;
-            max-width:       1400px;
-            margin:          0 auto;
+            left:            10%;
+            top:             0;
+            bottom:          0;
           }
           .desktop-red-circle {
             display:   block;
             transform: translateY(-50%);
-            animation: circleDriftDesktop 13s ease-in-out infinite;
+            animation: circleDriftDesktop 15s ease-in-out infinite;
           }
+        }
+
+        /* Narrower desktops / large tablets: shrink the circle */
+        @media (min-width: 768px) and (max-width: 1099px) {
+          .desktop-red-circle { width: 380px !important; height: 380px !important; }
         }
 
         .drift {
@@ -737,8 +747,10 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           font-weight:    400;
           line-height:    1.3;
           white-space:    nowrap;
-          color:          #d0021b;
+          color:          white;
           mix-blend-mode: difference;
+          position:       relative;
+          z-index:        3;
           animation:      driftLeft linear forwards;
           will-change:    transform;
         }
