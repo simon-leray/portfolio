@@ -288,7 +288,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           <h1
             style={{
               fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "clamp(3rem, 12vw, 4rem)",
+              fontSize:   "clamp(3.8rem, 16vw, 5rem)",
               lineHeight: 1,
               color:      "white",
             }}
