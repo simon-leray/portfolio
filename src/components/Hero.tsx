@@ -424,6 +424,9 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
           -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
         }
+        @media (min-width: 768px) {
+          .drift { color: rgba(255, 255, 255, 0.24); }
+        }
 
         @keyframes fade-up {
           from { opacity: 0; transform: translateY(24px); }
