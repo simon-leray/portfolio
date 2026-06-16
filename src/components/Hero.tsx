@@ -302,16 +302,36 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
         className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between"
         style={{ paddingTop: "4rem" }}
       >
+        {/* Animated red circle — sits behind all text, mix-blend-mode inverts text on top of it */}
+        <div
+          className="mobile-bg-circle"
+          aria-hidden
+          style={{
+            position:        "absolute",
+            top:              "50%",
+            left:             "50%",
+            width:            "65vw",
+            height:           "65vw",
+            borderRadius:     "50%",
+            backgroundColor:  "#d0021b",
+            zIndex:           0,
+            pointerEvents:    "none",
+          }}
+        />
+
         {/* TOP — fixed header, anchored at top */}
-        <div style={{ paddingTop: "1rem" }}>
+        <div style={{ paddingTop: "1rem", position: "relative", zIndex: 1 }}>
           {/* Name bleeds edge-to-edge: no side padding/margin */}
           <h1
             style={{
-              fontFamily: "var(--font-bebas), sans-serif",
-              lineHeight: 0.82,
-              color:      "white",
-              margin:     0,
-              width:      "100%",
+              fontFamily:    "var(--font-bebas), sans-serif",
+              lineHeight:    0.82,
+              color:         "white",
+              margin:        0,
+              width:         "100%",
+              position:      "relative",
+              zIndex:        1,
+              mixBlendMode:  "difference",
             }}
           >
             <span
@@ -344,10 +364,13 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
               fontSize:      "0.55rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
-              color:         "#d0021b",
+              color:         "white",
               marginTop:     "0.5rem",
               paddingLeft:   "1.2rem",
               paddingRight:  "1.2rem",
+              position:      "relative",
+              zIndex:        1,
+              mixBlendMode:  "difference",
             }}
           >
             Journalist · Biel/Bienne
@@ -356,15 +379,18 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
 
         {/* MIDDLE — typewriter quote */}
         {showQuotes && (
-          <div className="flex-1 flex items-center px-6">
+          <div className="flex-1 flex items-center px-6" style={{ position: "relative", zIndex: 1 }}>
             <p
               style={{
-                fontFamily: "var(--font-playfair), serif",
-                fontStyle:  "italic",
-                fontSize:   "1.1rem",
-                color:      "white",
-                opacity:    0.85,
-                maxWidth:   "80vw",
+                fontFamily:   "var(--font-playfair), serif",
+                fontStyle:    "italic",
+                fontSize:     "1.1rem",
+                color:        "white",
+                opacity:      0.85,
+                maxWidth:     "80vw",
+                position:     "relative",
+                zIndex:       1,
+                mixBlendMode: "difference",
               }}
             >
               {typedText}
@@ -505,11 +531,27 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
           from { transform: translateX(110vw); }
           to   { transform: translateX(calc(-100% - 10vw)); }
         }
+        @keyframes circleDrift {
+          0%   { transform: translate(-50%, -50%) translate(0, 0); }
+          20%  { transform: translate(-50%, -50%) translate(6vw, -4vw); }
+          40%  { transform: translate(-50%, -50%) translate(-5vw, 6vw); }
+          60%  { transform: translate(-50%, -50%) translate(7vw, 5vw); }
+          80%  { transform: translate(-50%, -50%) translate(-6vw, -5vw); }
+          100% { transform: translate(-50%, -50%) translate(0, 0); }
+        }
       `}</style>
 
       <style jsx>{`
         /* Mobile: show bespoke layout + fade quote, hide drift layer + desktop content + scroll hint */
         .mobile-hero-content  { display: flex; }
+        .mobile-bg-circle {
+          transform: translate(-50%, -50%);
+          animation: circleDrift 13s ease-in-out infinite;
+          will-change: transform;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mobile-bg-circle { animation: none; }
+        }
         .desktop-hero-content { display: none; }
         .desktop-quotes       { display: none; }
         .scroll-hint           { display: none; }
