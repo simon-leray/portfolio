@@ -54,20 +54,10 @@ function quoteLines(text: string): string[] {
   return lines.length ? lines : [text];
 }
 
-// Mobile poster style: ignore CMS line breaks, break aggressively at 3-4 words per line.
-function breakMobilePosterLines(text: string, maxWords = 4): string[] {
-  const words = text.split(" ").filter(Boolean);
-  const lines: string[] = [];
-  for (let i = 0; i < words.length; i += maxWords) {
-    lines.push(words.slice(i, i + maxWords).join(" "));
-  }
-  return lines;
-}
-
-// Flatten CMS line breaks, convert inner quotes to ‹ ›, then break aggressively for mobile.
-function processMobileQuote(text: string): string[] {
+// Flatten CMS line breaks and convert inner quotes to ‹ ›; lets CSS wrap naturally.
+function processMobileQuote(text: string): string {
   const flat = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
-  return breakMobilePosterLines(replaceQuotes(flat));
+  return replaceQuotes(flat);
 }
 
 function slotToPercent(slot: number): number {
@@ -114,7 +104,7 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   const retryRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Mobile fade state
-  const [mobileQuote, setMobileQuote]     = useState<string[]>([]);
+  const [mobileQuote, setMobileQuote]     = useState<string>("");
   const [mobileVisible, setMobileVisible] = useState(true);
   const mobilePoolRef    = useRef<string[]>([]);
   const mobileIdxRef     = useRef(0);
@@ -244,100 +234,96 @@ export function Hero({ tagline, subtitle, quotes = [] }: Props) {
   return (
     <section className="relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16">
 
-      {/* ── Mobile: full from-scratch layout (hidden on desktop) ──
-            Top label / middle (name + line + quote) / bottom buttons, space-between.
-            display is controlled entirely via CSS class (see <style jsx>)             */}
-      <div
-        className="mobile-hero-content absolute inset-0 z-10 flex flex-col justify-between px-6"
-        style={{ paddingTop: "4rem" }}
-      >
-        {/* TOP — small label */}
-        <p
+      {/* ── Mobile: "THE NAME IS THE HERO" (hidden on desktop) ──
+            Oversized name bleeding off screen edges; quote and nav are minimal footnotes.
+            display is controlled entirely via CSS class (see <style jsx>)                */}
+      <div className="mobile-hero-content absolute inset-0 z-10">
+        {/* TOP-LEFT — rotating quote, subtle footnote */}
+        {showQuotes && (
+          <p
+            className="mobile-quote-text"
+            style={{
+              position:   "absolute",
+              top:        "5rem",
+              left:       "1.2rem",
+              maxWidth:   "55vw",
+              fontFamily: "var(--font-playfair), serif",
+              fontStyle:  "italic",
+              fontSize:   "0.78rem",
+              color:      "white",
+              opacity:    mobileVisible ? 0.5 : 0,
+              transition: `opacity ${MOBILE_FADE_MS}ms ease`,
+            }}
+          >
+            {mobileQuote}
+          </p>
+        )}
+
+        {/* MIDDLE — oversized name, bleeds off both edges */}
+        <div
           style={{
-            fontFamily:    "var(--font-inter), sans-serif",
-            fontSize:      "0.6rem",
-            fontWeight:    500,
-            letterSpacing: "0.3em",
-            textTransform: "uppercase",
-            color:         "#d0021b",
-            marginTop:     "2rem",
+            position: "absolute",
+            top:      "38%",
+            left:     "-0.5rem",
+            right:    0,
+            overflow: "hidden",
           }}
         >
-          Journalist · Biel/Bienne
-        </p>
-
-        {/* MIDDLE — name, divider, quote */}
-        <div>
           <h1
             style={{
-              fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "clamp(5.5rem, 22vw, 7rem)",
-              lineHeight: 0.85,
-              color:      "white",
+              fontFamily:    "var(--font-bebas), sans-serif",
+              fontSize:      "28vw",
+              lineHeight:    0.82,
+              letterSpacing: "-0.02em",
+              color:         "white",
+              textAlign:     "left",
             }}
           >
             SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
           </h1>
-
-          <div
-            style={{
-              width:           "100%",
-              height:          "1px",
-              backgroundColor: "#d0021b",
-              margin:          "1.2rem 0",
-            }}
-          />
-
-          {showQuotes && (
-            <p
-              className="mobile-quote-text"
-              style={{
-                fontFamily: "var(--font-playfair), serif",
-                fontStyle:  "italic",
-                fontSize:   "1.05rem",
-                color:      "rgba(255,255,255,0.75)",
-                opacity:    mobileVisible ? 1 : 0,
-                transition: `opacity ${MOBILE_FADE_MS}ms ease`,
-              }}
-            >
-              {mobileQuote.map((line, i) => (
-                <span key={i} style={{ display: "block" }}>
-                  {i === 0 ? "«" : ""}{line}{i === mobileQuote.length - 1 ? "»" : ""}
-                </span>
-              ))}
-            </p>
-          )}
         </div>
 
-        {/* BOTTOM — two equal-width buttons */}
-        <div className="flex gap-3" style={{ marginBottom: "2.5rem" }}>
-          <Link
-            href="/texte"
-            className="flex-1 text-center uppercase"
+        {/* BOTTOM — minimal text navigation */}
+        <div style={{ position: "absolute", bottom: "3rem", left: "1.2rem" }}>
+          <p
             style={{
-              backgroundColor: "#d0021b",
-              color:           "white",
-              fontFamily:      "var(--font-bebas), sans-serif",
-              fontSize:        "1rem",
-              padding:         "1rem",
+              fontFamily:    "var(--font-inter), sans-serif",
+              fontSize:      "0.55rem",
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              color:         "#d0021b",
             }}
           >
-            Artikel lesen
-          </Link>
-          <Link
-            href="/kontakt"
-            className="flex-1 text-center uppercase"
-            style={{
-              backgroundColor: "transparent",
-              border:          "1px solid white",
-              color:           "white",
-              fontFamily:      "var(--font-bebas), sans-serif",
-              fontSize:        "1rem",
-              padding:         "1rem",
-            }}
-          >
-            Kontakt
-          </Link>
+            Journalist · Biel/Bienne
+          </p>
+          <div style={{ display: "flex", gap: "2rem", marginTop: "1rem" }}>
+            <Link
+              href="/texte"
+              style={{
+                fontFamily:    "var(--font-inter), sans-serif",
+                fontSize:      "0.7rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color:         "white",
+                opacity:       0.7,
+              }}
+            >
+              Texte →
+            </Link>
+            <Link
+              href="/kontakt"
+              style={{
+                fontFamily:    "var(--font-inter), sans-serif",
+                fontSize:      "0.7rem",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color:         "white",
+                opacity:       0.7,
+              }}
+            >
+              Kontakt →
+            </Link>
+          </div>
         </div>
       </div>
 
