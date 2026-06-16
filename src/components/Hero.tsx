@@ -503,23 +503,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           pointerEvents:    "none",
         }}
       />
-      <div
-        className="desktop-blend-circle"
-        aria-hidden
-        style={{
-          position:        "absolute",
-          top:              "50%",
-          left:             "50%",
-          width:            "55vw",
-          height:           "55vw",
-          borderRadius:     "50%",
-          backgroundColor:  "white",
-          mixBlendMode:     "difference",
-          zIndex:           11,
-          pointerEvents:    "none",
-        }}
-      />
-
       {/* ── Desktop: drifting quotes (hidden on mobile) ── */}
       {showQuotes ? (
         <div
@@ -528,7 +511,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           style={{
             maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-            zIndex: 12,
+            zIndex: 3,
           }}
         >
           {activeQuotes.map(q => (
@@ -584,42 +567,78 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
         </div>
       )}
 
-      {/* Foreground content — desktop only */}
-      <div className="desktop-hero-content relative z-10 max-w-7xl mx-auto px-6 py-24">
-        <div className="animate-fade-up">
-          {tagline && (
-            <p className="text-paper text-xs tracking-widest uppercase mb-8">{tagline}</p>
-          )}
-          <h1
-            className="text-[clamp(3.5rem,12vw,9rem)] leading-none text-paper mb-8"
-            style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
+      {/* Foreground content — desktop only.
+            No position/z-index on this container — stacking contexts on wrappers isolate
+            children's mix-blend-mode from sibling elements (same bug as mobile), so only
+            the leaf text elements carry position + z-index + blend. */}
+      <div className="desktop-hero-content max-w-7xl mx-auto px-6 py-24">
+        {tagline && (
+          <p
+            className="text-xs tracking-widest uppercase mb-8"
+            style={{
+              color:        "#d0021b",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+            }}
+          >{tagline}</p>
+        )}
+        <h1
+          className="text-[clamp(3.5rem,12vw,9rem)] leading-none mb-8"
+          style={{
+            fontFamily:   "var(--font-bebas), sans-serif",
+            letterSpacing:"0.02em",
+            color:        "#d0021b",
+            mixBlendMode: "difference",
+            position:     "relative",
+            zIndex:       2,
+          }}
+        >
+          Simon<br />Leray
+        </h1>
+        {subtitle && (
+          <p
+            className="text-lg md:text-xl max-w-lg leading-relaxed mb-12"
+            style={{
+              fontFamily:   "var(--font-playfair), serif",
+              color:        "#d0021b",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+            }}
           >
-            Simon<br />Leray
-          </h1>
-          {subtitle && (
-            <p
-              className="text-paper/60 text-lg md:text-xl max-w-lg leading-relaxed mb-12"
-              style={{ fontFamily: "var(--font-playfair), serif" }}
-            >
-              {subtitle}
-            </p>
-          )}
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/texte"
-              className="bg-red text-paper text-xs tracking-widest uppercase px-8 py-4 hover:bg-paper hover:text-ink transition-colors duration-200"
-              style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.9rem" }}
-            >
-              Artikel lesen
-            </Link>
-            <Link
-              href="/kontakt"
-              className="border border-paper/30 text-paper text-xs tracking-widest uppercase px-8 py-4 hover:bg-paper hover:text-ink transition-colors duration-200"
-              style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.9rem" }}
-            >
-              Kontakt
-            </Link>
-          </div>
+            {subtitle}
+          </p>
+        )}
+        <div className="flex flex-wrap gap-4">
+          <Link
+            href="/texte"
+            className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
+            style={{
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "0.9rem",
+              color:        "#d0021b",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+            }}
+          >
+            Artikel lesen
+          </Link>
+          <Link
+            href="/kontakt"
+            className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
+            style={{
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "0.9rem",
+              color:        "#d0021b",
+              mixBlendMode: "difference",
+              position:     "relative",
+              zIndex:       2,
+            }}
+          >
+            Kontakt
+          </Link>
         </div>
       </div>
 
@@ -673,9 +692,9 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           }
         }
 
-        .desktop-red-circle, .desktop-blend-circle { display: none; }
+        .desktop-red-circle { display: none; }
         @media (prefers-reduced-motion: reduce) {
-          .desktop-red-circle, .desktop-blend-circle { animation: none; }
+          .desktop-red-circle { animation: none; }
         }
 
         /* Desktop: hide mobile layout, show drift layer + desktop content + scroll hint */
@@ -690,30 +709,22 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             transform: translate(-50%, -50%);
             animation: circleDrift 13s ease-in-out infinite;
           }
-          .desktop-blend-circle {
-            display: block;
-            transform: translate(-50%, -50%);
-            animation: circleDrift 13s ease-in-out infinite;
-          }
         }
 
         .drift {
-          font-family: var(--font-playfair), serif;
-          font-style: italic;
-          font-weight: 400;
-          line-height: 1.3;
-          white-space: nowrap;
-          color: rgba(255, 255, 255, 0.14);
-          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-          animation: driftLeft linear forwards;
-          will-change: transform;
+          font-family:    var(--font-playfair), serif;
+          font-style:     italic;
+          font-weight:    400;
+          line-height:    1.3;
+          white-space:    nowrap;
+          color:          #d0021b;
+          mix-blend-mode: difference;
+          animation:      driftLeft linear forwards;
+          will-change:    transform;
         }
         .quotes-bg {
           mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
           -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-        }
-        @media (min-width: 768px) {
-          .drift { color: rgba(255, 255, 255, 0.24); }
         }
 
         @keyframes fade-up {
