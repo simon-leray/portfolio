@@ -504,11 +504,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       />
 
       {/* ── Desktop: hero content (left side) ──
-            z-index: 3 + background: #000 makes this a stacking context that sits
-            above quotes (z-2). Its black background occludes anything behind it in
-            that horizontal zone, so quotes are fully invisible under the text area.
-            Text inside blends locally against the black background (diff(white,black)=white).
-            Vertical centering via display: flex + justify-content: center. */}
+            No z-index on the container — no stacking context, no background.
+            Each leaf text element is position:relative z-index:3 with opaque color
+            and no mix-blend-mode. Opaque glyphs at z:3 naturally occlude quotes at
+            z:2 pixel-for-pixel; the transparent inter-letter gaps let quotes through.
+            Vertical centering via display:flex + justify-content:center. */}
       <div className="desktop-hero-content">
         {tagline && (
           <p
@@ -518,9 +518,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               fontSize:      "0.65rem",
               letterSpacing: "0.2em",
               color:         "#d0021b",
-              mixBlendMode:  "difference",
               position:      "relative",
-              zIndex:        2,
+              zIndex:        3,
               marginBottom:  "1.2rem",
             }}
           >{tagline}</p>
@@ -531,7 +530,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             fontSize:     "clamp(5rem, 8vw, 9rem)",
             lineHeight:   0.85,
             color:        "white",
-            mixBlendMode: "difference",
             position:     "relative",
             zIndex:       3,
             margin:       0,
@@ -546,9 +544,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               fontSize:     "1rem",
               lineHeight:   1.6,
               color:        "white",
-              mixBlendMode: "difference",
               position:     "relative",
-              zIndex:       2,
+              zIndex:       3,
               marginTop:    "1.5rem",
               maxWidth:     "380px",
             }}
@@ -564,9 +561,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               fontFamily:   "var(--font-bebas), sans-serif",
               fontSize:     "0.9rem",
               color:        "white",
-              mixBlendMode: "difference",
               position:     "relative",
-              zIndex:       2,
+              zIndex:       3,
             }}
           >
             Artikel lesen
@@ -578,9 +574,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               fontFamily:   "var(--font-bebas), sans-serif",
               fontSize:     "0.9rem",
               color:        "white",
-              mixBlendMode: "difference",
               position:     "relative",
-              zIndex:       2,
+              zIndex:       3,
             }}
           >
             Kontakt
@@ -735,8 +730,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             left:            10%;
             top:             0;
             bottom:          0;
-            z-index:         3;
-            background:      #000000;
           }
           .desktop-red-circle {
             display:   block;
