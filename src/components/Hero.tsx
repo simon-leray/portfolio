@@ -483,7 +483,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       </div>
 
       {/* ── Desktop: red circle (right side) ──
-            z-index: 1 so it sits below text (z-2) and quotes (z-3). No blend
+            z-index: 1 so it sits below quotes (z-2) and name text (z-3). No blend
             on the circle itself — blend lives on the text so the stacking
             math works: diff(white, black)=white, diff(white, red)=cyan.
             CSS handles transform: translateY(-50%) and the drift animation. */}
@@ -532,7 +532,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             color:        "white",
             mixBlendMode: "difference",
             position:     "relative",
-            zIndex:       2,
+            zIndex:       3,
             margin:       0,
           }}
         >
@@ -604,7 +604,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               style={{
                 top:          `${slotToPercent(q.slot)}%`,
                 transform:    "translateY(-50%)",
-                zIndex:       3,
+                zIndex:       2,
                 mixBlendMode: "difference",
                 color:        "#d0021b",
               }}
