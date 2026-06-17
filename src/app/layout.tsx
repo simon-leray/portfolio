@@ -26,11 +26,20 @@ export const metadata: Metadata = {
   title: "Simon Leray – Journalist",
   description:
     "Journalismus aus Biel/Bienne. Reportagen, Interviews und Hintergründe für Bieler Tagblatt und ajour.ch.",
+  metadataBase: new URL("https://leray.me"),
   openGraph: {
     title: "Simon Leray – Journalist",
     description:
       "Journalismus aus Biel/Bienne. Reportagen, Interviews und Hintergründe für Bieler Tagblatt und ajour.ch.",
     siteName: "Simon Leray",
+    url: "https://leray.me",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Simon Leray – Journalist",
+    description:
+      "Journalismus aus Biel/Bienne. Reportagen, Interviews und Hintergründe für Bieler Tagblatt und ajour.ch.",
   },
 };
 

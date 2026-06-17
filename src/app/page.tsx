@@ -194,6 +194,12 @@ export default async function HomePage() {
           </span>
           <span>© {new Date().getFullYear()} Simon Leray</span>
           <span>Biel/Bienne, Schweiz</span>
+          <Link
+            href="/impressum"
+            className="hover:text-paper/70 transition-colors"
+          >
+            Impressum
+          </Link>
         </div>
       </footer>
     </main>
