@@ -504,10 +504,11 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       />
 
       {/* ── Desktop: hero content (left side) ──
-            position: absolute with no z-index → no stacking context, so the
-            leaf text elements' mix-blend-mode reaches the circle directly.
-            Vertical centering via display: flex + justify-content: center
-            (avoids transform on the wrapper which would create isolation). */}
+            z-index: 3 + background: #000 makes this a stacking context that sits
+            above quotes (z-2). Its black background occludes anything behind it in
+            that horizontal zone, so quotes are fully invisible under the text area.
+            Text inside blends locally against the black background (diff(white,black)=white).
+            Vertical centering via display: flex + justify-content: center. */}
       <div className="desktop-hero-content">
         {tagline && (
           <p
@@ -734,6 +735,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             left:            10%;
             top:             0;
             bottom:          0;
+            z-index:         3;
+            background:      #000000;
           }
           .desktop-red-circle {
             display:   block;
