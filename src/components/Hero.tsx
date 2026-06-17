@@ -591,17 +591,23 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       {showQuotes ? (
         <div
           aria-hidden
-          className="desktop-quotes absolute inset-0 pointer-events-none select-none quotes-bg"
-          style={{
-            maskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-          }}
+          className="desktop-quotes absolute inset-0 pointer-events-none select-none"
         >
+          {/* Edge fades via solid-color overlays — mask-image would create compositing isolation
+              that prevents mix-blend-mode on quote wrappers from reaching the circle. */}
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to right, #000000, transparent)", zIndex: 4, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to left, #000000, transparent)", zIndex: 4, pointerEvents: "none" }} />
           {activeQuotes.map(q => (
             <div
               key={q.id}
               className="absolute w-full"
-              style={{ top: `${slotToPercent(q.slot)}%`, transform: "translateY(-50%)" }}
+              style={{
+                top:          `${slotToPercent(q.slot)}%`,
+                transform:    "translateY(-50%)",
+                zIndex:       3,
+                mixBlendMode: "difference",
+                color:        "#d0021b",
+              }}
             >
               <div
                 className={`drift ${q.sizeClass}`}
@@ -747,16 +753,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           font-weight:    400;
           line-height:    1.3;
           white-space:    nowrap;
-          color:          white;
-          mix-blend-mode: difference;
-          position:       relative;
-          z-index:        3;
           animation:      driftLeft linear forwards;
           will-change:    transform;
-        }
-        .quotes-bg {
-          mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-          -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
         }
 
         @keyframes fade-up {
