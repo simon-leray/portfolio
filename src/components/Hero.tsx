@@ -101,9 +101,10 @@ let nextId = 0;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Hero({ tagline, subtitle, quotes }: Props) {
-  const ghostRef       = useRef<HTMLDivElement>(null);
-  const circleDriftRef = useRef<HTMLDivElement>(null); // reads drift-animated position
-  const circleRepelRef = useRef<HTMLDivElement>(null); // receives JS flee transform
+  const ghostRef        = useRef<HTMLDivElement>(null);
+  const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
+  const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
+  const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -136,60 +137,74 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
   useEffect(() => { quotesRef.current = safeQuotes; }, [safeQuotes]);
   useEffect(() => { activeRef.current = activeQuotes; }, [activeQuotes]);
 
-  // ── Cursor-flee repulsion (desktop only) ───────────────────────────────────
+  // ── Cursor-attraction / rubber-band (desktop only) ────────────────────────
+  //
+  // Visual circle position = drift_center + (curX, curY).
+  // Each frame: target offset = (clamped_cursor − drift_center),
+  //             curX/Y lerps toward that target at LERP per frame.
+  // This makes the visual circle track the cursor with inertia.
+  // When cursor leaves the hero, target snaps to 0 → circle smoothly
+  // returns to pure ambient drift with the same lerp.
   useEffect(() => {
-    const RADIUS   = 280;  // px — repulsion zone radius from circle center
-    const MAX_PUSH = 90;   // px — max displacement when cursor is at center
-    const CLAMP    = 130;  // px — hard displacement ceiling
-    const SPRING   = 0.08; // lerp factor per frame (≈0.5 s to 92% of target)
+    const LERP     = 0.04;  // fraction to close per frame (~1.2 s to 95% of target)
+    const EDGE_PAD = 120;   // px — keep circle center this far from hero edges
+    const NAV_H    = 64;    // px — nav height guard at top
 
-    const mouse = { x: -9999, y: -9999 };
+    const mouse = { x: 0, y: 0, inHero: false };
     let curX = 0, curY = 0;
-    let tgtX = 0, tgtY = 0;
     let rafId: number;
+
+    const heroEl = heroRef.current;
 
     function tick() {
       rafId = requestAnimationFrame(tick);
       if (window.innerWidth < 768) return;
 
-      const driftEl = circleDriftRef.current;
-      const repelEl = circleRepelRef.current;
-      if (!driftEl || !repelEl) return;
+      const driftEl    = circleDriftRef.current;
+      const attractEl  = circleAttractRef.current;
+      if (!driftEl || !attractEl || !heroEl) return;
 
-      // getBoundingClientRect on the drift div gives the circle's natural center
-      // (position driven only by CSS animation, excludes repulsion offset).
-      const rect = driftEl.getBoundingClientRect();
-      const cx   = rect.left + rect.width  / 2;
-      const cy   = rect.top  + rect.height / 2;
-      const dx   = mouse.x - cx;
-      const dy   = mouse.y - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      // Drift center — driven purely by CSS animation, excludes JS offset.
+      const driftRect = driftEl.getBoundingClientRect();
+      const driftCx   = driftRect.left + driftRect.width  / 2;
+      const driftCy   = driftRect.top  + driftRect.height / 2;
 
-      if (dist > 0 && dist < RADIUS) {
-        const force = (1 - dist / RADIUS) * MAX_PUSH;
-        tgtX = Math.max(-CLAMP, Math.min(CLAMP, (-dx / dist) * force));
-        tgtY = Math.max(-CLAMP, Math.min(CLAMP, (-dy / dist) * force));
-      } else {
-        tgtX = 0;
-        tgtY = 0;
+      let tgtX = 0, tgtY = 0;
+
+      if (mouse.inHero) {
+        // Clamp cursor to hero interior so circle can't be pulled fully off-screen.
+        const heroRect  = heroEl.getBoundingClientRect();
+        const clampedCx = Math.max(heroRect.left + EDGE_PAD, Math.min(heroRect.right  - EDGE_PAD, mouse.x));
+        const clampedCy = Math.max(heroRect.top  + NAV_H + EDGE_PAD, Math.min(heroRect.bottom - EDGE_PAD, mouse.y));
+        // Target inner-div offset so that visual center == clamped cursor.
+        tgtX = clampedCx - driftCx;
+        tgtY = clampedCy - driftCy;
       }
+      // else: tgtX = tgtY = 0 → circle returns to drift center
 
-      curX += (tgtX - curX) * SPRING;
-      curY += (tgtY - curY) * SPRING;
+      curX += (tgtX - curX) * LERP;
+      curY += (tgtY - curY) * LERP;
 
-      repelEl.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
+      attractEl.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
     }
 
     function onMouseMove(e: MouseEvent) {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     }
+    function onMouseEnter() { mouse.inHero = true; }
+    function onMouseLeave() { mouse.inHero = false; }
 
-    rafId = requestAnimationFrame(tick);
+    heroEl?.addEventListener("mouseenter", onMouseEnter);
+    heroEl?.addEventListener("mouseleave", onMouseLeave);
     window.addEventListener("mousemove", onMouseMove, { passive: true });
+    rafId = requestAnimationFrame(tick);
+
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", onMouseMove);
+      heroEl?.removeEventListener("mouseenter", onMouseEnter);
+      heroEl?.removeEventListener("mouseleave", onMouseLeave);
     };
   }, []);
 
@@ -368,6 +383,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
 
   return (
     <section
+      ref={heroRef}
       className="hero-section relative min-h-screen bg-ink text-paper flex flex-col justify-center overflow-hidden pt-16"
       style={{ backgroundColor: "#000000" }}
     >
@@ -570,7 +586,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           style={{ width: "100%", height: "100%" }}
         >
           <div
-            ref={circleRepelRef}
+            ref={circleAttractRef}
             style={{
               position:        "absolute",
               inset:           0,
