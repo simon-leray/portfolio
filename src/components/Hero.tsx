@@ -101,7 +101,9 @@ let nextId = 0;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Hero({ tagline, subtitle, quotes }: Props) {
-  const ghostRef = useRef<HTMLDivElement>(null);
+  const ghostRef       = useRef<HTMLDivElement>(null);
+  const circleDriftRef = useRef<HTMLDivElement>(null); // reads drift-animated position
+  const circleRepelRef = useRef<HTMLDivElement>(null); // receives JS flee transform
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -133,6 +135,63 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
 
   useEffect(() => { quotesRef.current = safeQuotes; }, [safeQuotes]);
   useEffect(() => { activeRef.current = activeQuotes; }, [activeQuotes]);
+
+  // ── Cursor-flee repulsion (desktop only) ───────────────────────────────────
+  useEffect(() => {
+    const RADIUS   = 280;  // px — repulsion zone radius from circle center
+    const MAX_PUSH = 90;   // px — max displacement when cursor is at center
+    const CLAMP    = 130;  // px — hard displacement ceiling
+    const SPRING   = 0.08; // lerp factor per frame (≈0.5 s to 92% of target)
+
+    const mouse = { x: -9999, y: -9999 };
+    let curX = 0, curY = 0;
+    let tgtX = 0, tgtY = 0;
+    let rafId: number;
+
+    function tick() {
+      rafId = requestAnimationFrame(tick);
+      if (window.innerWidth < 768) return;
+
+      const driftEl = circleDriftRef.current;
+      const repelEl = circleRepelRef.current;
+      if (!driftEl || !repelEl) return;
+
+      // getBoundingClientRect on the drift div gives the circle's natural center
+      // (position driven only by CSS animation, excludes repulsion offset).
+      const rect = driftEl.getBoundingClientRect();
+      const cx   = rect.left + rect.width  / 2;
+      const cy   = rect.top  + rect.height / 2;
+      const dx   = mouse.x - cx;
+      const dy   = mouse.y - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist > 0 && dist < RADIUS) {
+        const force = (1 - dist / RADIUS) * MAX_PUSH;
+        tgtX = Math.max(-CLAMP, Math.min(CLAMP, (-dx / dist) * force));
+        tgtY = Math.max(-CLAMP, Math.min(CLAMP, (-dy / dist) * force));
+      } else {
+        tgtX = 0;
+        tgtY = 0;
+      }
+
+      curX += (tgtX - curX) * SPRING;
+      curY += (tgtY - curY) * SPRING;
+
+      repelEl.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
+    }
+
+    function onMouseMove(e: MouseEvent) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }
+
+    rafId = requestAnimationFrame(tick);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
+  }, []);
 
   // LERAY ghost — fallback when no quotes provided
   useEffect(() => {
@@ -485,25 +544,43 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
       </div>
 
       {/* ── Desktop: red circle (right side) ──
-            z-index: 1 so it sits below quotes (z-2) and name text (z-3). No blend
-            on the circle itself — blend lives on the text so the stacking
-            math works: diff(white, black)=white, diff(white, red)=cyan.
-            CSS handles transform: translateY(-50%) and the drift animation. */}
+            3-layer structure to stack CSS drift animation + JS cursor-flee:
+              1. Positioning wrapper — sets top/right/size/zIndex, no transform
+              2. Drift div (.desktop-red-circle) — CSS @keyframes drives ambient
+                 drift; circleDriftRef reads its getBoundingClientRect() for the
+                 natural (repulsion-free) circle center
+              3. Repulsion div — the actual visual circle; circleRepelRef receives
+                 translate(rx,ry) from the cursor-flee RAF loop
+            CSS animations own the drift div's transform; JS owns the repel div's
+            transform. Separating them avoids inline-style / animation conflicts. */}
       <div
-        className="desktop-red-circle"
+        className="desktop-circle-wrapper"
         aria-hidden
         style={{
-          position:       "absolute",
-          top:            "50%",
-          right:          "12%",
-          width:          "500px",
-          height:         "500px",
-          borderRadius:   "50%",
-          backgroundColor:"#d0021b",
-          zIndex:         1,
-          pointerEvents:  "none",
+          position:      "absolute",
+          top:           "50%",
+          right:         "12%",
+          zIndex:        1,
+          pointerEvents: "none",
         }}
-      />
+      >
+        <div
+          ref={circleDriftRef}
+          className="desktop-red-circle"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <div
+            ref={circleRepelRef}
+            style={{
+              position:        "absolute",
+              inset:           0,
+              borderRadius:    "50%",
+              backgroundColor: "#d0021b",
+              willChange:      "transform",
+            }}
+          />
+        </div>
+      </div>
 
       {/* ── Desktop: hero content (left side) ──
             No z-index on the container — no stacking context, no background.
@@ -698,8 +775,8 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
           }
         }
 
-        .desktop-hero-content { display: none; }
-        .desktop-red-circle   { display: none; }
+        .desktop-hero-content   { display: none; }
+        .desktop-circle-wrapper { display: none; }
         @media (prefers-reduced-motion: reduce) {
           .desktop-red-circle { animation: none; transform: translateY(-50%); }
         }
@@ -719,8 +796,12 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             top:             0;
             bottom:          0;
           }
+          .desktop-circle-wrapper {
+            display: block;
+            width:   500px;
+            height:  500px;
+          }
           .desktop-red-circle {
-            display:   block;
             transform: translateY(-50%);
             animation: circleDriftDesktop 15s ease-in-out infinite;
           }
@@ -728,7 +809,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
 
         /* Narrower desktops / large tablets: shrink the circle */
         @media (min-width: 768px) and (max-width: 1099px) {
-          .desktop-red-circle { width: 380px !important; height: 380px !important; }
+          .desktop-circle-wrapper { width: 380px; height: 380px; }
         }
 
         .drift {
