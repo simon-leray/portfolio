@@ -12,7 +12,8 @@ const BOTTOM_RESERVE     = 20;
 const USABLE             = 100 - TOP_RESERVE - BOTTOM_RESERVE;
 const ENTRY_INTERVAL_MIN = 8_000;
 const ENTRY_INTERVAL_MAX = 12_000;
-const INITIAL_COUNT      = 5;
+const INITIAL_COUNT      = 4;
+const MAX_ACTIVE         = 4;
 
 // ─── Mobile typewriter constants ──────────────────────────────────────────────
 const TYPE_SPEED_MS   = 35;   // ms per character while typing
@@ -261,6 +262,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
 
   function trySpawnQuote() {
     if (!mountedRef.current) return;
+    if (activeRef.current.length >= MAX_ACTIVE) return;
     const occupied = new Set(activeRef.current.map(q => q.slot));
     const free     = Array.from({ length: N_SLOTS }, (_, i) => i).filter(s => !occupied.has(s));
     if (!free.length) { retryRef.current = setTimeout(trySpawnQuote, 1500); return; }
@@ -510,20 +512,6 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             z:2 pixel-for-pixel; the transparent inter-letter gaps let quotes through.
             Vertical centering via display:flex + justify-content:center. */}
       <div className="desktop-hero-content">
-        {tagline && (
-          <p
-            className="uppercase"
-            style={{
-              fontFamily:    "var(--font-inter), sans-serif",
-              fontSize:      "0.65rem",
-              letterSpacing: "0.2em",
-              color:         "#d0021b",
-              position:      "relative",
-              zIndex:        3,
-              marginBottom:  "1.2rem",
-            }}
-          >{tagline}</p>
-        )}
         <h1
           style={{
             fontFamily:   "var(--font-bebas), sans-serif",
