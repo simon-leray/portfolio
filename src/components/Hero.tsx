@@ -523,7 +523,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
             margin:       0,
           }}
         >
-          Simon<br />Leray.
+          Simon<br />Leray<span style={{ color: "#d0021b" }}>.</span>
         </h1>
         {subtitle && (
           <p
