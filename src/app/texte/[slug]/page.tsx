@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getArticleBySlug, getArticles, getDossierForArticle, urlFor } from "@/lib/sanity";
 import { Article, Dossier } from "@/lib/types";
 import { PortableTextRenderer } from "@/components/PortableTextRenderer";
-import { ArticleCard } from "@/components/ArticleCard";
+import { ArticleCardLight } from "@/components/ArticleCard";
 import { replaceQuotes } from "@/lib/quotes";
 
 export const revalidate = 60;
@@ -131,7 +131,7 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
         </div>
       </div>
 
-      {/* 4. Body */}
+      {/* 4. Body + related articles + back link — all on bg-paper */}
       <div className="bg-paper px-6 py-16">
         <div className="max-w-4xl mx-auto">
           {article.content && article.content.length > 0 ? (
@@ -140,6 +140,28 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
             </div>
           ) : (
             <p className="text-ink/40 italic">Kein Inhalt vorhanden.</p>
+          )}
+
+          {/* Related articles — after body, before back link */}
+          {relatedArticles.length > 0 && (
+            <div className="mt-16 pt-8 border-t border-ink/10">
+              <h2
+                className="leading-none mb-8"
+                style={{
+                  fontFamily:    "var(--font-bebas), sans-serif",
+                  fontSize:      "clamp(2.5rem, 5vw, 4rem)",
+                  letterSpacing: "0.02em",
+                  color:         "#d0021b",
+                }}
+              >
+                Dazu auch
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedArticles.slice(0, 3).map((related) => (
+                  <ArticleCardLight key={related._id} article={related} />
+                ))}
+              </div>
+            </div>
           )}
 
           <div className="mt-16 pt-8 border-t border-ink/10">
@@ -152,30 +174,6 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
           </div>
         </div>
       </div>
-
-      {/* 5. Related articles — only shown when at least one is set */}
-      {relatedArticles.length > 0 && (
-        <section className="bg-ink py-16 px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2
-              className="leading-none mb-8"
-              style={{
-                fontFamily:    "var(--font-bebas), sans-serif",
-                fontSize:      "clamp(2.5rem, 5vw, 4rem)",
-                letterSpacing: "0.02em",
-                color:         "#d0021b",
-              }}
-            >
-              Dazu auch
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-paper/5">
-              {relatedArticles.slice(0, 3).map((related) => (
-                <ArticleCard key={related._id} article={related} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
     </main>
   );
 }

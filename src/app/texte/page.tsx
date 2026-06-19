@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { getArticles, getDossiers } from "@/lib/sanity";
+import { getArticles, getDossiers, urlFor } from "@/lib/sanity";
 import { Article, Dossier } from "@/lib/types";
 import { ArticleCardLight } from "@/components/ArticleCard";
 
@@ -46,23 +47,41 @@ export default async function TextePage() {
                   <Link
                     key={dossier._id}
                     href={`/dossier/${dossier.slug.current}`}
-                    className="group border border-ink/10 p-6 hover:border-red transition-colors duration-200"
+                    className="group border border-ink/10 overflow-hidden hover:border-red transition-colors duration-200 flex flex-col"
                   >
-                    <h2
-                      className="text-2xl leading-tight mb-2 group-hover:text-red transition-colors duration-200 text-ink"
-                      style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
-                    >
-                      {dossier.title}
-                    </h2>
-                    <p className="text-red text-xs tracking-widest uppercase mb-2">
-                      {dossier.articleCount ?? 0}{" "}
-                      {(dossier.articleCount ?? 0) === 1 ? "Text" : "Texte"}
-                    </p>
-                    {dossier.description && (
-                      <p className="text-ink/50 text-sm line-clamp-1">
-                        {dossier.description}
+                    {/* Cover image or red placeholder */}
+                    <div className="relative h-40 flex-shrink-0 overflow-hidden">
+                      {dossier.coverImage ? (
+                        <Image
+                          src={urlFor(dossier.coverImage).width(600).height(320).url()}
+                          alt={dossier.title}
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-red" />
+                      )}
+                    </div>
+
+                    {/* Card body */}
+                    <div className="p-5 flex flex-col gap-2">
+                      <h2
+                        className="text-2xl leading-tight group-hover:text-red transition-colors duration-200 text-ink"
+                        style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
+                      >
+                        {dossier.title}
+                      </h2>
+                      <p className="text-red text-xs tracking-widest uppercase">
+                        {dossier.articleCount ?? 0}{" "}
+                        {(dossier.articleCount ?? 0) === 1 ? "Text" : "Texte"}
                       </p>
-                    )}
+                      {dossier.description && (
+                        <p className="text-ink/50 text-sm line-clamp-3">
+                          {dossier.description}
+                        </p>
+                      )}
+                    </div>
                   </Link>
                 ))}
               </div>

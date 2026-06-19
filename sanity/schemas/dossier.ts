@@ -19,6 +19,19 @@ export const dossierSchema = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "coverImage",
+      title: "Titelbild",
+      type: "image",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "source",
+          title: "Quelle / Bildnachweis",
+          type: "string",
+        }),
+      ],
+    }),
+    defineField({
       name: "description",
       title: "Beschreibung",
       type: "text",
@@ -34,9 +47,9 @@ export const dossierSchema = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "description" },
-    prepare({ title, subtitle }) {
-      return { title, subtitle: subtitle ?? "Kein Beschreibungstext" };
+    select: { title: "title", subtitle: "description", media: "coverImage" },
+    prepare({ title, subtitle, media }) {
+      return { title, subtitle: subtitle ?? "Kein Beschreibungstext", media };
     },
   },
   orderings: [

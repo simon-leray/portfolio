@@ -65,6 +65,10 @@ export interface Dossier {
   title: string;
   slug: { current: string };
   description?: string;
+  coverImage?: {
+    asset: { _ref: string };
+    source?: string;
+  };
   articles?: Article[];
   articleCount?: number;
 }

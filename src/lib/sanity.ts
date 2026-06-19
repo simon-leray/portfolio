@@ -72,7 +72,7 @@ export async function getHomepage() {
 export async function getDossiers() {
   return client.fetch(
     `*[_type == "dossier" && defined(slug.current) && !(_id in path("drafts.**"))] | order(title asc) {
-      _id, title, slug, description,
+      _id, title, slug, description, coverImage,
       "articleCount": count(articles)
     }`,
     {},
