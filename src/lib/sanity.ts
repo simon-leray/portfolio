@@ -24,7 +24,8 @@ const ARTICLE_CARD_FIELDS = `_id, title, slug, publishedAt, category, outlet, ex
 
 export async function getArticles() {
   return client.fetch(
-    `*[_type == "article" && defined(slug.current) && !(_id in path("drafts.**"))] | order(publishedAt desc) {
+    `*[_type == "article" && defined(slug.current) && !(_id in path("drafts.**"))
+        && (showInTexte == true || !defined(showInTexte))] | order(publishedAt desc) {
       ${ARTICLE_CARD_FIELDS}
     }`,
     {},

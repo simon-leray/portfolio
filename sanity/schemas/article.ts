@@ -96,6 +96,13 @@ export const articleSchema = defineType({
       description: "Einleitungsabsatz, erscheint kursiv zwischen dem Titelbild und dem Artikeltext.",
     }),
     defineField({
+      name: "showInTexte",
+      title: "Auf Seite «Texte» anzeigen",
+      type: "boolean",
+      description: "Wenn deaktiviert, erscheint dieser Artikel nur in Dossiers, nicht in der allgemeinen Artikelübersicht.",
+      initialValue: true,
+    }),
+    defineField({
       name: "relatedArticles",
       title: "Verwandte Texte",
       type: "array",
