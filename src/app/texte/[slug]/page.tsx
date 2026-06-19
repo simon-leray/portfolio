@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getArticleBySlug, getArticles, urlFor } from "@/lib/sanity";
-import { Article } from "@/lib/types";
+import { getArticleBySlug, getArticles, getDossierForArticle, urlFor } from "@/lib/sanity";
+import { Article, Dossier } from "@/lib/types";
 import { PortableTextRenderer } from "@/components/PortableTextRenderer";
+import { ArticleCard } from "@/components/ArticleCard";
 import { replaceQuotes } from "@/lib/quotes";
 
 export const revalidate = 60;
@@ -52,6 +53,17 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
     redirect(article.externalUrl);
   }
 
+  // Dossier membership check — runs in parallel with nothing, but after article
+  // resolves so we have the _id. Fast: single indexed references() lookup.
+  let dossier: Dossier | null = null;
+  try {
+    dossier = await getDossierForArticle(article._id);
+  } catch {
+    // Non-fatal — page still renders without dossier banner
+  }
+
+  const relatedArticles = article.relatedArticles ?? [];
+
   return (
     <main>
       {/* 1. Full-bleed cover image — flush to top */}
@@ -74,7 +86,22 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
         <div className="h-16 bg-ink" />
       )}
 
-      {/* 2. articleTitle + 3. lead — dark band */}
+      {/* 2. Dossier banner — thin red strip, only when article belongs to a dossier */}
+      {dossier && (
+        <div className="bg-red px-6 py-2.5">
+          <p className="max-w-4xl mx-auto text-paper text-xs tracking-widest uppercase">
+            Teil des Dossiers:{" "}
+            <Link
+              href={`/dossier/${dossier.slug.current}`}
+              className="underline underline-offset-2 hover:no-underline"
+            >
+              {dossier.title} →
+            </Link>
+          </p>
+        </div>
+      )}
+
+      {/* 3. articleTitle + lead — dark band */}
       <div className="bg-ink text-paper">
         <div className="max-w-4xl mx-auto px-6 pt-10 pb-10">
           <div className="flex items-center gap-4 mb-8">
@@ -125,6 +152,30 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
           </div>
         </div>
       </div>
+
+      {/* 5. Related articles — only shown when at least one is set */}
+      {relatedArticles.length > 0 && (
+        <section className="bg-ink py-16 px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2
+              className="leading-none mb-8"
+              style={{
+                fontFamily:    "var(--font-bebas), sans-serif",
+                fontSize:      "clamp(2.5rem, 5vw, 4rem)",
+                letterSpacing: "0.02em",
+                color:         "#d0021b",
+              }}
+            >
+              Dazu auch
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-paper/5">
+              {relatedArticles.slice(0, 3).map((related) => (
+                <ArticleCard key={related._id} article={related} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

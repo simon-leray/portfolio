@@ -15,6 +15,7 @@ export interface Article {
   articleTitle?: string;
   lead?: string;
   content?: ContentBlock[];
+  relatedArticles?: Article[];
 }
 
 export type ContentBlock =
@@ -57,4 +58,13 @@ export interface Homepage {
   contactEmail?: string;
   contactPhone?: string;
   featuredArticles?: Article[];
+}
+
+export interface Dossier {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description?: string;
+  articles?: Article[];
+  articleCount?: number;
 }

@@ -30,9 +30,13 @@ export default defineConfig({
                   .title("Homepage")
               ),
             S.divider(),
-            // All other document types except the singleton
+            // Primary content types — explicit so they appear in the right order
+            S.documentTypeListItem("article").title("Artikel"),
+            S.documentTypeListItem("dossier").title("Dossiers"),
+            S.divider(),
+            // Remaining types (About, any future additions)
             ...S.documentTypeListItems().filter(
-              (item) => item.getId() !== "homepage"
+              (item) => !["homepage", "article", "dossier"].includes(item.getId() ?? "")
             ),
           ]),
     }),

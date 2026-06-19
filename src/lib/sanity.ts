@@ -19,22 +19,26 @@ export function urlFor(source: any) {
 // Shared fetch options: revalidate every 60 s so published changes appear quickly.
 const fetchOptions = { next: { revalidate: 60 } };
 
+// Shared article card projection — used in multiple queries.
+const ARTICLE_CARD_FIELDS = `_id, title, slug, publishedAt, category, outlet, excerpt, coverImage, externalUrl`;
+
 export async function getArticles() {
   return client.fetch(
     `*[_type == "article" && defined(slug.current) && !(_id in path("drafts.**"))] | order(publishedAt desc) {
-      _id, title, slug, publishedAt, category, outlet, excerpt, coverImage, externalUrl
+      ${ARTICLE_CARD_FIELDS}
     }`,
     {},
     fetchOptions
   );
 }
 
-
 export async function getArticleBySlug(slug: string) {
   return client.fetch(
     `*[_type == "article" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
-      _id, title, slug, publishedAt, category, outlet, excerpt, coverImage, externalUrl,
-      articleTitle, lead, content
+      ${ARTICLE_CARD_FIELDS}, articleTitle, lead, content,
+      "relatedArticles": relatedArticles[]->[_id != ^._id] {
+        ${ARTICLE_CARD_FIELDS}
+      }
     }`,
     { slug },
     fetchOptions
@@ -55,10 +59,45 @@ export async function getHomepage() {
       heroTagline, heroSubtitle, heroQuotes, aboutTeaser, aboutTags,
       contactTitle, contactSubtitle, contactEmail, contactPhone,
       "featuredArticles": featuredArticles[]-> {
-        _id, title, slug, publishedAt, category, outlet, excerpt, coverImage, externalUrl, articleTitle
+        ${ARTICLE_CARD_FIELDS}, articleTitle
       }
     }`,
     {},
     { cache: "no-store" }
+  );
+}
+
+// ── Dossier queries ───────────────────────────────────────────────────────────
+
+export async function getDossiers() {
+  return client.fetch(
+    `*[_type == "dossier" && defined(slug.current) && !(_id in path("drafts.**"))] | order(title asc) {
+      _id, title, slug, description,
+      "articleCount": count(articles)
+    }`,
+    {},
+    fetchOptions
+  );
+}
+
+export async function getDossierBySlug(slug: string) {
+  return client.fetch(
+    `*[_type == "dossier" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
+      _id, title, slug, description,
+      "articles": articles[]-> { ${ARTICLE_CARD_FIELDS} }
+    }`,
+    { slug },
+    fetchOptions
+  );
+}
+
+// Returns the first dossier that contains the given article ID, or null.
+export async function getDossierForArticle(articleId: string) {
+  return client.fetch(
+    `*[_type == "dossier" && references($articleId) && !(_id in path("drafts.**"))][0] {
+      _id, title, slug
+    }`,
+    { articleId },
+    fetchOptions
   );
 }

@@ -96,6 +96,14 @@ export const articleSchema = defineType({
       description: "Einleitungsabsatz, erscheint kursiv zwischen dem Titelbild und dem Artikeltext.",
     }),
     defineField({
+      name: "relatedArticles",
+      title: "Verwandte Texte",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "article" }] }],
+      description: "Optional: Bis zu 3 thematisch verwandte Artikel, die am Ende der Seite angezeigt werden.",
+      validation: (rule) => rule.max(3),
+    }),
+    defineField({
       name: "content",
       title: "Inhalt",
       type: "array",
