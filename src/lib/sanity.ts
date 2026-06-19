@@ -36,7 +36,7 @@ export async function getArticleBySlug(slug: string) {
   return client.fetch(
     `*[_type == "article" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
       ${ARTICLE_CARD_FIELDS}, articleTitle, lead, content,
-      "relatedArticles": relatedArticles[]->[_id != ^._id] {
+      "relatedArticles": relatedArticles[]-> {
         ${ARTICLE_CARD_FIELDS}
       }
     }`,

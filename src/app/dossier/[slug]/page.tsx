@@ -61,7 +61,7 @@ export default async function DossierPage({ params }: { params: { slug: string }
             </p>
           )}
           <p className="text-paper/30 text-xs tracking-widest uppercase mt-6">
-            {articles.length} {articles.length === 1 ? "Artikel" : "Artikel"}
+            {articles.length} {articles.length === 1 ? "Text" : "Texte"}
           </p>
         </div>
       </div>
