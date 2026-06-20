@@ -70,6 +70,9 @@ export default function RootLayout({
             <Link href="/impressum" className="hover:text-paper/70 transition-colors">
               Impressum
             </Link>
+            <Link href="/datenschutz" className="hover:text-paper/70 transition-colors">
+              Datenschutz
+            </Link>
           </div>
         </footer>
       </body>
