@@ -9,7 +9,7 @@ export interface Article {
   slug: { current: string };
   publishedAt: string;
   category: "Investigativ" | "Porträt" | "Reportage" | "Interview" | "Kommentar" | "Bericht" | "Recherche";
-  outlet?: Medium[];
+  outlets?: Medium[];
   excerpt: string;
   coverImage?: {
     asset: { _ref: string };

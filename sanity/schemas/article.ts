@@ -42,7 +42,7 @@ export const articleSchema = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "outlet",
+      name: "outlets",
       title: "Medium / Medien",
       type: "array",
       of: [{ type: "reference", to: [{ type: "medium" }] }],
@@ -329,7 +329,7 @@ export const articleSchema = defineType({
     }),
   ],
   preview: {
-    select: { title: "title", subtitle: "outlet", media: "coverImage" },
+    select: { title: "title", subtitle: "category", media: "coverImage" },
   },
   orderings: [
     {

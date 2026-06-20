@@ -11,9 +11,9 @@ function formatDate(dateStr: string) {
   });
 }
 
-function formatOutlet(outlet: Article["outlet"]): string {
-  if (!outlet?.length) return "";
-  return outlet.map((o) => o.name).join(" · ");
+function formatOutlet(outlets: Article["outlets"]): string {
+  if (!outlets?.length) return "";
+  return outlets.map((o) => o.name).join(" · ");
 }
 
 interface Props {
@@ -57,7 +57,7 @@ export function ArticleCard({ article, featured = false }: Props) {
           <span className="text-red text-xs font-semibold tracking-widest uppercase">
             {article.category}
           </span>
-          <span className="text-paper/40 text-xs">{formatOutlet(article.outlet)}</span>
+          <span className="text-paper/40 text-xs">{formatOutlet(article.outlets)}</span>
         </div>
 
         <h2
@@ -120,7 +120,7 @@ export function ArticleCardLight({ article, featured = false }: Props) {
           <span className="text-red text-xs font-semibold tracking-widest uppercase">
             {article.category}
           </span>
-          <span className="text-ink/40 text-xs">{formatOutlet(article.outlet)}</span>
+          <span className="text-ink/40 text-xs">{formatOutlet(article.outlets)}</span>
         </div>
 
         <h2

@@ -108,10 +108,10 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
             <span className="text-red text-xs font-semibold tracking-widest uppercase">
               {article.category}
             </span>
-            {article.outlet?.length ? (
+            {article.outlets?.length ? (
               <>
                 <span className="text-paper/40 text-xs">
-                  {article.outlet.map((o) => o.name).join(" · ")}
+                  {article.outlets.map((o) => o.name).join(" · ")}
                 </span>
                 <span className="text-paper/40 text-xs">·</span>
               </>
