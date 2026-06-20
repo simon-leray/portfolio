@@ -37,7 +37,7 @@ export function ImageGallery({ images }: Props) {
   return (
     <figure className="my-10">
       {/* Slide area — all images stacked, fade transition */}
-      <div className="relative w-full aspect-[4/3] bg-ink overflow-hidden">
+      <div className="relative w-full aspect-[3/2] bg-ink overflow-hidden">
         {images.map((image, i) => (
           <div
             key={image._key ?? i}
@@ -51,7 +51,7 @@ export function ImageGallery({ images }: Props) {
               src={urlFor(image).width(1200).url()}
               alt={image.alt ?? ""}
               fill
-              className="object-contain"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, 80vw"
               priority={i === 0}
             />
