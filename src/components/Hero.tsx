@@ -107,10 +107,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
-  const lerayEndRef        = useRef<HTMLSpanElement>(null);  // right edge of "Leray" text — period anchor
-  const desktopContentRef  = useRef<HTMLDivElement>(null);   // desktop-hero-content — containing block for period
-  const periodElRef        = useRef<HTMLSpanElement>(null);   // the period span — for self-height measurement
-  const [periodPos, setPeriodPos] = useState<{ top: number; left: number } | null>(null);
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -375,27 +371,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
     };
   }, []); // intentional: run once on mount
 
-  // ── Period anchor measurement (desktop only) ────────────────────────────────
-  // Measures the right edge of "Leray" text so we can place the period span as an
-  // absolutely positioned sibling at the hero stacking-context level.
-  useEffect(() => {
-    function measure() {
-      if (window.innerWidth < 768) return;
-      const el = lerayEndRef.current;
-      const dc = desktopContentRef.current;
-      const pe = periodElRef.current;
-      if (!el || !dc || !pe) return;
-      const er           = el.getBoundingClientRect();
-      const dcr          = dc.getBoundingClientRect();
-      const periodHeight = pe.getBoundingClientRect().height;
-      // Pin period's bottom edge to Leray's bottom edge.
-      setPeriodPos({ top: er.bottom - dcr.top - periodHeight, left: er.right - dcr.left });
-    }
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
   const showQuotes = safeQuotes.length > 0;
 
   return (
@@ -623,7 +598,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               z:3 — period "." (mix-blend-mode:difference → black over circle, above quotes)
               z:4 — "Simon/Leray" text, subtitle, buttons (solid white, no blend)
               z:5 — edge fades */}
-      <div ref={desktopContentRef} className="desktop-hero-content">
+      <div className="desktop-hero-content">
         <h1
           style={{
             fontFamily: "var(--font-bebas), sans-serif",
@@ -631,30 +606,12 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             lineHeight: 0.85,
             color:      "white",
             position:   "relative",
+            zIndex:     3,
             margin:     0,
           }}
         >
-          <span style={{ position: "relative", zIndex: 4 }}>Simon<br /><span ref={lerayEndRef}>Leray</span></span>
+          Simon<br />Leray<span style={{ color: "#d0021b" }}>.</span>
         </h1>
-        {/* Period — sibling to h1 inside desktop-hero-content (which has no stacking context),
-            so zIndex:100 competes directly with quotes zIndex:2 in the hero's stacking context */}
-        <span
-          ref={periodElRef}
-          aria-hidden
-          style={{
-            position:   "absolute",
-            top:        periodPos?.top ?? 0,
-            left:       periodPos?.left ?? 0,
-            visibility: periodPos ? "visible" : "hidden",
-            fontFamily: "var(--font-bebas), sans-serif",
-            fontSize:   "clamp(5rem, 8vw, 9rem)",
-            lineHeight: 0.85,
-            color:      "#d0021b",
-            zIndex:     100,
-            mixBlendMode:  "difference",
-            pointerEvents: "none",
-          }}
-        >.</span>
         {subtitle && (
           <p
             style={{
