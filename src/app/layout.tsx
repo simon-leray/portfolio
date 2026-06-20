@@ -3,6 +3,7 @@ import { Bebas_Neue, Playfair_Display, Inter } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
+import { Analytics } from "@vercel/analytics/react";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -75,6 +76,7 @@ export default function RootLayout({
             </Link>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
