@@ -95,13 +95,18 @@ export const homepageSchema = defineType({
       ],
     }),
     defineField({
-      name: "aboutTags",
-      title: "Bullet Points (max. 5)",
-      description: "Liste der Schwerpunkte im rechten Panel des Bio-Abschnitts",
-      type: "array",
-      of: [{ type: "string" }],
-      options: { layout: "tags" },
-      validation: (rule) => rule.max(5),
+      name: "bioPhoto",
+      title: "Foto Bio-Teaser",
+      description: "Porträtfoto, das im rechten Panel des Bio-Abschnitts auf der Startseite erscheint",
+      type: "image",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt-Text",
+          type: "string",
+        }),
+      ],
     }),
     defineField({
       name: "aboutButtonText",

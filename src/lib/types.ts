@@ -83,7 +83,7 @@ export interface Homepage {
   aboutSectionLabel?: string;
   aboutSectionTitle?: string;
   aboutTeaser?: unknown[];
-  aboutTags?: string[];
+  bioPhoto?: { asset: { _ref: string }; alt?: string };
   contactTitle?: string;
   contactSubtitle?: string;
   contactEmail?: string;

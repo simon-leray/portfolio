@@ -74,7 +74,7 @@ export async function getHomepage() {
       heroSubtitle,
       ctaButtonPrimary, ctaButtonPrimaryLink, ctaButtonSecondary, ctaButtonSecondaryLink, articlesSectionTitle,
       aboutButtonText, contactSectionLabel,
-      aboutSectionLabel, aboutSectionTitle, aboutTeaser, aboutTags,
+      aboutSectionLabel, aboutSectionTitle, aboutTeaser, bioPhoto,
       contactTitle, contactSubtitle, contactEmail, contactPhone,
       "featuredArticles": featuredArticles[]-> {
         ${ARTICLE_CARD_FIELDS}, articleTitle

@@ -1,6 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { PortableText } from "@portabletext/react";
-import { getHomepage, getHeroZitate } from "@/lib/sanity";
+import { getHomepage, getHeroZitate, urlFor } from "@/lib/sanity";
 import { Article, Homepage, HeroZitate } from "@/lib/types";
 import { replaceQuotesInPtBlocks } from "@/lib/quotes";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -15,14 +16,6 @@ export default async function HomePage() {
     getHeroZitate().catch(() => null),
   ]);
   const articles: Article[] = homepage?.featuredArticles ?? [];
-
-  const aboutTags = homepage?.aboutTags ?? [
-    "Investigativ",
-    "Reportage",
-    "Porträt",
-    "Interview",
-    "Kommentar",
-  ];
 
   return (
     <main>
@@ -145,26 +138,17 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="hidden md:block">
-            <div className="border border-paper/10 p-8">
-              <div className="space-y-4">
-                {aboutTags.map((tag) => (
-                  <div
-                    key={tag}
-                    className="flex items-center gap-4 border-b border-paper/10 pb-4 last:border-0 last:pb-0"
-                  >
-                    <span className="w-2 h-2 bg-red rounded-full flex-shrink-0" />
-                    <span
-                      className="text-2xl text-paper/80 hover:text-paper transition-colors"
-                      style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.05em" }}
-                    >
-                      {tag}
-                    </span>
-                  </div>
-                ))}
-              </div>
+          {homepage?.bioPhoto?.asset && (
+            <div className="relative w-full" style={{ aspectRatio: "4/5" }}>
+              <Image
+                src={urlFor(homepage.bioPhoto).width(800).url()}
+                alt={homepage.bioPhoto.alt ?? ""}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
-          </div>
+          )}
         </div>
       </section>
 
