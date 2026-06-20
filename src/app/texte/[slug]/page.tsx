@@ -108,16 +108,20 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
             <span className="text-red text-xs font-semibold tracking-widest uppercase">
               {article.category}
             </span>
-            {article.outlet && (Array.isArray(article.outlet) ? article.outlet.length > 0 : true) ? (
-              <>
-                <span className="text-paper/40 text-xs">
-                  {Array.isArray(article.outlet)
-                    ? article.outlet.join(" · ")
-                    : article.outlet}
-                </span>
-                <span className="text-paper/40 text-xs">·</span>
-              </>
-            ) : null}
+            {(() => {
+              const raw = article.outlet;
+              let label = "";
+              if (typeof raw === "string") label = raw;
+              else if (Array.isArray(raw)) {
+                label = raw.filter((x): x is string => typeof x === "string").join(" · ");
+              }
+              return label ? (
+                <>
+                  <span className="text-paper/40 text-xs">{label}</span>
+                  <span className="text-paper/40 text-xs">·</span>
+                </>
+              ) : null;
+            })()}
             <time className="text-paper/40 text-xs">{formatDate(article.publishedAt)}</time>
           </div>
 

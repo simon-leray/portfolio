@@ -13,8 +13,12 @@ function formatDate(dateStr: string) {
 
 function formatOutlet(outlet: Article["outlet"]): string {
   if (!outlet) return "";
-  if (Array.isArray(outlet)) return outlet.join(" · ");
-  return outlet;
+  if (typeof outlet === "string") return outlet;
+  if (Array.isArray(outlet)) {
+    const strings = outlet.filter((item): item is string => typeof item === "string");
+    return strings.join(" · ");
+  }
+  return "";
 }
 
 interface Props {
