@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { DateInput } from "../components/DateInput";
 
 export const articleSchema = defineType({
   name: "article",
@@ -22,9 +23,7 @@ export const articleSchema = defineType({
       name: "publishedAt",
       title: "Erscheinungsdatum",
       type: "date",
-      options: {
-        dateFormat: "DD.MM.YYYY",
-      },
+      components: { input: DateInput },
       validation: (rule) => rule.required(),
     }),
     defineField({
