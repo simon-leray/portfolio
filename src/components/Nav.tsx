@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const links = [
   { href: "/", label: "Home" },
@@ -14,8 +14,48 @@ const links = [
 export function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const periodRef  = useRef<HTMLSpanElement>(null);
+  const navLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
 
-  // Don't show nav in studio
+  useEffect(() => {
+    let resetTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function overlaps(el: Element, cx: number, cy: number, r: number): boolean {
+      const rect = el.getBoundingClientRect();
+      return cx + r > rect.left && cx - r < rect.right &&
+             cy + r > rect.top  && cy - r < rect.bottom;
+    }
+
+    function handleCircleMove(e: Event) {
+      const { cx, cy, radius } = (e as CustomEvent<{ cx: number; cy: number; radius: number }>).detail;
+
+      // Logo period
+      const pEl = periodRef.current;
+      if (pEl) pEl.style.color = overlaps(pEl, cx, cy, radius) ? "#000000" : "";
+
+      // Desktop active nav links
+      Object.values(navLinkRefs.current).forEach(el => {
+        if (!el) return;
+        if (el.classList.contains("text-red")) {
+          el.style.color = overlaps(el, cx, cy, radius) ? "#000000" : "";
+        }
+      });
+
+      // Reset when events stop (hero unmounted / navigated away)
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        if (pEl) pEl.style.color = "";
+        Object.values(navLinkRefs.current).forEach(el => { if (el) el.style.color = ""; });
+      }, 300);
+    }
+
+    window.addEventListener("hero-circle-move", handleCircleMove);
+    return () => {
+      window.removeEventListener("hero-circle-move", handleCircleMove);
+      if (resetTimer) clearTimeout(resetTimer);
+    };
+  }, []);
+
   if (pathname.startsWith("/studio")) return null;
 
   return (
@@ -26,7 +66,7 @@ export function Nav() {
           className="hover:opacity-80 transition-opacity"
           style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "2rem", letterSpacing: "0.05em" }}
         >
-          LERAY<span className="text-red" style={{ position: "relative", mixBlendMode: "difference" }}>.</span>
+          LERAY<span ref={periodRef} className="text-red">.</span>
         </Link>
 
         {/* Desktop nav */}
@@ -37,8 +77,8 @@ export function Nav() {
               <Link
                 key={href}
                 href={href}
+                ref={(el) => { navLinkRefs.current[href] = el; }}
                 className={`text-sm tracking-widest uppercase transition-colors hover:text-red ${isActive ? "text-red" : "text-paper"}`}
-                style={isActive ? { position: "relative", mixBlendMode: "difference" } : undefined}
               >
                 {label}
               </Link>

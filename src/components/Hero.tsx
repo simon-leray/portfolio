@@ -107,6 +107,8 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
+  const lerayEndRef     = useRef<HTMLSpanElement>(null); // right edge of "Leray" text — period anchor
+  const [periodPos, setPeriodPos] = useState<{ top: number; left: number } | null>(null);
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -188,6 +190,11 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       curY += (tgtY - curY) * LERP;
 
       attractEl.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
+
+      // Broadcast visual circle center so Nav can do JS overlap detection
+      window.dispatchEvent(new CustomEvent("hero-circle-move", {
+        detail: { cx: driftCx + curX, cy: driftCy + curY, radius: driftRect.width / 2 },
+      }));
     }
 
     function onMouseMove(e: MouseEvent) {
@@ -365,6 +372,24 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       if (retryRef.current) clearTimeout(retryRef.current);
     };
   }, []); // intentional: run once on mount
+
+  // ── Period anchor measurement (desktop only) ────────────────────────────────
+  // Measures the right edge of "Leray" text so we can place the period span as an
+  // absolutely positioned sibling at the hero stacking-context level.
+  useEffect(() => {
+    function measure() {
+      if (window.innerWidth < 768) return;
+      const el   = lerayEndRef.current;
+      const hero = heroRef.current;
+      if (!el || !hero) return;
+      const er = el.getBoundingClientRect();
+      const hr = hero.getBoundingClientRect();
+      setPeriodPos({ top: er.top - hr.top, left: er.right - hr.left });
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   const showQuotes = safeQuotes.length > 0;
 
@@ -604,14 +629,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             margin:     0,
           }}
         >
-          <span style={{ position: "relative", zIndex: 4 }}>Simon<br />Leray</span><span
-            style={{
-              color:        "#d0021b",
-              position:     "relative",
-              zIndex:       3,
-              mixBlendMode: "difference",
-            }}
-          >.</span>
+          <span style={{ position: "relative", zIndex: 4 }}>Simon<br /><span ref={lerayEndRef}>Leray</span></span>
         </h1>
         {subtitle && (
           <p
@@ -659,6 +677,27 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
         </div>
       </div>
 
+      {/* ── Desktop: period "." — lives at hero stacking-context level, not inside h1 ── */}
+      {periodPos && (
+        <span
+          className="desktop-only-period"
+          aria-hidden
+          style={{
+            position:      "absolute",
+            top:           periodPos.top,
+            left:          periodPos.left,
+            fontFamily:    "var(--font-bebas), sans-serif",
+            fontSize:      "clamp(5rem, 8vw, 9rem)",
+            lineHeight:    0.85,
+            color:         "#d0021b",
+            zIndex:        3,
+            mixBlendMode:  "difference",
+            pointerEvents: "none",
+            outline:       "3px solid lime",
+          }}
+        >.</span>
+      )}
+
       {/* ── Desktop: drifting quotes (hidden on mobile) ── */}
       {showQuotes ? (
         <div
@@ -679,6 +718,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
                 zIndex:       2,
                 mixBlendMode: "difference",
                 color:        "#d0021b",
+                outline:      "3px solid lime",
               }}
             >
               <div
@@ -774,6 +814,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
 
         .desktop-hero-content   { display: none; }
         .desktop-circle-wrapper { display: none; }
+        .desktop-only-period    { display: none; }
         @media (prefers-reduced-motion: reduce) {
           .desktop-red-circle { animation: none; transform: translateY(-50%); }
         }
@@ -783,6 +824,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
           .mobile-hero-content  { display: none; }
           .mobile-bg-circle     { display: none; }
           .desktop-quotes       { display: block; }
+          .desktop-only-period  { display: inline; }
           .scroll-hint           { display: flex; }
           .desktop-hero-content {
             display:         flex;
