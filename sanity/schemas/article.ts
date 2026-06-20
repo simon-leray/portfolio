@@ -48,7 +48,7 @@ export const articleSchema = defineType({
       of: [{ type: "string" }],
       options: { layout: "tags" },
       description: "Medien, in denen dieser Artikel erschienen ist. Enter drücken um ein Medium hinzuzufügen.",
-      initialValue: ["Bieler Tagblatt"],
+      initialValue: ["Bieler Tagblatt", "ajour.ch"],
     }),
     defineField({
       name: "excerpt",
