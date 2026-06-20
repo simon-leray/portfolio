@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PortableText } from "@portabletext/react";
-import { getAbout } from "@/lib/sanity";
+import { getAbout, urlFor } from "@/lib/sanity";
 import { About } from "@/lib/types";
-import { urlFor } from "@/lib/sanity";
 import { replaceQuotesInPtBlocks } from "@/lib/quotes";
 
 export const dynamic = "force-dynamic";
@@ -52,16 +51,21 @@ export default async function UeberMichPage() {
     // not configured yet
   }
 
+  const location = about?.location ?? "Biel/Bienne, Schweiz";
+  const media = about?.media ?? ["Bieler Tagblatt", "ajour.ch"];
+
   return (
     <main className="pt-16">
       <div className="bg-ink text-paper py-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <p className="text-red text-xs tracking-widest uppercase mb-6">Journalist</p>
+          <p className="text-red text-xs tracking-widest uppercase mb-6">
+            {about?.pageSubtitle ?? "Journalist"}
+          </p>
           <h1
             className="text-6xl md:text-9xl leading-none"
             style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
           >
-            Über mich
+            {about?.pageTitle ?? "Über mich"}
           </h1>
         </div>
       </div>
@@ -93,12 +97,13 @@ export default async function UeberMichPage() {
             <div className="mt-8 space-y-4">
               <div className="border-t border-ink/10 pt-4">
                 <p className="text-xs tracking-widest uppercase text-ink/40 mb-1">Standort</p>
-                <p className="text-sm text-ink">Biel/Bienne, Schweiz</p>
+                <p className="text-sm text-ink">{location}</p>
               </div>
               <div className="border-t border-ink/10 pt-4">
                 <p className="text-xs tracking-widest uppercase text-ink/40 mb-1">Medien</p>
-                <p className="text-sm text-ink">Bieler Tagblatt</p>
-                <p className="text-sm text-ink">ajour.ch</p>
+                {media.map((m) => (
+                  <p key={m} className="text-sm text-ink">{m}</p>
+                ))}
               </div>
             </div>
           </div>
@@ -135,7 +140,7 @@ export default async function UeberMichPage() {
                 className="inline-block bg-ink text-paper text-xs tracking-widest uppercase px-8 py-4 hover:bg-red transition-colors duration-200"
                 style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.9rem" }}
               >
-                Kontakt aufnehmen
+                {about?.contactButtonText ?? "Kontakt aufnehmen"}
               </Link>
             </div>
           </div>

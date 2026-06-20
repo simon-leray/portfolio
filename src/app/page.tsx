@@ -74,14 +74,16 @@ export default async function HomePage() {
       <section className="bg-ink text-paper py-24 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <p className="text-red text-xs tracking-widest uppercase mb-6">Über mich</p>
+            <p className="text-red text-xs tracking-widest uppercase mb-6">
+              {homepage?.aboutSectionLabel ?? "Über mich"}
+            </p>
             <h2
               className="text-5xl md:text-7xl leading-none mb-8"
               style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
             >
-              Journalismus,
-              <br />
-              der fragt.
+              {homepage?.aboutSectionTitle ?? (
+                <>Journalismus,<br />der fragt.</>
+              )}
             </h2>
 
             {homepage?.aboutTeaser && homepage.aboutTeaser.length > 0 ? (

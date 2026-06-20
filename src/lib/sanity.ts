@@ -48,7 +48,21 @@ export async function getArticleBySlug(slug: string) {
 
 export async function getAbout() {
   return client.fetch(
-    `*[_type == "about" && !(_id in path("drafts.**"))][0] { photo, bio }`,
+    `*[_type == "about" && !(_id in path("drafts.**"))][0] {
+      pageTitle, pageSubtitle, contactButtonText, location, media, photo, bio
+    }`,
+    {},
+    fetchOptions
+  );
+}
+
+export async function getContact() {
+  return client.fetch(
+    `*[_type == "contact" && !(_id in path("drafts.**"))][0] {
+      pageLabel, pageTitle, introText,
+      locationLabel, locationValue,
+      mediaLabel, mediaItems
+    }`,
     {},
     fetchOptions
   );
@@ -57,7 +71,8 @@ export async function getAbout() {
 export async function getHomepage() {
   return client.fetch(
     `*[_type == "homepage" && _id == "homepage-singleton"][0] {
-      heroTagline, heroSubtitle, heroQuotes, aboutTeaser, aboutTags,
+      heroTagline, heroSubtitle, heroQuotes,
+      aboutSectionLabel, aboutSectionTitle, aboutTeaser, aboutTags,
       contactTitle, contactSubtitle, contactEmail, contactPhone,
       "featuredArticles": featuredArticles[]-> {
         ${ARTICLE_CARD_FIELDS}, articleTitle

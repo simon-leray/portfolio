@@ -6,6 +6,8 @@ const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
 const SINGLETON_ID = "homepage-singleton";
+const ABOUT_ID = "about-singleton";
+const CONTACT_ID = "contact-singleton";
 
 export default defineConfig({
   name: "leray-portfolio",
@@ -29,14 +31,32 @@ export default defineConfig({
                   .documentId(SINGLETON_ID)
                   .title("Homepage")
               ),
+            S.listItem()
+              .title("Über mich")
+              .id("about")
+              .child(
+                S.document()
+                  .schemaType("about")
+                  .documentId(ABOUT_ID)
+                  .title("Über mich")
+              ),
+            S.listItem()
+              .title("Kontakt-Seite")
+              .id("contact")
+              .child(
+                S.document()
+                  .schemaType("contact")
+                  .documentId(CONTACT_ID)
+                  .title("Kontakt-Seite")
+              ),
             S.divider(),
-            // Primary content types — explicit so they appear in the right order
+            // Primary content types
             S.documentTypeListItem("article").title("Artikel"),
             S.documentTypeListItem("dossier").title("Dossiers"),
             S.divider(),
-            // Remaining types (About, any future additions)
+            // Remaining types (any future additions)
             ...S.documentTypeListItems().filter(
-              (item) => !["homepage", "article", "dossier"].includes(item.getId() ?? "")
+              (item) => !["homepage", "about", "contact", "article", "dossier"].includes(item.getId() ?? "")
             ),
           ]),
     }),

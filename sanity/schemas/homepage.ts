@@ -52,6 +52,20 @@ export const homepageSchema = defineType({
       options: { layout: "tags" },
     }),
     defineField({
+      name: "aboutSectionLabel",
+      title: "Über-mich-Teaser — Label",
+      description: "Kleiner roter Text über der Überschrift im Über-mich-Abschnitt (z. B. «Über mich»)",
+      type: "string",
+      initialValue: "Über mich",
+    }),
+    defineField({
+      name: "aboutSectionTitle",
+      title: "Über-mich-Teaser — Überschrift",
+      description: "Grosse Überschrift im Über-mich-Abschnitt der Startseite",
+      type: "string",
+      initialValue: "Journalismus, der fragt.",
+    }),
+    defineField({
       name: "contactTitle",
       title: "Kontakt-Titel",
       description: "Grosser Titel im Kontaktabschnitt (z. B. «Schreiben Sie mir.»)",

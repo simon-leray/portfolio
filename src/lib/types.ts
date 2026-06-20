@@ -39,8 +39,23 @@ export interface GalleryImage {
 }
 
 export interface About {
+  pageTitle?: string;
+  pageSubtitle?: string;
+  contactButtonText?: string;
+  location?: string;
+  media?: string[];
   photo?: { asset: { _ref: string }; alt?: string };
   bio?: unknown[];
+}
+
+export interface Contact {
+  pageLabel?: string;
+  pageTitle?: string;
+  introText?: string;
+  locationLabel?: string;
+  locationValue?: string;
+  mediaLabel?: string;
+  mediaItems?: string[];
 }
 
 export interface HeroQuote {
@@ -52,6 +67,8 @@ export interface Homepage {
   heroTagline?: string;
   heroSubtitle?: string;
   heroQuotes?: HeroQuote[];
+  aboutSectionLabel?: string;
+  aboutSectionTitle?: string;
   aboutTeaser?: unknown[];
   aboutTags?: string[];
   contactTitle?: string;
