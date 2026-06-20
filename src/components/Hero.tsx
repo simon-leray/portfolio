@@ -104,11 +104,9 @@ let nextId = 0;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink, ctaButtonSecondary, ctaButtonSecondaryLink }: Props) {
-  const heroRef          = useRef<HTMLElement>(null);    // hero section — for bounds clamping
-  const circleDriftRef   = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
+  const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
+  const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
-  const whiteDiffAttractRef = useRef<HTMLDivElement>(null); // white inversion disc
-  const blueDiffAttractRef  = useRef<HTMLDivElement>(null); // blue inversion disc
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -190,8 +188,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       curY += (tgtY - curY) * LERP;
 
       attractEl.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
-      if (whiteDiffAttractRef.current) whiteDiffAttractRef.current.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
-      if (blueDiffAttractRef.current)  blueDiffAttractRef.current.style.transform  = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
     }
 
     function onMouseMove(e: MouseEvent) {
@@ -589,98 +585,37 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
         </div>
       </div>
 
-      {/* ── Desktop: white inversion disc (z:3, mix-blend-mode:difference) ──
-            Tracks the red circle exactly. difference blend turns white text black
-            where the disc overlaps it. */}
-      <div
-        className="desktop-circle-wrapper"
-        aria-hidden
-        style={{
-          position:     "absolute",
-          top:          "50%",
-          right:        "12%",
-          zIndex:       3,
-          pointerEvents:"none",
-          mixBlendMode: "difference",
-        }}
-      >
-        <div
-          className="desktop-red-circle"
-          style={{ width: "100%", height: "100%" }}
-        >
-          <div
-            ref={whiteDiffAttractRef}
-            style={{
-              position:        "absolute",
-              inset:           0,
-              borderRadius:    "50%",
-              backgroundColor: "#ffffff",
-              willChange:      "transform",
-            }}
-          />
-        </div>
-      </div>
-
-      {/* ── Desktop: blue inversion disc (z:4, mix-blend-mode:difference) ──
-            Second pass of inversion applied on top of the white disc result. */}
-      <div
-        className="desktop-circle-wrapper"
-        aria-hidden
-        style={{
-          position:     "absolute",
-          top:          "50%",
-          right:        "12%",
-          zIndex:       4,
-          pointerEvents:"none",
-          mixBlendMode: "difference",
-        }}
-      >
-        <div
-          className="desktop-red-circle"
-          style={{ width: "100%", height: "100%" }}
-        >
-          <div
-            ref={blueDiffAttractRef}
-            style={{
-              position:        "absolute",
-              inset:           0,
-              borderRadius:    "50%",
-              backgroundColor: "#002ae5",
-              willChange:      "transform",
-            }}
-          />
-        </div>
-      </div>
-
       {/* ── Desktop: hero content (left side) ──
-            Each leaf text element: position:relative, z-index:2, color:white, no blend.
-            The white (z:3) and blue (z:4) inversion discs above them handle color
-            inversion where the circle overlaps. */}
+            No z-index on the container — no stacking context, no background.
+            Each leaf text element is position:relative z-index:3 with opaque color
+            and no mix-blend-mode. Opaque glyphs at z:3 naturally occlude quotes at
+            z:2 pixel-for-pixel; the transparent inter-letter gaps let quotes through.
+            Vertical centering via display:flex + justify-content:center. */}
       <div className="desktop-hero-content">
         <h1
           style={{
-            fontFamily: "var(--font-bebas), sans-serif",
-            fontSize:   "clamp(5rem, 8vw, 9rem)",
-            lineHeight: 0.85,
-            color:      "white",
-            position:   "relative",
-            zIndex:     2,
-            margin:     0,
+            fontFamily:   "var(--font-bebas), sans-serif",
+            fontSize:     "clamp(5rem, 8vw, 9rem)",
+            lineHeight:   0.85,
+            color:        "white",
+            position:     "relative",
+            zIndex:       3,
+            margin:       0,
           }}
         >
-          Simon<br />Leray<span style={{ color: "white" }}>.</span>
+          Simon<br />Leray<span style={{ color: "#d0021b" }}>.</span>
         </h1>
         {subtitle && (
           <p
             style={{
-              fontFamily: "var(--font-inter), sans-serif",
-              fontSize:   "1rem",
-              lineHeight: 1.6,
-              color:      "white",
-              position:   "relative",
-              zIndex:     2,
-              marginTop:  "1.5rem",
-              maxWidth:   "380px",
+              fontFamily:   "var(--font-inter), sans-serif",
+              fontSize:     "1rem",
+              lineHeight:   1.6,
+              color:        "white",
+              position:     "relative",
+              zIndex:       3,
+              marginTop:    "1.5rem",
+              maxWidth:     "380px",
             }}
           >
             {subtitle}
@@ -691,11 +626,11 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             href={ctaButtonPrimaryLink ?? "/texte"}
             className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
             style={{
-              fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "0.9rem",
-              color:      "white",
-              position:   "relative",
-              zIndex:     2,
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "0.9rem",
+              color:        "white",
+              position:     "relative",
+              zIndex:       3,
             }}
           >
             {ctaButtonPrimary ?? "Artikel lesen"}
@@ -704,11 +639,11 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             href={ctaButtonSecondaryLink ?? "/kontakt"}
             className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
             style={{
-              fontFamily: "var(--font-bebas), sans-serif",
-              fontSize:   "0.9rem",
-              color:      "white",
-              position:   "relative",
-              zIndex:     2,
+              fontFamily:   "var(--font-bebas), sans-serif",
+              fontSize:     "0.9rem",
+              color:        "white",
+              position:     "relative",
+              zIndex:       3,
             }}
           >
             {ctaButtonSecondary ?? "Kontakt"}
@@ -724,17 +659,18 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
         >
           {/* Edge fades via solid-color overlays — mask-image would create compositing isolation
               that prevents mix-blend-mode on quote wrappers from reaching the circle. */}
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to right, #000000, transparent)", zIndex: 5, pointerEvents: "none" }} />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to left, #000000, transparent)", zIndex: 5, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to right, #000000, transparent)", zIndex: 4, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to left, #000000, transparent)", zIndex: 4, pointerEvents: "none" }} />
           {activeQuotes.map(q => (
             <div
               key={q.id}
               className="absolute w-full"
               style={{
-                top:       `${slotToPercent(q.slot)}%`,
-                transform: "translateY(-50%)",
-                zIndex:    2,
-                color:     "#d0021b",
+                top:          `${slotToPercent(q.slot)}%`,
+                transform:    "translateY(-50%)",
+                zIndex:       2,
+                mixBlendMode: "difference",
+                color:        "#d0021b",
               }}
             >
               <div
