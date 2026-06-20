@@ -26,6 +26,7 @@ export default function DatenschutzPage() {
             <div>
               <p className="text-xs tracking-widest uppercase text-ink/40 mb-3">Verantwortliche Person</p>
               <p className="text-ink leading-relaxed">
+                Bieler Tagblatt<br />
                 Simon Leray<br />
                 Robert-Walser-Platz 7<br />
                 2501 Biel/Bienne<br />
