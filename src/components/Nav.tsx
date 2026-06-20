@@ -59,7 +59,7 @@ export function Nav() {
   if (pathname.startsWith("/studio")) return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 text-paper">
+    <header className="fixed top-0 left-0 right-0 z-50 text-paper" style={{ backgroundColor: "#000000" }}>
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           href="/"

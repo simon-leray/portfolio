@@ -690,10 +690,9 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             fontSize:      "clamp(5rem, 8vw, 9rem)",
             lineHeight:    0.85,
             color:         "#d0021b",
-            zIndex:        3,
+            zIndex:        10,
             mixBlendMode:  "difference",
             pointerEvents: "none",
-            outline:       "3px solid lime",
           }}
         >.</span>
       )}
@@ -718,7 +717,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
                 zIndex:       2,
                 mixBlendMode: "difference",
                 color:        "#d0021b",
-                outline:      "3px solid lime",
               }}
             >
               <div
