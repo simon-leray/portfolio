@@ -674,7 +674,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               style={{
                 top:          `${slotToPercent(q.slot)}%`,
                 transform:    "translateY(-50%)",
-                zIndex:       2,
+                zIndex:       1,
                 mixBlendMode: "difference",
                 color:        "#d0021b",
               }}

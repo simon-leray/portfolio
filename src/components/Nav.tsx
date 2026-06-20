@@ -26,22 +26,24 @@ export function Nav() {
           className="hover:opacity-80 transition-opacity"
           style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "2rem", letterSpacing: "0.05em" }}
         >
-          LERAY<span className="text-red">.</span>
+          LERAY<span className="text-red" style={{ position: "relative", mixBlendMode: "difference" }}>.</span>
         </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`text-sm tracking-widest uppercase transition-colors hover:text-red ${
-                (href === "/" ? pathname === "/" : pathname.startsWith(href)) ? "text-red" : "text-paper"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map(({ href, label }) => {
+            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`text-sm tracking-widest uppercase transition-colors hover:text-red ${isActive ? "text-red" : "text-paper"}`}
+                style={isActive ? { position: "relative", mixBlendMode: "difference" } : undefined}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Mobile hamburger */}
