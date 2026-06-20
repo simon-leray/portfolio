@@ -79,7 +79,7 @@ export default function DatenschutzPage() {
               <p className="text-xs tracking-widest uppercase text-ink/40 mb-3">Rechte</p>
               <p className="text-ink/80 text-sm leading-relaxed">
                 Sie haben das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten gemäss dem
-                Schweizer Datenschutzgesetz (DSG). Kontaktieren Sie uns unter{" "}
+                Schweizer Datenschutzgesetz (DSG). Kontaktieren Sie mich unter{" "}
                 <a
                   href="mailto:simon.leray@bielertagblatt.ch"
                   className="underline underline-offset-2 hover:text-red transition-colors"
