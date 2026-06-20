@@ -109,7 +109,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
   const lerayEndRef        = useRef<HTMLSpanElement>(null);  // right edge of "Leray" text — period anchor
   const desktopContentRef  = useRef<HTMLDivElement>(null);   // desktop-hero-content — containing block for period
-  const [periodPos, setPeriodPos] = useState<{ yBottom: number; left: number } | null>(null);
+  const [periodPos, setPeriodPos] = useState<{ yTop: number; left: number } | null>(null);
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -385,9 +385,9 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       if (!el || !dc) return;
       const er  = el.getBoundingClientRect();
       const dcr = dc.getBoundingClientRect();
-      // yBottom: distance from desktop-hero-content top to bottom of "Leray" text.
-      // Combined with translateY(-100%) this pins the period's bottom to the text bottom.
-      setPeriodPos({ yBottom: er.bottom - dcr.top, left: er.right - dcr.left });
+      // yTop: distance from desktop-hero-content top to top of "Leray" line box.
+      // Same font/size/lineHeight → period and Leray share identical baselines when tops align.
+      setPeriodPos({ yTop: er.top - dcr.top, left: er.right - dcr.left });
     }
     measure();
     window.addEventListener("resize", measure);
@@ -641,9 +641,8 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             aria-hidden
             style={{
               position:      "absolute",
-              top:           periodPos.yBottom,
+              top:           periodPos.yTop,
               left:          periodPos.left,
-              transform:     "translateY(-100%)",
               fontFamily:    "var(--font-bebas), sans-serif",
               fontSize:      "clamp(5rem, 8vw, 9rem)",
               lineHeight:    0.85,
