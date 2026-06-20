@@ -11,7 +11,6 @@ export interface Article {
     alt?: string;
     credit?: string;
   };
-  externalUrl?: string;
   articleTitle?: string;
   lead?: string;
   content?: ContentBlock[];

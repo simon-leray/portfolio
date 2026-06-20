@@ -19,9 +19,8 @@ function formatDate(dateStr: string) {
 }
 
 export function ArticleCardEditorial({ article, variant }: Props) {
-  if (!article.slug?.current && !article.externalUrl) return null;
-  const href = article.externalUrl ?? `/texte/${article.slug.current}`;
-  const isExternal = !!article.externalUrl;
+  if (!article.slug?.current) return null;
+  const href = `/texte/${article.slug.current}`;
 
   // Mobile: always 16/9; desktop varies by variant
   const aspectClass =
@@ -37,8 +36,6 @@ export function ArticleCardEditorial({ article, variant }: Props) {
   return (
     <Link
       href={href}
-      target={isExternal ? "_blank" : undefined}
-      rel={isExternal ? "noopener noreferrer" : undefined}
       className="group flex flex-col w-full h-full"
       style={{ backgroundColor: "#000000" }}
     >

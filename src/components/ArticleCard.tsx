@@ -27,17 +27,12 @@ interface Props {
 }
 
 export function ArticleCard({ article, featured = false }: Props) {
-  if (!article.slug?.current && !article.externalUrl) return null;
-  const href = article.externalUrl
-    ? article.externalUrl
-    : `/texte/${article.slug.current}`;
-  const isExternal = !!article.externalUrl;
+  if (!article.slug?.current) return null;
+  const href = `/texte/${article.slug.current}`;
 
   return (
     <Link
       href={href}
-      target={isExternal ? "_blank" : undefined}
-      rel={isExternal ? "noopener noreferrer" : undefined}
       className={`group block bg-ink text-paper overflow-hidden ${
         featured ? "md:col-span-2" : ""
       }`}
@@ -81,27 +76,18 @@ export function ArticleCard({ article, featured = false }: Props) {
         <time className="text-paper/40 text-xs tracking-wider">
           {formatDate(article.publishedAt)}
         </time>
-
-        {isExternal && (
-          <span className="ml-3 text-paper/40 text-xs">↗</span>
-        )}
       </div>
     </Link>
   );
 }
 
 export function ArticleCardLight({ article, featured = false }: Props) {
-  if (!article.slug?.current && !article.externalUrl) return null;
-  const href = article.externalUrl
-    ? article.externalUrl
-    : `/texte/${article.slug.current}`;
-  const isExternal = !!article.externalUrl;
+  if (!article.slug?.current) return null;
+  const href = `/texte/${article.slug.current}`;
 
   return (
     <Link
       href={href}
-      target={isExternal ? "_blank" : undefined}
-      rel={isExternal ? "noopener noreferrer" : undefined}
       className={`group block border border-ink/10 overflow-hidden hover:border-red transition-colors duration-200 ${
         featured ? "md:col-span-2" : ""
       }`}
@@ -144,10 +130,6 @@ export function ArticleCardLight({ article, featured = false }: Props) {
         <time className="text-ink/40 text-xs tracking-wider">
           {formatDate(article.publishedAt)}
         </time>
-
-        {isExternal && (
-          <span className="ml-3 text-ink/40 text-xs">↗</span>
-        )}
       </div>
     </Link>
   );

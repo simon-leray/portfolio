@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getArticleBySlug, getArticles, getDossierForArticle, urlFor } from "@/lib/sanity";
@@ -48,10 +48,6 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
   }
 
   if (!article) notFound();
-
-  if (article.externalUrl) {
-    redirect(article.externalUrl);
-  }
 
   // Dossier membership check — runs in parallel with nothing, but after article
   // resolves so we have the _id. Fast: single indexed references() lookup.

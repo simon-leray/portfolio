@@ -7,6 +7,13 @@ export const articleSchema = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "showInTexte",
+      title: "Auf Seite «Texte» anzeigen",
+      type: "boolean",
+      description: "Wenn deaktiviert, erscheint dieser Artikel nur in Dossiers, nicht in der allgemeinen Artikelübersicht.",
+      initialValue: true,
+    }),
+    defineField({
       name: "title",
       title: "Titel",
       type: "string",
@@ -21,7 +28,7 @@ export const articleSchema = defineType({
     }),
     defineField({
       name: "publishedAt",
-      title: "Erscheinungsdatum",
+      title: "Datum",
       type: "date",
       components: { input: DateInput },
       validation: (rule) => rule.required(),
@@ -54,14 +61,14 @@ export const articleSchema = defineType({
     }),
     defineField({
       name: "excerpt",
-      title: "Teaser",
+      title: "Teaser Vorschau",
       type: "text",
       rows: 3,
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "coverImage",
-      title: "Titelbild",
+      title: "Hero-Image",
       type: "image",
       options: { hotspot: true },
       fields: [
@@ -72,16 +79,10 @@ export const articleSchema = defineType({
         }),
         defineField({
           name: "credit",
-          title: "Bildnachweis / Quelle",
+          title: "Bildnachweis",
           type: "string",
         }),
       ],
-    }),
-    defineField({
-      name: "externalUrl",
-      title: "Externer Link (optional)",
-      type: "url",
-      description: "Wenn gesetzt, verweist der Artikel auf diese URL statt auf den vollen Inhalt.",
     }),
     defineField({
       name: "articleTitle",
@@ -91,21 +92,14 @@ export const articleSchema = defineType({
     }),
     defineField({
       name: "lead",
-      title: "Lead / Einleitung",
+      title: "Lead",
       type: "text",
       rows: 4,
       description: "Einleitungsabsatz, erscheint kursiv zwischen dem Titelbild und dem Artikeltext.",
     }),
     defineField({
-      name: "showInTexte",
-      title: "Auf Seite «Texte» anzeigen",
-      type: "boolean",
-      description: "Wenn deaktiviert, erscheint dieser Artikel nur in Dossiers, nicht in der allgemeinen Artikelübersicht.",
-      initialValue: true,
-    }),
-    defineField({
       name: "relatedArticles",
-      title: "Verwandte Texte",
+      title: "Story Links",
       type: "array",
       of: [{ type: "reference", to: [{ type: "article" }] }],
       description: "Optional: Bis zu 3 thematisch verwandte Artikel, die am Ende der Seite angezeigt werden.",
