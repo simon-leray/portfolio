@@ -3,7 +3,7 @@ export interface Article {
   title: string;
   slug: { current: string };
   publishedAt: string;
-  category: "Investigativ" | "Porträt" | "Reportage" | "Interview" | "Kommentar";
+  category: "Investigativ" | "Porträt" | "Reportage" | "Interview" | "Kommentar" | "Bericht" | "Recherche";
   outlet: "Bieler Tagblatt" | "ajour.ch";
   excerpt: string;
   coverImage?: {

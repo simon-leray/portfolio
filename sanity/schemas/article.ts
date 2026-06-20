@@ -35,6 +35,8 @@ export const articleSchema = defineType({
           { title: "Reportage", value: "Reportage" },
           { title: "Interview", value: "Interview" },
           { title: "Kommentar", value: "Kommentar" },
+          { title: "Bericht", value: "Bericht" },
+          { title: "Recherche", value: "Recherche" },
         ],
       },
       validation: (rule) => rule.required(),
