@@ -61,12 +61,10 @@ export default function ImpressumPage() {
                 Haftungsausschluss
               </p>
               <p className="text-ink/60 text-sm leading-relaxed">
-                Diese Website enthält Links zu externen Webseiten Dritter, auf deren Inhalte ich
-                keinen Einfluss habe. Für die Inhalte der verlinkten Seiten ist stets der jeweilige
-                Anbieter oder Betreiber der Seiten verantwortlich. Eine permanente inhaltliche
-                Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer
-                Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden
-                entsprechende Links umgehend entfernt.
+                Diese Website enthält Links zu externen Webseiten Dritter, auf deren Inhalte die
+                Betreiber von leray.me keinen Einfluss haben. Für die Inhalte der verlinkten Seiten
+                ist der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Bei
+                Bekanntwerden von Rechtsverletzungen werden entsprechende Links umgehend entfernt.
               </p>
             </div>
 
