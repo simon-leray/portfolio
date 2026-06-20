@@ -35,6 +35,7 @@ export interface GalleryImage {
   asset: { _ref: string };
   alt?: string;
   caption?: string;
+  credit?: string;
 }
 
 export interface About {

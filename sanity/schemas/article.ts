@@ -250,6 +250,7 @@ export const articleSchema = defineType({
                   fields: [
                     { name: "alt", type: "string", title: "Alt-Text" },
                     { name: "caption", type: "string", title: "Bildunterschrift" },
+                    { name: "credit", type: "string", title: "Bildnachweis / Quelle" },
                   ],
                 },
               ],

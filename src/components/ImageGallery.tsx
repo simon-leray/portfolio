@@ -133,10 +133,17 @@ export function ImageGallery({ images }: Props) {
                 style={{ maxHeight: "80vh" }}
               />
             </div>
-            {images[lightboxIndex].caption && (
-              <p className="mt-3 text-sm text-paper/60 text-center">
-                {images[lightboxIndex].caption}
-              </p>
+            {(images[lightboxIndex].caption || images[lightboxIndex].credit) && (
+              <div className="mt-3 flex items-start gap-4">
+                <p className="text-sm text-paper/60 flex-1 min-w-0">
+                  {images[lightboxIndex].caption}
+                </p>
+                {images[lightboxIndex].credit && (
+                  <p className="text-xs text-paper/40 flex-shrink-0" style={{ whiteSpace: "nowrap" }}>
+                    Foto: {images[lightboxIndex].credit}
+                  </p>
+                )}
+              </div>
             )}
             {images.length > 1 && (
               <p className="mt-1 text-xs text-paper/30 text-center">

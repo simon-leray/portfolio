@@ -70,9 +70,9 @@ export default async function DossierPage({ params }: { params: { slug: string }
       <div className="bg-ink px-6 pb-20">
         <div className="max-w-7xl mx-auto">
           {articles.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-paper/5">
-              {articles.map((article, i) => (
-                <ArticleCard key={article._id} article={article} featured={i === 0} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px" style={{ backgroundColor: "#1c1c1c" }}>
+              {articles.map((article) => (
+                <ArticleCard key={article._id} article={article} />
               ))}
             </div>
           ) : (

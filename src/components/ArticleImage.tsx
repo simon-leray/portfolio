@@ -54,9 +54,13 @@ export function ArticleImage({ image, caption, credit }: Props) {
           </div>
         </button>
         {(caption || credit) && (
-          <figcaption className="mt-2 text-xs text-ink/50 flex justify-between">
-            <span>{caption}</span>
-            {credit && <span>Foto: {credit}</span>}
+          <figcaption className="mt-2 text-xs text-ink/50 flex items-start gap-4">
+            <span className="flex-1 min-w-0">{caption}</span>
+            {credit && (
+              <span className="flex-shrink-0" style={{ whiteSpace: "nowrap" }}>
+                Foto: {credit}
+              </span>
+            )}
           </figcaption>
         )}
       </figure>
@@ -88,11 +92,14 @@ export function ArticleImage({ image, caption, credit }: Props) {
               style={{ maxHeight: "85vh" }}
             />
             {(caption || credit) && (
-              <p className="mt-3 text-sm text-paper/60 text-center">
-                {caption}
-                {caption && credit ? " — " : ""}
-                {credit && `Foto: ${credit}`}
-              </p>
+              <div className="mt-3 flex items-start gap-4">
+                <p className="text-sm text-paper/60 flex-1 min-w-0">{caption}</p>
+                {credit && (
+                  <p className="text-xs text-paper/40 flex-shrink-0" style={{ whiteSpace: "nowrap" }}>
+                    Foto: {credit}
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>
