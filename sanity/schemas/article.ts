@@ -42,11 +42,13 @@ export const articleSchema = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "outlets",
+      name: "outlet",
       title: "Medium / Medien",
       type: "array",
-      of: [{ type: "reference", to: [{ type: "medium" }] }],
-      description: "Ein oder mehrere Medien, in denen dieser Artikel erschienen ist.",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
+      description: "Medien, in denen dieser Artikel erschienen ist. Enter drücken um ein Medium hinzuzufügen.",
+      initialValue: ["Bieler Tagblatt"],
     }),
     defineField({
       name: "excerpt",

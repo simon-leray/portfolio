@@ -54,11 +54,9 @@ export default defineConfig({
             S.documentTypeListItem("article").title("Artikel"),
             S.documentTypeListItem("dossier").title("Dossiers"),
             S.divider(),
-            S.documentTypeListItem("medium").title("Medien"),
-            S.divider(),
             // Remaining types (any future additions)
             ...S.documentTypeListItems().filter(
-              (item) => !["homepage", "about", "contact", "article", "dossier", "medium"].includes(item.getId() ?? "")
+              (item) => !["homepage", "about", "contact", "article", "dossier"].includes(item.getId() ?? "")
             ),
           ]),
     }),
