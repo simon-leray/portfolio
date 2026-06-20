@@ -104,7 +104,6 @@ let nextId = 0;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink, ctaButtonSecondary, ctaButtonSecondaryLink }: Props) {
-  const ghostRef        = useRef<HTMLDivElement>(null);
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
@@ -211,21 +210,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
     };
   }, []);
 
-  // LERAY ghost — fallback when no quotes provided
-  useEffect(() => {
-    if (safeQuotes.length > 0) return;
-    const el = ghostRef.current;
-    if (!el) return;
-    let x = 0;
-    let raf: number;
-    function tick() {
-      x += 0.03;
-      el!.style.transform = `translateX(${Math.sin(x) * 40}px) translateY(${Math.cos(x * 0.7) * 15}px)`;
-      raf = requestAnimationFrame(tick);
-    }
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [safeQuotes.length]);
 
   // ── Mobile typewriter cycle ─────────────────────────────────────────────────
   // Returns null when there are no quotes to show (empty/undefined pool) — callers
@@ -720,21 +704,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             </div>
           ))}
         </div>
-      ) : (
-        <div
-          ref={ghostRef}
-          aria-hidden
-          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none motion-reduce:transform-none"
-          style={{ willChange: "transform" }}
-        >
-          <span
-            className="text-[20vw] md:text-[22vw] font-bold text-paper/[0.03] whitespace-nowrap leading-none"
-            style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.1em" }}
-          >
-            LERAY
-          </span>
-        </div>
-      )}
+      ) : null}
 
       {/* Scroll hint */}
       <div className="scroll-hint absolute bottom-8 left-0 right-0 mx-auto w-fit flex flex-col items-center gap-2 text-paper/30 animate-bounce motion-reduce:animate-none text-center" style={{ zIndex: 13 }}>
