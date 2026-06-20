@@ -578,7 +578,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               position:        "absolute",
               inset:           0,
               borderRadius:    "50%",
-              backgroundColor: "#d0021b",
+              backgroundColor: "#ffffff",
               willChange:      "transform",
             }}
           />
@@ -594,16 +594,17 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       <div className="desktop-hero-content">
         <h1
           style={{
-            fontFamily:   "var(--font-bebas), sans-serif",
-            fontSize:     "clamp(5rem, 8vw, 9rem)",
-            lineHeight:   0.85,
-            color:        "white",
-            position:     "relative",
-            zIndex:       3,
-            margin:       0,
+            fontFamily:    "var(--font-bebas), sans-serif",
+            fontSize:      "clamp(5rem, 8vw, 9rem)",
+            lineHeight:    0.85,
+            color:         "white",
+            position:      "relative",
+            zIndex:        3,
+            margin:        0,
+            mixBlendMode:  "difference",
           }}
         >
-          Simon<br />Leray<span style={{ color: "#d0021b" }}>.</span>
+          Simon<br />Leray<span style={{ color: "white" }}>.</span>
         </h1>
         {subtitle && (
           <p
@@ -616,6 +617,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               zIndex:       3,
               marginTop:    "1.5rem",
               maxWidth:     "380px",
+              mixBlendMode: "difference",
             }}
           >
             {subtitle}
@@ -631,6 +633,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               color:        "white",
               position:     "relative",
               zIndex:       3,
+              mixBlendMode: "difference",
             }}
           >
             {ctaButtonPrimary ?? "Artikel lesen"}
@@ -644,6 +647,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               color:        "white",
               position:     "relative",
               zIndex:       3,
+              mixBlendMode: "difference",
             }}
           >
             {ctaButtonSecondary ?? "Kontakt"}
