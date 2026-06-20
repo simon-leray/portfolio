@@ -6,16 +6,45 @@ export const homepageSchema = defineType({
   type: "document",
   fields: [
     defineField({
-      name: "heroTagline",
-      title: "Hero-Tagline",
-      description: "Kleiner roter Text über dem Namen (z. B. «Journalist · Biel/Bienne»)",
-      type: "string",
-    }),
-    defineField({
       name: "heroSubtitle",
       title: "Hero-Untertitel",
       description: "Kursiver Satz unter dem Namen",
       type: "string",
+    }),
+    defineField({
+      name: "ctaButtonPrimary",
+      title: "Hero — Primär-Button",
+      description: "Text des ersten Buttons im Hero-Bereich (z. B. «Artikel lesen»)",
+      type: "string",
+      initialValue: "Artikel lesen",
+    }),
+    defineField({
+      name: "ctaButtonSecondary",
+      title: "Hero — Sekundär-Button",
+      description: "Text des zweiten Buttons im Hero-Bereich (z. B. «Kontakt»)",
+      type: "string",
+      initialValue: "Kontakt",
+    }),
+    defineField({
+      name: "articlesSectionTitle",
+      title: "Artikel-Abschnitt — Titel",
+      description: "Überschrift über dem Artikelraster auf der Startseite",
+      type: "string",
+      initialValue: "Ausgewählte Texte",
+    }),
+    defineField({
+      name: "textePageTitle",
+      title: "Texte-Seite — Titel",
+      description: "Grosser Titel der /texte-Seite",
+      type: "string",
+      initialValue: "Texte",
+    }),
+    defineField({
+      name: "textePageSubtitle",
+      title: "Texte-Seite — Untertitel",
+      description: "Kleiner roter Text über dem Titel auf der /texte-Seite",
+      type: "string",
+      initialValue: "Alle Texte",
     }),
     defineField({
       name: "aboutTeaser",
@@ -50,6 +79,20 @@ export const homepageSchema = defineType({
       type: "array",
       of: [{ type: "string" }],
       options: { layout: "tags" },
+    }),
+    defineField({
+      name: "aboutButtonText",
+      title: "Über-mich-Teaser — Button-Text",
+      description: "Text des «Mehr erfahren»-Buttons im Über-mich-Abschnitt",
+      type: "string",
+      initialValue: "Mehr erfahren",
+    }),
+    defineField({
+      name: "contactSectionLabel",
+      title: "Kontakt-Abschnitt — Label",
+      description: "Kleiner roter Text über dem Kontakt-Titel auf der Startseite",
+      type: "string",
+      initialValue: "Kontakt",
     }),
     defineField({
       name: "aboutSectionLabel",

@@ -96,7 +96,7 @@ export default async function UeberMichPage() {
 
             <div className="mt-8 space-y-4">
               <div className="border-t border-ink/10 pt-4">
-                <p className="text-xs tracking-widest uppercase text-ink/40 mb-1">Standort</p>
+                <p className="text-xs tracking-widest uppercase text-ink/40 mb-1">Standorte</p>
                 <p className="text-sm text-ink">{location}</p>
               </div>
               <div className="border-t border-ink/10 pt-4">

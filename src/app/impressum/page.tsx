@@ -27,7 +27,6 @@ export default function ImpressumPage() {
               <p className="text-xs tracking-widest uppercase text-ink/40 mb-3">Verantwortlich</p>
               <p className="text-ink leading-relaxed">
                 Simon Leray<br />
-                Journalist<br />
                 Bieler Tagblatt / Gassmann Media AG<br />
                 Robert-Walser-Platz 7<br />
                 2501 Biel/Bienne<br />

@@ -24,9 +24,10 @@ export default async function HomePage() {
   return (
     <main>
       <Hero
-        tagline={homepage?.heroTagline}
         subtitle={homepage?.heroSubtitle}
         quotes={homepage?.heroQuotes ?? undefined}
+        ctaButtonPrimary={homepage?.ctaButtonPrimary}
+        ctaButtonSecondary={homepage?.ctaButtonSecondary}
       />
 
       {/* Articles section */}
@@ -37,7 +38,7 @@ export default async function HomePage() {
               className="text-5xl md:text-7xl text-ink"
               style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
             >
-              Ausgewählte Texte
+              {homepage?.articlesSectionTitle ?? "Ausgewählte Texte"}
             </h2>
             <Link
               href="/texte"
@@ -135,7 +136,7 @@ export default async function HomePage() {
               className="inline-block border border-paper/30 text-paper text-xs tracking-widest uppercase px-8 py-4 hover:bg-red hover:border-red transition-colors duration-200"
               style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.9rem" }}
             >
-              Mehr erfahren
+              {homepage?.aboutButtonText ?? "Mehr erfahren"}
             </Link>
           </div>
 
@@ -166,7 +167,9 @@ export default async function HomePage() {
       <section className="bg-paper py-24 px-6" id="kontakt">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16">
           <div>
-            <p className="text-red text-xs tracking-widest uppercase mb-6">Kontakt</p>
+            <p className="text-red text-xs tracking-widest uppercase mb-6">
+              {homepage?.contactSectionLabel ?? "Kontakt"}
+            </p>
             <h2
               className="text-5xl md:text-7xl leading-none text-ink mb-8"
               style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}

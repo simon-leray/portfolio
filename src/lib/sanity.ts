@@ -71,7 +71,10 @@ export async function getContact() {
 export async function getHomepage() {
   return client.fetch(
     `*[_type == "homepage" && _id == "homepage-singleton"][0] {
-      heroTagline, heroSubtitle, heroQuotes,
+      heroSubtitle, heroQuotes,
+      ctaButtonPrimary, ctaButtonSecondary, articlesSectionTitle,
+      textePageTitle, textePageSubtitle,
+      aboutButtonText, contactSectionLabel,
       aboutSectionLabel, aboutSectionTitle, aboutTeaser, aboutTags,
       contactTitle, contactSubtitle, contactEmail, contactPhone,
       "featuredArticles": featuredArticles[]-> {

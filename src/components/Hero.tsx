@@ -34,9 +34,10 @@ interface ActiveQuote {
 }
 
 interface Props {
-  tagline?: string;
   subtitle?: string;
   quotes?: HeroQuote[];
+  ctaButtonPrimary?: string;
+  ctaButtonSecondary?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -100,7 +101,7 @@ let nextId = 0;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Hero({ tagline, subtitle, quotes }: Props) {
+export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonSecondary }: Props) {
   const ghostRef        = useRef<HTMLDivElement>(null);
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
@@ -540,7 +541,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               zIndex:        3,
             }}
           >
-            Texte →
+            {ctaButtonPrimary ?? "Texte"} →
           </Link>
           <Link
             href="/kontakt"
@@ -554,7 +555,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               zIndex:        3,
             }}
           >
-            Kontakt →
+            {ctaButtonSecondary ?? "Kontakt"} →
           </Link>
         </div>
       </div>
@@ -646,7 +647,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               zIndex:       3,
             }}
           >
-            Artikel lesen
+            {ctaButtonPrimary ?? "Artikel lesen"}
           </Link>
           <Link
             href="/kontakt"
@@ -659,7 +660,7 @@ export function Hero({ tagline, subtitle, quotes }: Props) {
               zIndex:       3,
             }}
           >
-            Kontakt
+            {ctaButtonSecondary ?? "Kontakt"}
           </Link>
         </div>
       </div>

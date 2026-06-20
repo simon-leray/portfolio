@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getArticles, getDossiers, urlFor } from "@/lib/sanity";
-import { Article, Dossier } from "@/lib/types";
+import { getArticles, getDossiers, getHomepage, urlFor } from "@/lib/sanity";
+import { Article, Dossier, Homepage } from "@/lib/types";
 import { ArticleCardLight } from "@/components/ArticleCard";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +14,14 @@ export const metadata = {
 export default async function TextePage() {
   let articles: Article[] = [];
   let dossiers: Dossier[] = [];
+  let homepage: Homepage | null = null;
 
   try {
-    [articles, dossiers] = await Promise.all([getArticles(), getDossiers()]);
+    [articles, dossiers, homepage] = await Promise.all([
+      getArticles(),
+      getDossiers(),
+      getHomepage(),
+    ]);
   } catch {
     // not yet configured
   }
@@ -25,12 +30,14 @@ export default async function TextePage() {
     <main className="pt-16">
       <div className="bg-ink text-paper py-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <p className="text-red text-xs tracking-widest uppercase mb-6">Alle Texte</p>
+          <p className="text-red text-xs tracking-widest uppercase mb-6">
+            {homepage?.textePageSubtitle ?? "Alle Texte"}
+          </p>
           <h1
             className="text-6xl md:text-9xl leading-none"
             style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
           >
-            Texte
+            {homepage?.textePageTitle ?? "Texte"}
           </h1>
         </div>
       </div>
