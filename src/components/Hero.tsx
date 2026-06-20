@@ -107,7 +107,8 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
-  const lerayEndRef     = useRef<HTMLSpanElement>(null); // right edge of "Leray" text — period anchor
+  const lerayEndRef        = useRef<HTMLSpanElement>(null);  // right edge of "Leray" text — period anchor
+  const desktopContentRef  = useRef<HTMLDivElement>(null);   // desktop-hero-content — containing block for period
   const [periodPos, setPeriodPos] = useState<{ top: number; left: number } | null>(null);
 
   // Drop any null/undefined entries or items missing a quote — protects against
@@ -379,12 +380,12 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
   useEffect(() => {
     function measure() {
       if (window.innerWidth < 768) return;
-      const el   = lerayEndRef.current;
-      const hero = heroRef.current;
-      if (!el || !hero) return;
-      const er = el.getBoundingClientRect();
-      const hr = hero.getBoundingClientRect();
-      setPeriodPos({ top: er.top - hr.top, left: er.right - hr.left });
+      const el = lerayEndRef.current;
+      const dc = desktopContentRef.current;
+      if (!el || !dc) return;
+      const er  = el.getBoundingClientRect();
+      const dcr = dc.getBoundingClientRect();
+      setPeriodPos({ top: er.top - dcr.top, left: er.right - dcr.left });
     }
     measure();
     window.addEventListener("resize", measure);
@@ -618,7 +619,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               z:3 — period "." (mix-blend-mode:difference → black over circle, above quotes)
               z:4 — "Simon/Leray" text, subtitle, buttons (solid white, no blend)
               z:5 — edge fades */}
-      <div className="desktop-hero-content">
+      <div ref={desktopContentRef} className="desktop-hero-content">
         <h1
           style={{
             fontFamily: "var(--font-bebas), sans-serif",
@@ -631,6 +632,25 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
         >
           <span style={{ position: "relative", zIndex: 4 }}>Simon<br /><span ref={lerayEndRef}>Leray</span></span>
         </h1>
+        {/* Period — sibling to h1 inside desktop-hero-content (which has no stacking context),
+            so zIndex:100 competes directly with quotes zIndex:2 in the hero's stacking context */}
+        {periodPos && (
+          <span
+            aria-hidden
+            style={{
+              position:      "absolute",
+              top:           periodPos.top,
+              left:          periodPos.left,
+              fontFamily:    "var(--font-bebas), sans-serif",
+              fontSize:      "clamp(5rem, 8vw, 9rem)",
+              lineHeight:    0.85,
+              color:         "#d0021b",
+              zIndex:        100,
+              mixBlendMode:  "difference",
+              pointerEvents: "none",
+            }}
+          >.</span>
+        )}
         {subtitle && (
           <p
             style={{
@@ -676,26 +696,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
           </Link>
         </div>
       </div>
-
-      {/* ── Desktop: period "." — lives at hero stacking-context level, not inside h1 ── */}
-      {periodPos && (
-        <span
-          className="desktop-only-period"
-          aria-hidden
-          style={{
-            position:      "absolute",
-            top:           periodPos.top,
-            left:          periodPos.left,
-            fontFamily:    "var(--font-bebas), sans-serif",
-            fontSize:      "clamp(5rem, 8vw, 9rem)",
-            lineHeight:    0.85,
-            color:         "#d0021b",
-            zIndex:        10,
-            mixBlendMode:  "difference",
-            pointerEvents: "none",
-          }}
-        >.</span>
-      )}
 
       {/* ── Desktop: drifting quotes (hidden on mobile) ── */}
       {showQuotes ? (
@@ -812,7 +812,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
 
         .desktop-hero-content   { display: none; }
         .desktop-circle-wrapper { display: none; }
-        .desktop-only-period    { display: none; }
         @media (prefers-reduced-motion: reduce) {
           .desktop-red-circle { animation: none; transform: translateY(-50%); }
         }
@@ -822,7 +821,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
           .mobile-hero-content  { display: none; }
           .mobile-bg-circle     { display: none; }
           .desktop-quotes       { display: block; }
-          .desktop-only-period  { display: inline; }
           .scroll-hint           { display: flex; }
           .desktop-hero-content {
             display:         flex;

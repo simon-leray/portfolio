@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
 const links = [
   { href: "/", label: "Home" },
@@ -14,59 +14,21 @@ const links = [
 export function Nav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const periodRef  = useRef<HTMLSpanElement>(null);
-  const navLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-
-  useEffect(() => {
-    let resetTimer: ReturnType<typeof setTimeout> | null = null;
-
-    function overlaps(el: Element, cx: number, cy: number, r: number): boolean {
-      const rect = el.getBoundingClientRect();
-      return cx + r > rect.left && cx - r < rect.right &&
-             cy + r > rect.top  && cy - r < rect.bottom;
-    }
-
-    function handleCircleMove(e: Event) {
-      const { cx, cy, radius } = (e as CustomEvent<{ cx: number; cy: number; radius: number }>).detail;
-
-      // Logo period
-      const pEl = periodRef.current;
-      if (pEl) pEl.style.color = overlaps(pEl, cx, cy, radius) ? "#000000" : "";
-
-      // Desktop active nav links
-      Object.values(navLinkRefs.current).forEach(el => {
-        if (!el) return;
-        if (el.classList.contains("text-red")) {
-          el.style.color = overlaps(el, cx, cy, radius) ? "#000000" : "";
-        }
-      });
-
-      // Reset when events stop (hero unmounted / navigated away)
-      if (resetTimer) clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => {
-        if (pEl) pEl.style.color = "";
-        Object.values(navLinkRefs.current).forEach(el => { if (el) el.style.color = ""; });
-      }, 300);
-    }
-
-    window.addEventListener("hero-circle-move", handleCircleMove);
-    return () => {
-      window.removeEventListener("hero-circle-move", handleCircleMove);
-      if (resetTimer) clearTimeout(resetTimer);
-    };
-  }, []);
 
   if (pathname.startsWith("/studio")) return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 text-paper" style={{ backgroundColor: "#000000" }}>
+    <header
+      className="fixed top-0 left-0 right-0 text-paper"
+      style={{ backgroundColor: "#000000", zIndex: 1000, minHeight: "70px" }}
+    >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           href="/"
           className="hover:opacity-80 transition-opacity"
           style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "2rem", letterSpacing: "0.05em" }}
         >
-          LERAY<span ref={periodRef} className="text-red">.</span>
+          LERAY<span className="text-red">.</span>
         </Link>
 
         {/* Desktop nav */}
@@ -77,7 +39,6 @@ export function Nav() {
               <Link
                 key={href}
                 href={href}
-                ref={(el) => { navLinkRefs.current[href] = el; }}
                 className={`text-sm tracking-widest uppercase transition-colors hover:text-red ${isActive ? "text-red" : "text-paper"}`}
               >
                 {label}
@@ -92,15 +53,9 @@ export function Nav() {
           onClick={() => setOpen(!open)}
           aria-label="Menü"
         >
-          <span
-            className={`block w-6 h-0.5 bg-paper transition-transform duration-200 ${open ? "rotate-45 translate-y-2" : ""}`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-paper transition-opacity duration-200 ${open ? "opacity-0" : ""}`}
-          />
-          <span
-            className={`block w-6 h-0.5 bg-paper transition-transform duration-200 ${open ? "-rotate-45 -translate-y-2" : ""}`}
-          />
+          <span className={`block w-6 h-0.5 bg-paper transition-transform duration-200 ${open ? "rotate-45 translate-y-2" : ""}`} />
+          <span className={`block w-6 h-0.5 bg-paper transition-opacity duration-200 ${open ? "opacity-0" : ""}`} />
+          <span className={`block w-6 h-0.5 bg-paper transition-transform duration-200 ${open ? "-rotate-45 -translate-y-2" : ""}`} />
         </button>
       </div>
 
