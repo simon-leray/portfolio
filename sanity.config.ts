@@ -8,6 +8,8 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 const SINGLETON_ID = "homepage-singleton";
 const ABOUT_ID = "about-singleton";
 const CONTACT_ID = "contact-singleton";
+const TEXTE_SEITE_ID = "texte-seite-singleton";
+const HERO_ZITATE_ID = "hero-zitate-singleton";
 
 export default defineConfig({
   name: "leray-portfolio",
@@ -21,7 +23,7 @@ export default defineConfig({
         S.list()
           .title("Inhalt")
           .items([
-            // Singleton: opens the document directly, no list or new/delete
+            // ── Seiten ─────────────────────────────────────────────────────────
             S.listItem()
               .title("Homepage")
               .id("homepage")
@@ -30,6 +32,15 @@ export default defineConfig({
                   .schemaType("homepage")
                   .documentId(SINGLETON_ID)
                   .title("Homepage")
+              ),
+            S.listItem()
+              .title("Texte-Seite")
+              .id("texte-seite")
+              .child(
+                S.document()
+                  .schemaType("texte-seite")
+                  .documentId(TEXTE_SEITE_ID)
+                  .title("Texte-Seite")
               ),
             S.listItem()
               .title("Über mich")
@@ -50,13 +61,33 @@ export default defineConfig({
                   .title("Kontakt-Seite")
               ),
             S.divider(),
-            // Primary content types
+            // ── Inhalte ────────────────────────────────────────────────────────
             S.documentTypeListItem("article").title("Artikel"),
             S.documentTypeListItem("dossier").title("Dossiers"),
             S.divider(),
-            // Remaining types (any future additions)
+            // ── Hero ───────────────────────────────────────────────────────────
+            S.listItem()
+              .title("Hero-Zitate")
+              .id("hero-zitate")
+              .child(
+                S.document()
+                  .schemaType("hero-zitate")
+                  .documentId(HERO_ZITATE_ID)
+                  .title("Hero-Zitate")
+              ),
+            S.divider(),
+            // ── Remaining types ────────────────────────────────────────────────
             ...S.documentTypeListItems().filter(
-              (item) => !["homepage", "about", "contact", "article", "dossier"].includes(item.getId() ?? "")
+              (item) =>
+                ![
+                  "homepage",
+                  "about",
+                  "contact",
+                  "article",
+                  "dossier",
+                  "texte-seite",
+                  "hero-zitate",
+                ].includes(item.getId() ?? "")
             ),
           ]),
     }),

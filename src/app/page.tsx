@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PortableText } from "@portabletext/react";
-import { getHomepage } from "@/lib/sanity";
-import { Article, Homepage } from "@/lib/types";
+import { getHomepage, getHeroZitate } from "@/lib/sanity";
+import { Article, Homepage, HeroZitate } from "@/lib/types";
 import { replaceQuotesInPtBlocks } from "@/lib/quotes";
 import { ArticleCard } from "@/components/ArticleCard";
 import { ContactDetails } from "@/components/ContactDetails";
@@ -10,7 +10,10 @@ import { Hero } from "@/components/Hero";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const homepage: Homepage | null = await getHomepage().catch(() => null);
+  const [homepage, heroZitate]: [Homepage | null, HeroZitate | null] = await Promise.all([
+    getHomepage().catch(() => null),
+    getHeroZitate().catch(() => null),
+  ]);
   const articles: Article[] = homepage?.featuredArticles ?? [];
 
   const aboutTags = homepage?.aboutTags ?? [
@@ -25,7 +28,7 @@ export default async function HomePage() {
     <main>
       <Hero
         subtitle={homepage?.heroSubtitle}
-        quotes={homepage?.heroQuotes ?? undefined}
+        quotes={heroZitate?.heroQuotes ?? undefined}
         ctaButtonPrimary={homepage?.ctaButtonPrimary}
         ctaButtonSecondary={homepage?.ctaButtonSecondary}
       />

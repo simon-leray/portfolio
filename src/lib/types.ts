@@ -63,14 +63,20 @@ export interface HeroQuote {
   source?: string;
 }
 
+export interface HeroZitate {
+  heroQuotes?: HeroQuote[];
+}
+
+export interface TexteSeite {
+  textePageTitle?: string;
+  textePageSubtitle?: string;
+}
+
 export interface Homepage {
   heroSubtitle?: string;
-  heroQuotes?: HeroQuote[];
   ctaButtonPrimary?: string;
   ctaButtonSecondary?: string;
   articlesSectionTitle?: string;
-  textePageTitle?: string;
-  textePageSubtitle?: string;
   aboutButtonText?: string;
   contactSectionLabel?: string;
   aboutSectionLabel?: string;

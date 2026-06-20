@@ -71,9 +71,8 @@ export async function getContact() {
 export async function getHomepage() {
   return client.fetch(
     `*[_type == "homepage" && _id == "homepage-singleton"][0] {
-      heroSubtitle, heroQuotes,
+      heroSubtitle,
       ctaButtonPrimary, ctaButtonSecondary, articlesSectionTitle,
-      textePageTitle, textePageSubtitle,
       aboutButtonText, contactSectionLabel,
       aboutSectionLabel, aboutSectionTitle, aboutTeaser, aboutTags,
       contactTitle, contactSubtitle, contactEmail, contactPhone,
@@ -83,6 +82,26 @@ export async function getHomepage() {
     }`,
     {},
     { cache: "no-store" }
+  );
+}
+
+export async function getHeroZitate() {
+  return client.fetch(
+    `*[_type == "hero-zitate" && _id == "hero-zitate-singleton"][0] {
+      heroQuotes
+    }`,
+    {},
+    fetchOptions
+  );
+}
+
+export async function getTexteSeite() {
+  return client.fetch(
+    `*[_type == "texte-seite" && _id == "texte-seite-singleton"][0] {
+      textePageTitle, textePageSubtitle
+    }`,
+    {},
+    fetchOptions
   );
 }
 

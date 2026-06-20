@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getArticles, getDossiers, getHomepage, urlFor } from "@/lib/sanity";
-import { Article, Dossier, Homepage } from "@/lib/types";
+import { getArticles, getDossiers, getTexteSeite, urlFor } from "@/lib/sanity";
+import { Article, Dossier, TexteSeite } from "@/lib/types";
 import { ArticleCardLight } from "@/components/ArticleCard";
 
 export const dynamic = "force-dynamic";
@@ -14,13 +14,13 @@ export const metadata = {
 export default async function TextePage() {
   let articles: Article[] = [];
   let dossiers: Dossier[] = [];
-  let homepage: Homepage | null = null;
+  let texteSeite: TexteSeite | null = null;
 
   try {
-    [articles, dossiers, homepage] = await Promise.all([
+    [articles, dossiers, texteSeite] = await Promise.all([
       getArticles(),
       getDossiers(),
-      getHomepage(),
+      getTexteSeite(),
     ]);
   } catch {
     // not yet configured
@@ -31,13 +31,13 @@ export default async function TextePage() {
       <div className="bg-ink text-paper py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <p className="text-red text-xs tracking-widest uppercase mb-6">
-            {homepage?.textePageSubtitle ?? "Alle Texte"}
+            {texteSeite?.textePageSubtitle ?? "Alle Texte"}
           </p>
           <h1
             className="text-6xl md:text-9xl leading-none"
             style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
           >
-            {homepage?.textePageTitle ?? "Texte"}
+            {texteSeite?.textePageTitle ?? "Texte"}
           </h1>
         </div>
       </div>
