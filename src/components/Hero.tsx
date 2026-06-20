@@ -107,6 +107,9 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
   const circleAttractRef = useRef<HTMLDivElement>(null); // receives JS attraction transform
+  const lerayEndRef        = useRef<HTMLSpanElement>(null);  // right edge of "Leray" text — period anchor
+  const desktopContentRef  = useRef<HTMLDivElement>(null);   // desktop-hero-content — containing block for period
+  const [periodPos, setPeriodPos] = useState<{ yBottom: number; left: number } | null>(null);
 
   // Drop any null/undefined entries or items missing a quote — protects against
   // stale/malformed Sanity data (e.g. leftover items from a schema migration).
@@ -371,6 +374,26 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
     };
   }, []); // intentional: run once on mount
 
+  // ── Period anchor measurement (desktop only) ────────────────────────────────
+  // Measures the right edge of "Leray" text so we can place the period span as an
+  // absolutely positioned sibling at the hero stacking-context level.
+  useEffect(() => {
+    function measure() {
+      if (window.innerWidth < 768) return;
+      const el = lerayEndRef.current;
+      const dc = desktopContentRef.current;
+      if (!el || !dc) return;
+      const er  = el.getBoundingClientRect();
+      const dcr = dc.getBoundingClientRect();
+      // yBottom: distance from desktop-hero-content top to bottom of "Leray" text.
+      // Combined with translateY(-100%) this pins the period's bottom to the text bottom.
+      setPeriodPos({ yBottom: er.bottom - dcr.top, left: er.right - dcr.left });
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
   const showQuotes = safeQuotes.length > 0;
 
   return (
@@ -593,10 +616,12 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       {/* ── Desktop: hero content (left side) ──
             No z-index on the container — no stacking context, no background.
             Z-index scheme (all in hero's stacking context):
-              z:1 — red circle + quotes container
-              z:4 — subtitle, buttons
-              z:9999; isolation:isolate — h1 (Simon/Leray + period): always on top of everything */}
-      <div className="desktop-hero-content">
+              z:1 — red circle
+              z:2 — flying quotes (mix-blend-mode:difference → black over circle)
+              z:3 — period "." (mix-blend-mode:difference → black over circle, above quotes)
+              z:4 — "Simon/Leray" text, subtitle, buttons (solid white, no blend)
+              z:5 — edge fades */}
+      <div ref={desktopContentRef} className="desktop-hero-content">
         <h1
           style={{
             fontFamily: "var(--font-bebas), sans-serif",
@@ -604,13 +629,31 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             lineHeight: 0.85,
             color:      "white",
             position:   "relative",
-            zIndex:     9999,
-            isolation:  "isolate",
             margin:     0,
           }}
         >
-          Simon<br />Leray<span style={{ color: "#d0021b", display: "inline", verticalAlign: "baseline" }}>.</span>
+          <span style={{ position: "relative", zIndex: 4 }}>Simon<br /><span ref={lerayEndRef}>Leray</span></span>
         </h1>
+        {/* Period — sibling to h1 inside desktop-hero-content (which has no stacking context),
+            so zIndex:100 competes directly with quotes zIndex:2 in the hero's stacking context */}
+        {periodPos && (
+          <span
+            aria-hidden
+            style={{
+              position:      "absolute",
+              top:           periodPos.yBottom,
+              left:          periodPos.left,
+              transform:     "translateY(-100%)",
+              fontFamily:    "var(--font-bebas), sans-serif",
+              fontSize:      "clamp(5rem, 8vw, 9rem)",
+              lineHeight:    0.85,
+              color:         "#d0021b",
+              zIndex:        100,
+              mixBlendMode:  "difference",
+              pointerEvents: "none",
+            }}
+          >.</span>
+        )}
         {subtitle && (
           <p
             style={{
@@ -662,7 +705,6 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
         <div
           aria-hidden
           className="desktop-quotes absolute inset-0 pointer-events-none select-none"
-          style={{ zIndex: 1 }}
         >
           {/* Edge fades via solid-color overlays — mask-image would create compositing isolation
               that prevents mix-blend-mode on quote wrappers from reaching the circle. */}
