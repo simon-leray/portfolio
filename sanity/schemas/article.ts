@@ -22,6 +22,9 @@ export const articleSchema = defineType({
       name: "publishedAt",
       title: "Erscheinungsdatum",
       type: "date",
+      options: {
+        dateFormat: "DD.MM.YYYY",
+      },
       validation: (rule) => rule.required(),
     }),
     defineField({
