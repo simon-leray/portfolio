@@ -594,16 +594,22 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
       <div className="desktop-hero-content">
         <h1
           style={{
-            fontFamily:   "var(--font-bebas), sans-serif",
-            fontSize:     "clamp(5rem, 8vw, 9rem)",
-            lineHeight:   0.85,
-            color:        "white",
-            position:     "relative",
-            zIndex:       3,
-            margin:       0,
+            fontFamily: "var(--font-bebas), sans-serif",
+            fontSize:   "clamp(5rem, 8vw, 9rem)",
+            lineHeight: 0.85,
+            color:      "white",
+            position:   "relative",
+            margin:     0,
           }}
         >
-          Simon<br />Leray<span style={{ color: "#d0021b" }}>.</span>
+          <span style={{ position: "relative", zIndex: 3 }}>Simon<br />Leray</span><span
+            style={{
+              color:        "#d0021b",
+              position:     "relative",
+              zIndex:       2,
+              mixBlendMode: "difference",
+            }}
+          >.</span>
         </h1>
         {subtitle && (
           <p
