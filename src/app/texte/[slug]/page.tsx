@@ -117,6 +117,7 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
               }
               return label ? (
                 <>
+                  <span className="text-paper/40 text-xs tracking-widest uppercase">Publiziert in:</span>
                   <span className="text-paper/40 text-xs">{label}</span>
                   <span className="text-paper/40 text-xs">·</span>
                 </>

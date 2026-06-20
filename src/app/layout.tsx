@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Playfair_Display, Inter } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
 
@@ -56,6 +57,21 @@ export default function RootLayout({
       <body className="bg-paper text-ink">
         <Nav />
         {children}
+        <footer className="bg-ink text-paper/40 py-8 px-6">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-wider">
+            <span
+              className="text-2xl text-paper"
+              style={{ fontFamily: "var(--font-bebas), sans-serif" }}
+            >
+              SL<span className="text-red">.</span>
+            </span>
+            <span>© {new Date().getFullYear()} Simon Leray</span>
+            <span>Biel/Bienne, Schweiz</span>
+            <Link href="/impressum" className="hover:text-paper/70 transition-colors">
+              Impressum
+            </Link>
+          </div>
+        </footer>
       </body>
     </html>
   );
