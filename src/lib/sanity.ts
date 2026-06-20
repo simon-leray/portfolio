@@ -20,7 +20,7 @@ export function urlFor(source: any) {
 const fetchOptions = { next: { revalidate: 60 } };
 
 // Shared article card projection — used in multiple queries.
-const ARTICLE_CARD_FIELDS = `_id, title, slug, publishedAt, category, outlet, excerpt, coverImage, externalUrl`;
+const ARTICLE_CARD_FIELDS = `_id, title, slug, publishedAt, category, "outlet": outlet[]->{_id, name}, excerpt, coverImage, externalUrl`;
 
 export async function getArticles() {
   return client.fetch(

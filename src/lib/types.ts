@@ -1,10 +1,15 @@
+export interface Medium {
+  _id: string;
+  name: string;
+}
+
 export interface Article {
   _id: string;
   title: string;
   slug: { current: string };
   publishedAt: string;
   category: "Investigativ" | "Porträt" | "Reportage" | "Interview" | "Kommentar" | "Bericht" | "Recherche";
-  outlet: "Bieler Tagblatt" | "ajour.ch";
+  outlet?: Medium[];
   excerpt: string;
   coverImage?: {
     asset: { _ref: string };

@@ -43,15 +43,10 @@ export const articleSchema = defineType({
     }),
     defineField({
       name: "outlet",
-      title: "Medium",
-      type: "string",
-      options: {
-        list: [
-          { title: "Bieler Tagblatt", value: "Bieler Tagblatt" },
-          { title: "ajour.ch", value: "ajour.ch" },
-        ],
-      },
-      validation: (rule) => rule.required(),
+      title: "Medium / Medien",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "medium" }] }],
+      description: "Ein oder mehrere Medien, in denen dieser Artikel erschienen ist.",
     }),
     defineField({
       name: "excerpt",
