@@ -41,6 +41,7 @@ export interface About {
   pageTitle?: string;
   pageSubtitle?: string;
   contactButtonText?: string;
+  contactButtonLink?: string;
   location?: string;
   media?: string[];
   photo?: { asset: { _ref: string }; alt?: string };
@@ -51,7 +52,6 @@ export interface Contact {
   pageLabel?: string;
   pageTitle?: string;
   introText?: string;
-  locationLabel?: string;
   locationValue?: string;
   mediaLabel?: string;
   mediaItems?: string[];
@@ -74,7 +74,9 @@ export interface TexteSeite {
 export interface Homepage {
   heroSubtitle?: string;
   ctaButtonPrimary?: string;
+  ctaButtonPrimaryLink?: string;
   ctaButtonSecondary?: string;
+  ctaButtonSecondaryLink?: string;
   articlesSectionTitle?: string;
   aboutButtonText?: string;
   contactSectionLabel?: string;

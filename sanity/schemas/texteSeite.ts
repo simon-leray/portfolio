@@ -7,14 +7,14 @@ export const texteSeiteSchema = defineType({
   fields: [
     defineField({
       name: "textePageTitle",
-      title: "Titel",
+      title: "Head",
       description: "Grosser Titel der /texte-Seite",
       type: "string",
       initialValue: "Texte",
     }),
     defineField({
       name: "textePageSubtitle",
-      title: "Untertitel",
+      title: "Subtitle",
       description: "Kleiner roter Text über dem Titel auf der /texte-Seite",
       type: "string",
       initialValue: "Alle Texte",

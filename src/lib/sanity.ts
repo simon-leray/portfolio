@@ -49,7 +49,7 @@ export async function getArticleBySlug(slug: string) {
 export async function getAbout() {
   return client.fetch(
     `*[_type == "about" && !(_id in path("drafts.**"))][0] {
-      pageTitle, pageSubtitle, contactButtonText, location, media, photo, bio
+      pageTitle, pageSubtitle, contactButtonText, contactButtonLink, location, media, photo, bio
     }`,
     {},
     fetchOptions
@@ -60,7 +60,7 @@ export async function getContact() {
   return client.fetch(
     `*[_type == "contact" && !(_id in path("drafts.**"))][0] {
       pageLabel, pageTitle, introText,
-      locationLabel, locationValue,
+      locationValue,
       mediaLabel, mediaItems
     }`,
     {},
@@ -72,7 +72,7 @@ export async function getHomepage() {
   return client.fetch(
     `*[_type == "homepage" && _id == "homepage-singleton"][0] {
       heroSubtitle,
-      ctaButtonPrimary, ctaButtonSecondary, articlesSectionTitle,
+      ctaButtonPrimary, ctaButtonPrimaryLink, ctaButtonSecondary, ctaButtonSecondaryLink, articlesSectionTitle,
       aboutButtonText, contactSectionLabel,
       aboutSectionLabel, aboutSectionTitle, aboutTeaser, aboutTags,
       contactTitle, contactSubtitle, contactEmail, contactPhone,

@@ -23,60 +23,56 @@ export default defineConfig({
         S.list()
           .title("Inhalt")
           .items([
-            // ── Seiten ─────────────────────────────────────────────────────────
             S.listItem()
-              .title("Homepage")
+              .title("Front")
               .id("homepage")
               .child(
                 S.document()
                   .schemaType("homepage")
                   .documentId(SINGLETON_ID)
-                  .title("Homepage")
+                  .title("Front")
               ),
             S.listItem()
-              .title("Texte-Seite")
+              .title("Texte")
               .id("texte-seite")
               .child(
                 S.document()
                   .schemaType("texte-seite")
                   .documentId(TEXTE_SEITE_ID)
-                  .title("Texte-Seite")
+                  .title("Texte")
               ),
             S.listItem()
-              .title("Über mich")
+              .title("Bio")
               .id("about")
               .child(
                 S.document()
                   .schemaType("about")
                   .documentId(ABOUT_ID)
-                  .title("Über mich")
+                  .title("Bio")
               ),
             S.listItem()
-              .title("Kontakt-Seite")
+              .title("Kontakt")
               .id("contact")
               .child(
                 S.document()
                   .schemaType("contact")
                   .documentId(CONTACT_ID)
-                  .title("Kontakt-Seite")
+                  .title("Kontakt")
               ),
             S.divider(),
-            // ── Inhalte ────────────────────────────────────────────────────────
-            S.documentTypeListItem("article").title("Artikel"),
-            S.documentTypeListItem("dossier").title("Dossiers"),
+            S.documentTypeListItem("article").title("Manage Articles"),
+            S.documentTypeListItem("dossier").title("Manage Dossiers"),
             S.divider(),
-            // ── Hero ───────────────────────────────────────────────────────────
             S.listItem()
-              .title("Hero-Zitate")
+              .title("Manage Hero Quotes")
               .id("hero-zitate")
               .child(
                 S.document()
                   .schemaType("hero-zitate")
                   .documentId(HERO_ZITATE_ID)
-                  .title("Hero-Zitate")
+                  .title("Manage Hero Quotes")
               ),
             S.divider(),
-            // ── Remaining types ────────────────────────────────────────────────
             ...S.documentTypeListItems().filter(
               (item) =>
                 ![

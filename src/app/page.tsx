@@ -30,7 +30,9 @@ export default async function HomePage() {
         subtitle={homepage?.heroSubtitle}
         quotes={heroZitate?.heroQuotes ?? undefined}
         ctaButtonPrimary={homepage?.ctaButtonPrimary}
+        ctaButtonPrimaryLink={homepage?.ctaButtonPrimaryLink}
         ctaButtonSecondary={homepage?.ctaButtonSecondary}
+        ctaButtonSecondaryLink={homepage?.ctaButtonSecondaryLink}
       />
 
       {/* Articles section */}

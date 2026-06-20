@@ -8,7 +8,7 @@ import { replaceQuotesInPtBlocks } from "@/lib/quotes";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Über mich — Simon Leray",
+  title: "Bio — Simon Leray",
   description: "Journalist in Biel/Bienne. Reportagen und Hintergründe für Bieler Tagblatt und ajour.ch.",
 };
 
@@ -65,7 +65,7 @@ export default async function UeberMichPage() {
             className="text-6xl md:text-9xl leading-none"
             style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
           >
-            {about?.pageTitle ?? "Über mich"}
+            {about?.pageTitle ?? "Bio"}
           </h1>
         </div>
       </div>
@@ -136,7 +136,7 @@ export default async function UeberMichPage() {
 
             <div className="mt-12">
               <Link
-                href="/kontakt"
+                href={about?.contactButtonLink ?? "/kontakt"}
                 className="inline-block bg-ink text-paper text-xs tracking-widest uppercase px-8 py-4 hover:bg-red transition-colors duration-200"
                 style={{ fontFamily: "var(--font-bebas), sans-serif", fontSize: "0.9rem" }}
               >

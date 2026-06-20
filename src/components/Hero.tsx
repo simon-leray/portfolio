@@ -37,7 +37,9 @@ interface Props {
   subtitle?: string;
   quotes?: HeroQuote[];
   ctaButtonPrimary?: string;
+  ctaButtonPrimaryLink?: string;
   ctaButtonSecondary?: string;
+  ctaButtonSecondaryLink?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -101,7 +103,7 @@ let nextId = 0;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonSecondary }: Props) {
+export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink, ctaButtonSecondary, ctaButtonSecondaryLink }: Props) {
   const ghostRef        = useRef<HTMLDivElement>(null);
   const heroRef         = useRef<HTMLElement>(null);    // hero section — for bounds clamping
   const circleDriftRef  = useRef<HTMLDivElement>(null); // reads CSS-animated drift position
@@ -530,7 +532,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonSecondary }:
           }}
         >
           <Link
-            href="/texte"
+            href={ctaButtonPrimaryLink ?? "/texte"}
             style={{
               fontFamily:    "var(--font-inter), sans-serif",
               fontSize:      "0.7rem",
@@ -544,7 +546,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonSecondary }:
             {ctaButtonPrimary ?? "Texte"} →
           </Link>
           <Link
-            href="/kontakt"
+            href={ctaButtonSecondaryLink ?? "/kontakt"}
             style={{
               fontFamily:    "var(--font-inter), sans-serif",
               fontSize:      "0.7rem",
@@ -637,7 +639,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonSecondary }:
         )}
         <div className="flex flex-wrap gap-4" style={{ marginTop: "2rem" }}>
           <Link
-            href="/texte"
+            href={ctaButtonPrimaryLink ?? "/texte"}
             className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",
@@ -650,7 +652,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonSecondary }:
             {ctaButtonPrimary ?? "Artikel lesen"}
           </Link>
           <Link
-            href="/kontakt"
+            href={ctaButtonSecondaryLink ?? "/kontakt"}
             className="text-xs tracking-widest uppercase px-8 py-4 border border-current hover:opacity-75 transition-opacity duration-200"
             style={{
               fontFamily:   "var(--font-bebas), sans-serif",

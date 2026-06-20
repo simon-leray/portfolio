@@ -15,7 +15,6 @@ export default async function KontaktPage() {
     getContact().catch(() => null) as Promise<Contact | null>,
   ]);
 
-  const locationLabel = contact?.locationLabel ?? "Standort";
   const locationValue = contact?.locationValue ?? "Biel/Bienne, Schweiz";
   const mediaLabel = contact?.mediaLabel ?? "Medien";
   const mediaItems = contact?.mediaItems ?? ["Bieler Tagblatt", "ajour.ch"];
@@ -50,7 +49,7 @@ export default async function KontaktPage() {
             <div className="space-y-6">
               <div className="border-t border-ink/10 pt-6">
                 <p className="text-xs tracking-widest uppercase text-ink/40 mb-1">
-                  {locationLabel}
+                  Standorte
                 </p>
                 <p className="text-ink">{locationValue}</p>
               </div>

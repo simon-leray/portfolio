@@ -7,21 +7,21 @@ export const contactSchema = defineType({
   fields: [
     defineField({
       name: "pageLabel",
-      title: "Seiten-Label",
-      description: "Kleiner roter Text über dem Titel (z. B. «Schreiben Sie mir»)",
+      title: "Subtitle",
+      description: "Kleiner roter Text über dem Titel",
       type: "string",
       initialValue: "Schreiben Sie mir",
     }),
     defineField({
       name: "pageTitle",
-      title: "Seitentitel",
+      title: "Head",
       description: "Grosser Titel der Kontaktseite",
       type: "string",
       initialValue: "Kontakt",
     }),
     defineField({
       name: "introText",
-      title: "Einleitungstext",
+      title: "Teaser",
       description: "Kurzer Absatz unter dem Titel",
       type: "text",
       rows: 3,
@@ -29,15 +29,8 @@ export const contactSchema = defineType({
         "Für Anfragen, Hinweise, Zusammenarbeit oder einfach ein Gespräch — ich freue mich über Ihre Nachricht.",
     }),
     defineField({
-      name: "locationLabel",
-      title: "Standort-Label",
-      description: "Bezeichnung für die Standortzeile",
-      type: "string",
-      initialValue: "Standort",
-    }),
-    defineField({
       name: "locationValue",
-      title: "Standort",
+      title: "Standorte",
       type: "string",
       initialValue: "Biel/Bienne, Schweiz",
     }),

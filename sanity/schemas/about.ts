@@ -2,33 +2,40 @@ import { defineField, defineType } from "sanity";
 
 export const aboutSchema = defineType({
   name: "about",
-  title: "Über mich",
+  title: "Bio",
   type: "document",
   fields: [
     defineField({
       name: "pageTitle",
-      title: "Seitentitel",
-      description: "Grosser Titel der Über-mich-Seite",
+      title: "Head",
+      description: "Grosser Titel der Bio-Seite",
       type: "string",
-      initialValue: "Über mich",
+      initialValue: "Bio",
     }),
     defineField({
       name: "pageSubtitle",
-      title: "Seiten-Untertitel",
-      description: "Kleiner roter Text über dem Titel (z. B. «Journalist»)",
+      title: "Subtitle",
+      description: "Kleiner roter Text über dem Titel",
       type: "string",
       initialValue: "Journalist",
     }),
     defineField({
       name: "contactButtonText",
-      title: "Button-Text",
-      description: "Beschriftung des «Kontakt»-Buttons am Ende der Seite",
+      title: "Button",
+      description: "Beschriftung des Buttons am Ende der Seite",
       type: "string",
       initialValue: "Kontakt aufnehmen",
     }),
     defineField({
+      name: "contactButtonLink",
+      title: "Button — Link",
+      description: "Ziel-URL des Buttons (Standard: /kontakt)",
+      type: "url",
+      validation: (rule) => rule.uri({ allowRelative: true }),
+    }),
+    defineField({
       name: "location",
-      title: "Standort",
+      title: "Standorte",
       type: "string",
       initialValue: "Biel/Bienne, Schweiz",
     }),
@@ -56,7 +63,7 @@ export const aboutSchema = defineType({
     }),
     defineField({
       name: "bio",
-      title: "Biografie",
+      title: "Bio",
       type: "array",
       of: [
         {
@@ -84,7 +91,7 @@ export const aboutSchema = defineType({
     select: { media: "photo" },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prepare(value: any) {
-      return { title: "Über mich", media: value.media };
+      return { title: "Bio", media: value.media };
     },
   },
 });

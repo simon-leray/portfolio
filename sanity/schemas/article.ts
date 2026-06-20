@@ -52,7 +52,7 @@ export const articleSchema = defineType({
     }),
     defineField({
       name: "outlet",
-      title: "Medium / Medien",
+      title: "Publiziert in",
       type: "array",
       of: [{ type: "string" }],
       options: { layout: "tags" },
@@ -79,14 +79,14 @@ export const articleSchema = defineType({
         }),
         defineField({
           name: "credit",
-          title: "Bildnachweis",
+          title: "Quelle",
           type: "string",
         }),
       ],
     }),
     defineField({
       name: "articleTitle",
-      title: "Artikeltitel (Detailseite)",
+      title: "Article Head",
       type: "string",
       description: "Grosser Titel auf der Artikelseite. Falls leer, wird der Vorschautitel verwendet.",
     }),
@@ -96,14 +96,6 @@ export const articleSchema = defineType({
       type: "text",
       rows: 4,
       description: "Einleitungsabsatz, erscheint kursiv zwischen dem Titelbild und dem Artikeltext.",
-    }),
-    defineField({
-      name: "relatedArticles",
-      title: "Story Links",
-      type: "array",
-      of: [{ type: "reference", to: [{ type: "article" }] }],
-      description: "Optional: Bis zu 3 thematisch verwandte Artikel, die am Ende der Seite angezeigt werden.",
-      validation: (rule) => rule.max(3),
     }),
     defineField({
       name: "content",
@@ -139,7 +131,7 @@ export const articleSchema = defineType({
           fields: [
             { name: "image", type: "image", title: "Bild", options: { hotspot: true } },
             { name: "caption", type: "string", title: "Bildunterschrift" },
-            { name: "credit", type: "string", title: "Bildnachweis" },
+            { name: "credit", type: "string", title: "Quelle" },
           ],
           preview: {
             select: { title: "caption", media: "image" },
@@ -324,6 +316,14 @@ export const articleSchema = defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: "relatedArticles",
+      title: "Story Links",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "article" }] }],
+      description: "Optional: Bis zu 3 thematisch verwandte Artikel, die am Ende der Seite angezeigt werden.",
+      validation: (rule) => rule.max(3),
     }),
   ],
   preview: {
