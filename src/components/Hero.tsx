@@ -587,10 +587,12 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
 
       {/* ── Desktop: hero content (left side) ──
             No z-index on the container — no stacking context, no background.
-            Each leaf text element is position:relative z-index:3 with opaque color
-            and no mix-blend-mode. Opaque glyphs at z:3 naturally occlude quotes at
-            z:2 pixel-for-pixel; the transparent inter-letter gaps let quotes through.
-            Vertical centering via display:flex + justify-content:center. */}
+            Z-index scheme (all in hero's stacking context):
+              z:1 — red circle
+              z:2 — flying quotes (mix-blend-mode:difference → black over circle)
+              z:3 — period "." (mix-blend-mode:difference → black over circle, above quotes)
+              z:4 — "Simon/Leray" text, subtitle, buttons (solid white, no blend)
+              z:5 — edge fades */}
       <div className="desktop-hero-content">
         <h1
           style={{
@@ -602,11 +604,11 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             margin:     0,
           }}
         >
-          <span style={{ position: "relative", zIndex: 3 }}>Simon<br />Leray</span><span
+          <span style={{ position: "relative", zIndex: 4 }}>Simon<br />Leray</span><span
             style={{
               color:        "#d0021b",
               position:     "relative",
-              zIndex:       2,
+              zIndex:       3,
               mixBlendMode: "difference",
             }}
           >.</span>
@@ -619,7 +621,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               lineHeight:   1.6,
               color:        "white",
               position:     "relative",
-              zIndex:       3,
+              zIndex:       4,
               marginTop:    "1.5rem",
               maxWidth:     "380px",
             }}
@@ -636,7 +638,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               fontSize:     "0.9rem",
               color:        "white",
               position:     "relative",
-              zIndex:       3,
+              zIndex:       4,
             }}
           >
             {ctaButtonPrimary ?? "Artikel lesen"}
@@ -649,7 +651,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               fontSize:     "0.9rem",
               color:        "white",
               position:     "relative",
-              zIndex:       3,
+              zIndex:       4,
             }}
           >
             {ctaButtonSecondary ?? "Kontakt"}
@@ -665,8 +667,8 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
         >
           {/* Edge fades via solid-color overlays — mask-image would create compositing isolation
               that prevents mix-blend-mode on quote wrappers from reaching the circle. */}
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to right, #000000, transparent)", zIndex: 4, pointerEvents: "none" }} />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to left, #000000, transparent)", zIndex: 4, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to right, #000000, transparent)", zIndex: 5, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "8%", background: "linear-gradient(to left, #000000, transparent)", zIndex: 5, pointerEvents: "none" }} />
           {activeQuotes.map(q => (
             <div
               key={q.id}
@@ -674,7 +676,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               style={{
                 top:          `${slotToPercent(q.slot)}%`,
                 transform:    "translateY(-50%)",
-                zIndex:       1,
+                zIndex:       2,
                 mixBlendMode: "difference",
                 color:        "#d0021b",
               }}
