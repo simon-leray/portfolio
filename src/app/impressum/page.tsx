@@ -14,7 +14,7 @@ export default function ImpressumPage() {
             className="text-6xl md:text-9xl leading-none"
             style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
           >
-            Impressum<span style={{ color: "#d0021b" }}>.</span>
+            Impressum<span style={{ color: "#ae0c00" }}>.</span>
           </h1>
         </div>
       </div>

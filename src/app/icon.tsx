@@ -21,7 +21,7 @@ export default function Icon() {
         }}
       >
         <span style={{ color: "#ffffff" }}>SL</span>
-        <span style={{ color: "#d0021b" }}>.</span>
+        <span style={{ color: "#ae0c00" }}>.</span>
       </div>
     ),
     { ...size }

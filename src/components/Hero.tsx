@@ -399,7 +399,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
           width:            "110vw",
           height:           "110vw",
           borderRadius:     "50%",
-          backgroundColor:  "#d0021b",
+          backgroundColor:  "#ae0c00",
           zIndex:           2,
           pointerEvents:    "none",
         }}
@@ -428,14 +428,14 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               fontFamily:   "var(--font-bebas), sans-serif",
               fontSize:     "28vw",
               lineHeight:   0.82,
-              color:        "#d0021b",
+              color:        "#ae0c00",
               margin:       0,
               position:     "relative",
               zIndex:       3,
               mixBlendMode: "difference",
             }}
           >
-            SIMON<br />LERAY<span style={{ color: "#d0021b" }}>.</span>
+            SIMON<br />LERAY<span style={{ color: "#ae0c00" }}>.</span>
           </h1>
           <p
             style={{
@@ -443,7 +443,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               fontSize:      "0.75rem",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
-              color:         "#d0021b",
+              color:         "#ae0c00",
               marginTop:     "0.4rem",
               position:      "relative",
               zIndex:        3,
@@ -478,7 +478,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
                 fontStyle:    "italic",
                 fontSize:     "1.3rem",
                 lineHeight:   1.4,
-                color:        "#d0021b",
+                color:        "#ae0c00",
                 maxWidth:     "80vw",
                 margin:       0,
                 position:     "relative",
@@ -487,7 +487,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               }}
             >
               {typedText}
-              <span className="typewriter-cursor" style={{ color: "#d0021b" }}>|</span>
+              <span className="typewriter-cursor" style={{ color: "#ae0c00" }}>|</span>
             </p>
             {sourceLine && (
               <p
@@ -496,7 +496,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
                   fontSize:      "0.6rem",
                   textTransform: "uppercase",
                   letterSpacing: "0.12em",
-                  color:         "#d0021b",
+                  color:         "#ae0c00",
                   mixBlendMode:  "difference",
                   opacity:       showSource ? 1 : 0,
                   transition:    `opacity ${SOURCE_FADE_MS}ms ease`,
@@ -583,7 +583,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
               position:        "absolute",
               inset:           0,
               borderRadius:    "50%",
-              backgroundColor: "#d0021b",
+              backgroundColor: "#ae0c00",
               willChange:      "transform",
             }}
           />
@@ -610,7 +610,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
             margin:     0,
           }}
         >
-          Simon<br />Leray<span style={{ color: "#d0021b" }}>.</span>
+          Simon<br />Leray<span style={{ color: "#ae0c00" }}>.</span>
         </h1>
         {subtitle && (
           <p
@@ -677,7 +677,7 @@ export function Hero({ subtitle, quotes, ctaButtonPrimary, ctaButtonPrimaryLink,
                 transform:    "translateY(-50%)",
                 zIndex:       2,
                 mixBlendMode: "difference",
-                color:        "#d0021b",
+                color:        "#ae0c00",
               }}
             >
               <div

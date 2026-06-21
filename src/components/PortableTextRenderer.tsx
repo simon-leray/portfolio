@@ -43,7 +43,7 @@ const components: PortableTextComponents = {
     zwischentitelFarbig: ({ children }) => (
       <h2
         className="text-[20px] md:text-[26px] font-bold mb-4 mt-10"
-        style={{ color: "#d0021b" }}
+        style={{ color: "#ae0c00" }}
       >
         {children}
       </h2>

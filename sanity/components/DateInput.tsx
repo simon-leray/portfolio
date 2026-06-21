@@ -56,12 +56,12 @@ export function DateInput(props: StringInputProps) {
           color: #fff;
         }
         .sl-datepicker .react-datepicker__day--selected {
-          background-color: #d0021b;
+          background-color: #ae0c00;
           color: #fff;
         }
         .sl-datepicker .react-datepicker__day--today {
           font-weight: bold;
-          color: #d0021b;
+          color: #ae0c00;
         }
         .sl-datepicker .react-datepicker__day--today.react-datepicker__day--selected {
           color: #fff;
@@ -86,8 +86,8 @@ export function DateInput(props: StringInputProps) {
           outline: none;
         }
         .sl-datepicker input:focus {
-          border-color: #d0021b;
-          box-shadow: 0 0 0 1px #d0021b;
+          border-color: #ae0c00;
+          box-shadow: 0 0 0 1px #ae0c00;
         }
       `}</style>
       <div className="sl-datepicker">

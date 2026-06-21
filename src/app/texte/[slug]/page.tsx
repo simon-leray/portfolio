@@ -160,7 +160,7 @@ export default async function TexteDetailPage({ params }: { params: { slug: stri
                   fontFamily:    "var(--font-bebas), sans-serif",
                   fontSize:      "clamp(2.5rem, 5vw, 4rem)",
                   letterSpacing: "0.02em",
-                  color:         "#d0021b",
+                  color:         "#ae0c00",
                 }}
               >
                 Dazu auch

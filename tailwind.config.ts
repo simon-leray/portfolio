@@ -11,7 +11,7 @@ const config: Config = {
       colors: {
         ink: "#0a0a0a",
         paper: "#f5f4f0",
-        red: "#d0021b",
+        red: "#ae0c00",
       },
       fontFamily: {
         bebas: ["var(--font-bebas)", "sans-serif"],

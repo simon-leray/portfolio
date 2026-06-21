@@ -14,7 +14,7 @@ export default function NotFound() {
           }}
         >
           <span className="text-paper">4</span>
-          <span style={{ color: "#d0021b" }}>0</span>
+          <span style={{ color: "#ae0c00" }}>0</span>
           <span className="text-paper">4</span>
         </div>
 
@@ -22,9 +22,9 @@ export default function NotFound() {
           className="text-2xl md:text-4xl leading-tight mb-4"
           style={{ fontFamily: "var(--font-bebas), sans-serif", letterSpacing: "0.02em" }}
         >
-          Diese Seite gibt es nicht<span style={{ color: "#d0021b" }}>.</span>
+          Diese Seite gibt es nicht<span style={{ color: "#ae0c00" }}>.</span>
           <br />
-          Noch nicht recherchiert<span style={{ color: "#d0021b" }}>?</span>
+          Noch nicht recherchiert<span style={{ color: "#ae0c00" }}>?</span>
         </h1>
 
         <p
@@ -41,7 +41,7 @@ export default function NotFound() {
             fontFamily: "var(--font-bebas), sans-serif",
             fontSize: "1rem",
             letterSpacing: "0.15em",
-            backgroundColor: "#d0021b",
+            backgroundColor: "#ae0c00",
           }}
         >
           ZURÜCK ZUR STARTSEITE →

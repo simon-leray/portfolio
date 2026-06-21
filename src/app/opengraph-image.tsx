@@ -31,7 +31,7 @@ export default function OgImage() {
           }}
         >
           <span style={{ color: "#ffffff" }}>SIMON LERAY</span>
-          <span style={{ color: "#d0021b" }}>.</span>
+          <span style={{ color: "#ae0c00" }}>.</span>
         </div>
         <div
           style={{
