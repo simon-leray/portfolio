@@ -3,7 +3,7 @@ import { Bebas_Neue, Playfair_Display, Inter } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
